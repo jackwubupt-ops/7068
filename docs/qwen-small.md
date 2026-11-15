@@ -54,7 +54,7 @@ cp .env.qwen-small.example .env
 python -m experiments.qwen_small_dev --mode preflight
 ~~~
 
-The local .env must NEVER be committed. QWEN_API_KEY=EMPTY is ONLY for a localhost vLLM endpoint and is not a paid-provider key. The client has NO silent fallback to DeepSeek or OpenAI.
+The local .env must NEVER be committed. QWEN_API_KEY=EMPTY is ONLY for a localhost vLLM endpoint and is not a paid-provider key. PATCHLOOP_MODEL_BACKEND=qwen also routes the ORIGINAL CodeNexus Flask Demo and the shared Task 1-3 model client through the same local vLLM server. The default OpenAI-compatible behavior remains unchanged unless this flag is set. The Qwen client has NO silent fallback to DeepSeek or OpenAI.
 
 ## 3. REAL Qwen -> Git -> Docker smoke
 
