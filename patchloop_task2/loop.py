@@ -5,16 +5,13 @@ commit. Test outcomes are internal feedback, not SWE-bench resolution labels.
 """
 from __future__ import annotations
 
-from dataclasses import asdict
 from pathlib import Path
 import hashlib
 import json
-import time
 
 from .coder import CoderError, build_messages, extract_diff, permitted_paths
 from .execution import DockerTestRunner, DockerTestSpec
 from .reviewer import ReviewerError, review_failure
-from .validator import PatchValidationError
 from .workspace import (
     WorkspaceError, _good_result, _run_git, apply_candidate,
     isolated_worktree, resolve_base,
@@ -97,9 +94,13 @@ def run_from_plan(
     for number in range(1, max_candidates + 1):
         try:
             validate_repository(repo, base_commit)
+        except (ValueError, OSError) as exc:
+            result["status"] = "infrastructure_error"
+            result["error_message"] = str(exc)[:800]
+            break
+        try:
             patch = _coder(issue, plan, completion=coder_completion, revision=revision)
-        except (CoderError, ValueError, OSError, Exception) as exc:
-            # A model exception is a model error; no executable actions are attempted.
+        except Exception as exc:
             result["status"] = "model_error"
             result["error_message"] = str(exc)[:800]
             break
@@ -178,7 +179,7 @@ def run_from_plan(
         try:
             advice = review_failure(issue, plan, patch, failure,
                                     completion=reviewer_completion)
-        except (ReviewerError, ValueError, Exception) as exc:
+        except Exception as exc:
             result["status"] = "reviewer_error"
             result["error_message"] = str(exc)[:800]
             break
