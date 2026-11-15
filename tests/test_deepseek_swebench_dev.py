@@ -123,5 +123,34 @@ class DeepSeekDevControllerTests(unittest.TestCase):
             run_real_dev(dest, api=self.api)
 
 
+    def test_search_budget_caps_real_planner_evidence(self):
+        from experiments.live_deepseek import create_real_git_fixture
+        from prompt_agent import plan_repair
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            base = create_real_git_fixture(fixture)
+            steps = iter([
+                json.dumps({"action": "search_repo", "arguments": {
+                    "query": "divide", "max_results": 20, "context_lines": 3}}),
+                json.dumps({"action": "read_file", "arguments": {
+                    "relative_path": "calc.py", "start_line": 1, "end_line": 2}}),
+                json.dumps({"action": "final", "plan": {
+                    "issue_summary": "Division truncates",
+                    "suspected_files": [{"file_path": "calc.py",
+                        "relevant_lines": [1, 2], "reason": "floor division",
+                        "evidence_ids": ["E2"]}],
+                    "root_cause_hypothesis": "Floor division truncates",
+                    "planned_changes": ["Use true division"],
+                    "limitations": []}}),
+            ])
+            plan = plan_repair(
+                "divide(3,2) should be 1.5", str(fixture), base,
+                completion=lambda messages: next(steps),
+                search_result_limit=2, search_context_limit=0,
+            )
+            self.assertEqual(plan["evidence"][0]["arguments"]["max_results"], 2)
+            self.assertEqual(plan["evidence"][0]["arguments"]["context_lines"], 0)
+            self.assertEqual(plan["suspected_files"][0]["file_path"], "calc.py")
+
 if __name__ == "__main__":
     unittest.main()

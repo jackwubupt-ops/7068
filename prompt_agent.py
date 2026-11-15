@@ -32,7 +32,8 @@ def correct_and_refine_prompt(raw_input: str, language='en') -> str:
     return response.choices[0].message.content.strip()
 
 
-def plan_repair(issue, repo_root, base_commit, *, completion=None, max_steps=10):
+def plan_repair(issue, repo_root, base_commit, *, completion=None, max_steps=10,
+                search_result_limit=20, search_context_limit=3):
     """Localize an issue using bounded read-only tools; never apply a patch.
 
     completion(messages) is an injectable text completion for offline tests.
@@ -45,6 +46,10 @@ def plan_repair(issue, repo_root, base_commit, *, completion=None, max_steps=10)
         raise ValueError('Issue must contain 1-20000 characters')
     if type(max_steps) is not int or not 1 <= max_steps <= 15:
         raise ValueError('max_steps must be in [1, 15]')
+    if type(search_result_limit) is not int or not 1 <= search_result_limit <= 20:
+        raise ValueError('search_result_limit must be in [1, 20]')
+    if type(search_context_limit) is not int or not 0 <= search_context_limit <= 3:
+        raise ValueError('search_context_limit must be in [0, 3]')
     repository = validate_repository(repo_root, base_commit)
     root = repository['repo_root']
     instructions = '''You are PatchLoop's repository bug localization Planner.
@@ -91,6 +96,12 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
             allowed = {'query', 'max_results', 'context_lines'} if name == 'search_repo' else {'relative_path', 'start_line', 'end_line'}
             if not isinstance(arguments, dict) or not set(arguments) <= allowed:
                 raise ValueError('Invalid tool arguments')
+            if name == 'search_repo':
+                # Real benchmark repos are large: bound evidence BEFORE adding it
+                # to the LLM conversation. Defaults preserve Task 1 behavior.
+                arguments = dict(arguments)
+                arguments['max_results'] = min(arguments.get('max_results', 20), search_result_limit)
+                arguments['context_lines'] = min(arguments.get('context_lines', 3), search_context_limit)
             if name == 'read_file' and not is_tracked(root, arguments.get('relative_path', '')):
                 result = {'ok': False, 'error': 'File is not a permitted tracked file at Base Commit', 'truncated': False}
             else:

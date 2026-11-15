@@ -26,7 +26,7 @@ from swebench_dev import (
 INSTANCE_ID = "sqlfluff__sqlfluff-4764"
 EXPECTED_REPO = "sqlfluff/sqlfluff"
 EXPECTED_BASE = "a820c139ccbe6d1865d73c4a459945cd69899f8f"
-MAX_PLANNER_STEPS = 8
+MAX_PLANNER_STEPS = 14
 
 
 def _clean_source(path: Path, base: str) -> bool:
@@ -74,13 +74,14 @@ def run_real_dev(
         "prediction_available": False,
         "model": "deepseek-flash",
         "model_calls": [],
+        "planner_action_trace": [],
     }
 
     stage = "api_initialization"
     began = time.monotonic()
     live = None
     try:
-        live = api if api is not None else LiveDeepSeek()
+        live = api if api is not None else LiveDeepSeek(max_calls=16)
         report["model"] = live.model
         stage = "load_official_dev_task"
         task = task_loader(instance_id=INSTANCE_ID)
@@ -98,9 +99,43 @@ def run_real_dev(
             )
             report["live_api_preflight"] = True
             stage = "real_planner_localization"
+            def planner_completion(messages):
+                # Log only action metadata and prior validation feedback.
+                # Never persist issue text, source lines or untrusted model output.
+                raw = live.complete("planner", messages)
+                event = {"round": len(report["planner_action_trace"]) + 1}
+                try:
+                    decoded = json.loads(raw)
+                    if isinstance(decoded, dict):
+                        event["action"] = str(decoded.get("action", "unknown"))[:35]
+                        args = decoded.get("arguments")
+                        if isinstance(args, dict):
+                            if isinstance(args.get("query"), str):
+                                event["search_query"] = args["query"][:80]
+                            if isinstance(args.get("relative_path"), str):
+                                event["read_path"] = args["relative_path"][:160]
+                        if event["action"] == "final":
+                            plan_fields = decoded.get("plan")
+                            if isinstance(plan_fields, dict):
+                                suspects = plan_fields.get("suspected_files")
+                                event["candidate_count"] = (
+                                    len(suspects) if isinstance(suspects, list) else None
+                                )
+                    else:
+                        event["action"] = "non_object"
+                except ValueError:
+                    event["action"] = "invalid_json"
+                if messages and messages[-1].get("role") == "user":
+                    previous = messages[-1].get("content", "")
+                    if previous.startswith("Protocol validation error:"):
+                        event["prior_protocol_error"] = previous[:140]
+                report["planner_action_trace"].append(event)
+                return raw
+
             plan = run_localization(
                 task.problem_statement, str(checkout), task.base_commit,
-                completion=live.callback("planner"), max_steps=MAX_PLANNER_STEPS,
+                completion=planner_completion, max_steps=MAX_PLANNER_STEPS,
+                search_result_limit=5, search_context_limit=1,
             )
             files = plan.get("suspected_files", [])
             report["suspected_file_count"] = len(files)

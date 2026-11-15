@@ -68,7 +68,7 @@ class LiveDeepSeek:
     """Controlled, metered real HTTP completions through the official endpoint."""
 
     def __init__(self, *, api_key: str | None = None, model: str | None = None,
-                 client=None):
+                 client=None, max_calls: int = MAX_CALLS):
         token = api_key if api_key is not None else os.getenv("DEEPSEEK_API_KEY", "")
         if not token or token in {"EMPTY", "DUMMY", "YOUR_API_KEY"}:
             raise ValueError(
@@ -84,12 +84,15 @@ class LiveDeepSeek:
                 api_key=token, base_url=OFFICIAL_ENDPOINT,
                 timeout=75, max_retries=0,
             )
+        if type(max_calls) is not int or not 1 <= max_calls <= 16:
+            raise ValueError('max_calls must be an integer in [1, 16]')
+        self.max_calls = max_calls
         self.client = client
         self.calls: list[dict] = []
         self.output_tokens = 0
 
     def complete(self, stage: str, messages: list[dict]) -> str:
-        if len(self.calls) >= MAX_CALLS or self.output_tokens >= MAX_COMPLETION_TOKENS:
+        if len(self.calls) >= self.max_calls or self.output_tokens >= MAX_COMPLETION_TOKENS:
             raise RuntimeError("LIVE_API_BUDGET_EXHAUSTED: maximum request/token budget reached")
         if stage not in {"preflight", "planner", "coder", "reviewer"}:
             raise ValueError("Unsupported agent role")
