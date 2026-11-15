@@ -44,6 +44,28 @@ def _clean_source(path: Path, base: str) -> bool:
     )
 
 
+
+def _planner_request_messages(messages: list[dict], round_number: int) -> list[dict]:
+    """Ask for a final plan after exploration, without any gold patch hints."""
+    if round_number < 10:
+        return messages
+    # There can be 14 Planner turns. Reserve the final five for completion,
+    # rather than allowing repeated search calls to consume the full budget.
+    return [*messages, {
+        "role": "user",
+        "content": (
+            "STOP SEARCHING. You have already inspected repository code. "
+            "Your NEXT answer must be a single JSON action='final' following "
+            "the system schema, not another search_repo or read_file call. "
+            "Cite the exact successful read_file evidence IDs and covered "
+            "inclusive line ranges in suspected_files. "
+            "Use only the observed issue text and source evidence. "
+            "If the evidence is insufficient, use suspected_files=[] and "
+            "state the limitation; never invent evidence, tests, or fixes."
+        ),
+    }]
+
+
 def run_real_dev(
     output_dir: str | Path, *,
     api=None, task_loader=select_dev_task, checkout_fn=checkout_dev_task,
@@ -102,8 +124,14 @@ def run_real_dev(
             def planner_completion(messages):
                 # Log only action metadata and prior validation feedback.
                 # Never persist issue text, source lines or untrusted model output.
-                raw = live.complete("planner", messages)
-                event = {"round": len(report["planner_action_trace"]) + 1}
+                next_round = len(report["planner_action_trace"]) + 1
+                raw = live.complete(
+                    "planner", _planner_request_messages(messages, next_round)
+                )
+                event = {
+                    "round": next_round,
+                    "finalization_requested": next_round >= 10,
+                }
                 try:
                     decoded = json.loads(raw)
                     if isinstance(decoded, dict):

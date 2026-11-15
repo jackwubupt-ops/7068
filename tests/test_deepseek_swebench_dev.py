@@ -152,5 +152,16 @@ class DeepSeekDevControllerTests(unittest.TestCase):
             self.assertEqual(plan["evidence"][0]["arguments"]["context_lines"], 0)
             self.assertEqual(plan["suspected_files"][0]["file_path"], "calc.py")
 
+    def test_finalization_request_after_nine_planner_turns(self):
+        from experiments.deepseek_swebench_dev import _planner_request_messages
+        original = [{"role": "user", "content": "Task issue"}]
+        self.assertIs(_planner_request_messages(original, 9), original)
+        prompted = _planner_request_messages(original, 10)
+        self.assertEqual(len(prompted), 2)
+        self.assertIn("STOP SEARCHING", prompted[-1]["content"])
+        self.assertIn("evidence", prompted[-1]["content"])
+        self.assertEqual(len(original), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
