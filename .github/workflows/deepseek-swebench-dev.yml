@@ -1,0 +1,109 @@
+name: LIVE DeepSeek on real SWE-bench full dev issue
+
+on:
+  push:
+    branches: [experiment/deepseek-swebench-dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-prediction:
+    name: Real DeepSeek Planner+Coder on sqlfluff__sqlfluff-4764
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install benchmark reader and model API dependencies
+        run: python -m pip install "datasets>=3,<5" "openai>=1.68,<3" "python-dotenv>=1,<2"
+      - name: Check credentials without printing them
+        shell: bash
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          if [ -z "$DEEPSEEK_API_KEY" ]; then
+            echo "::error::No DEEPSEEK_API_KEY repo secret configured."
+            exit 1
+          fi
+      - name: Generate ONE real DeepSeek prediction from official dev task
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: deepseek-flash
+        run: python -m experiments.deepseek_swebench_dev --out "$RUNNER_TEMP/deepseek-swebench-dev"
+      - name: Upload candidate, prediction and sanitized run status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deepseek-swebench-dev-prediction
+          path: ${{ runner.temp }}/deepseek-swebench-dev/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  official-evaluation:
+    name: OFFICIAL SWE-bench dev Docker test (single instance)
+    needs: [generate-prediction]
+    if: needs.generate-prediction.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download exactly the generated candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: deepseek-swebench-dev-prediction
+          path: ${{ runner.temp }}/deepseek-swebench-dev
+      - name: Verify candidate and available Docker resources
+        shell: bash
+        run: |
+          test -s "$RUNNER_TEMP/deepseek-swebench-dev/predictions.jsonl"
+          python -c 'import json,os,pathlib; p=pathlib.Path(os.environ["RUNNER_TEMP"])/"deepseek-swebench-dev/predictions.jsonl"; r=json.loads(p.read_text()); assert r["instance_id"]=="sqlfluff__sqlfluff-4764"; assert r["model_name_or_path"]=="deepseek-flash"; assert r["model_patch"].startswith("diff --git a/"); print("Prediction schema and target instance verified")'
+          df -h /
+          free -h
+          docker info --format 'Docker: {{.ServerVersion}}'
+      - name: Install OFFICIAL SWE-bench evaluator
+        run: python -m pip install swebench
+      - name: Run official dev harness against the actual generated patch
+        shell: bash
+        run: |
+          python -m swebench.harness.run_evaluation             --dataset_name princeton-nlp/SWE-bench             --split dev             --instance_ids sqlfluff__sqlfluff-4764             --predictions_path "$RUNNER_TEMP/deepseek-swebench-dev/predictions.jsonl"             --max_workers 1             --timeout 900             --run_id "deepseek-dev-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Report official resolved/unresolved if evaluation completed
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          p=Path("logs/evaluation/deepseek-dev-${{ github.run_id }}-${{ github.run_attempt }}/results.json")
+          summary=Path(os.environ["GITHUB_STEP_SUMMARY"])
+          if p.is_file():
+              data=json.loads(p.read_text())
+              with summary.open("a") as f:
+                  f.write("### Official SWE-bench full-dev evaluation\n\n")
+                  f.write("Result JSON: "+str(p)+"\n\n")
+                  f.write("Summary: "+json.dumps(data,ensure_ascii=False)[:1500]+"\n")
+              print(json.dumps(data,ensure_ascii=False)[:3000])
+          else:
+              print("Official result JSON absent: evaluation incomplete or infrastructure blocked")
+              with summary.open("a") as f:
+                  f.write("### Official evaluation unavailable\n\nNo results.json produced. This is NOT a resolved/unresolved verdict.\n")
+          PY
+      - name: Preserve official evaluation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: swebench-full-dev-official-evaluation
+          path: logs/evaluation/
+          if-no-files-found: ignore
+          retention-days: 14
