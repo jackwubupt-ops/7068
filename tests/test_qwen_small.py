@@ -176,5 +176,31 @@ class SettingsTests(unittest.TestCase):
         self.assertFalse(bad["official_resolved"])
 
 
+    def test_original_demo_shared_client_can_be_switched_to_local_qwen(self):
+        import os
+        import subprocess
+        import sys
+        env = dict(os.environ)
+        env.update({
+            "PATCHLOOP_MODEL_BACKEND": "qwen",
+            "QWEN_MODEL": DEFAULT_MODEL,
+            "QWEN_BASE_URL": "http://127.0.0.1:8000/v1",
+            "QWEN_API_KEY": "EMPTY",
+        })
+        script = (
+            "import json,config;"
+            "print(json.dumps({'model':config.OPENAI_MODEL,"
+            "'url':str(config.get_client().base_url)}))"
+        )
+        completed = subprocess.run(
+            [sys.executable, "-c", script], env=env,
+            text=True, capture_output=True, timeout=15,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        info = json.loads(completed.stdout)
+        self.assertEqual(info["model"], DEFAULT_MODEL)
+        self.assertIn("127.0.0.1:8000/v1", info["url"])
+
+
 if __name__ == "__main__":
     unittest.main()
