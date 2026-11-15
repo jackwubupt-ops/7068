@@ -149,7 +149,7 @@ def run_real_dev(
     began = time.monotonic()
     live = None
     try:
-        live = api if api is not None else LiveDeepSeek(max_calls=16)
+        live = api if api is not None else LiveDeepSeek(max_calls=16, coder_max_tokens=5500)
         report["model"] = live.model
         stage = "load_official_dev_task"
         task = task_loader(instance_id=INSTANCE_ID)

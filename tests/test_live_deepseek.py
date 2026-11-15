@@ -79,5 +79,16 @@ class LiveDeepSeekContractTest(unittest.TestCase):
             self.assertEqual(outcome["model_calls"], [])
 
 
+    def test_configured_coder_token_budget_is_bounded(self):
+        fake = FakeResponses()
+        client = SimpleNamespace(chat=SimpleNamespace(completions=fake))
+        live = LiveDeepSeek(api_key="TEST_ONLY_NOT_REAL_KEY", model="deepseek-flash",
+                            client=client, coder_max_tokens=5500)
+        live.complete("coder", [{"role": "user", "content": "Output a Git diff"}])
+        self.assertEqual(fake.requests[-1]["max_tokens"], 5500)
+        with self.assertRaises(ValueError):
+            LiveDeepSeek(api_key="TEST_ONLY", client=client, coder_max_tokens=90000)
+
+
 if __name__ == "__main__":
     unittest.main()

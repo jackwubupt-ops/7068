@@ -68,7 +68,8 @@ class LiveDeepSeek:
     """Controlled, metered real HTTP completions through the official endpoint."""
 
     def __init__(self, *, api_key: str | None = None, model: str | None = None,
-                 client=None, max_calls: int = MAX_CALLS):
+                 client=None, max_calls: int = MAX_CALLS,
+                 coder_max_tokens: int = 2200):
         token = api_key if api_key is not None else os.getenv("DEEPSEEK_API_KEY", "")
         if not token or token in {"EMPTY", "DUMMY", "YOUR_API_KEY"}:
             raise ValueError(
@@ -86,7 +87,10 @@ class LiveDeepSeek:
             )
         if type(max_calls) is not int or not 1 <= max_calls <= 16:
             raise ValueError('max_calls must be an integer in [1, 16]')
+        if type(coder_max_tokens) is not int or not 200 <= coder_max_tokens <= 6000:
+            raise ValueError('coder_max_tokens must be an integer in [200, 6000]')
         self.max_calls = max_calls
+        self.coder_max_tokens = coder_max_tokens
         self.client = client
         self.calls: list[dict] = []
         self.output_tokens = 0
@@ -99,7 +103,7 @@ class LiveDeepSeek:
         max_tokens = {
             "preflight": 24,
             "planner": 1500,
-            "coder": 2200,
+            "coder": self.coder_max_tokens,
             "reviewer": 700,
         }[stage]
         remaining = MAX_COMPLETION_TOKENS - self.output_tokens
