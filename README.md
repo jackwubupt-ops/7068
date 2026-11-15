@@ -47,6 +47,25 @@ The target repo stays unchanged and no repository code/tests are executed in Tas
 An applied patch is not evidence that the issue is resolved. The original Flask Demo
 and its generation route remain unchanged. See [Task 2 guide](docs/task2.md).
 
+## Task 3: execution-grounded tests and Reviewer retries
+
+Task 3 adds a real Docker test runner and a bounded Coder–Reviewer feedback
+loop (maximum three complete patches, each checked out from the original Base
+Commit). The Reviewer diagnoses actual failing test logs; Docker outages and
+timeouts stop rather than being treated as code failures. No model-generated
+shell commands execute, and the original target repository remains unchanged.
+
+~~~powershell
+docker pull python:3.11-slim
+.\.venv\Scripts\python.exe -m examples.task3_docker_smoke
+.\.venv\Scripts\python.exe repair_loop.py --repo C:\target --base-commit FULL_SHA --issue-file issue.txt --image python:3.11-slim --test-runner unittest --max-candidates 3 --out C:\logs\repair.json
+~~~
+
+The first command pre-pulls a trusted image; the smoke executes actual Docker
+tests with **scripted model outputs**, not a real LLM. Real model runs reuse
+the configured OpenAI-compatible adapter. An internal test pass is NOT
+equivalent to official SWE-bench resolution. See [Task 3 guide](docs/task3.md).
+
 ## Original demo and visualizations
 
 ```powershell
@@ -73,4 +92,4 @@ Generation scripts call the configured API and may incur charges. Visualizations
 
 `requirements.txt` contains direct dependency ranges; `requirements-lock.txt` records the installed versions. `.env`, virtual environments, caches and runtime logs are intentionally excluded from Git. Run the web app locally; its repository input grants access to local source files.
 
-Real model localization and SWE-bench evaluation have not been validated. Task 2 patch application has been implemented; test execution, Reviewer retries and QLoRA training remain future work.
+Real model localization and SWE-bench evaluation have not been validated. Task 3 adds Docker execution and Reviewer retries. Live LLM repair quality, QLoRA training and official SWE-bench evaluation remain future work.
