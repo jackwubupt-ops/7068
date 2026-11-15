@@ -128,15 +128,24 @@ class SettingsTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "prediction"
             path.mkdir()
+            def fake_prediction(output, *, api):
+                (output / "predictions.jsonl").write_text(json.dumps({
+                    "instance_id": "sqlfluff__sqlfluff-4764",
+                    "model_name_or_path": DEFAULT_MODEL,
+                    "model_patch": "diff --git a/a.py b/a.py\n",
+                }), encoding="utf-8")
+                return {"status": "prediction_ready", "official_evaluated": True,
+                        "official_resolved": True}
             with patch(
                 "experiments.qwen_small_dev.run_real_dev",
-                return_value={"status": "prediction_ready", "official_evaluated": True,
-                              "official_resolved": True},
+                side_effect=fake_prediction,
             ) as run:
                 report = run_qwen_dev(fake_backend, path)
             run.assert_called_once()
             self.assertFalse(report["official_evaluated"])
             self.assertIsNone(report["official_resolved"])
+            prediction = json.loads((path / "predictions.jsonl").read_text())
+            self.assertEqual(prediction["model_name_or_path"], "qwen2.5-coder-0.5b-instruct")
             self.assertEqual(
                 json.loads((path / "run_status.json").read_text())["experiment"],
                 "qwen-small-real-swebench-full-dev-v1",
