@@ -77,5 +77,35 @@ class Task2IntegrationTests(unittest.TestCase):
         self.assertFalse(result["patch_result"]["execution_verified"])
 
 
+    def test_real_task1_to_task2_end_to_end_offline(self):
+        # This path does NOT mock run_localization. It exercises the actual
+        # Task 1 Planner, real search_repo/read_file, Task 2 Coder contract,
+        # Git validation and isolated patch application.
+        actions = iter([
+            {"action": "search_repo", "arguments": {"query": "divide"}},
+            {"action": "read_file", "arguments": {
+                "relative_path": "calc.py", "start_line": 1, "end_line": 2}},
+            {"action": "final", "plan": {
+                "issue_summary": "Division unexpectedly truncates fractions",
+                "suspected_files": self.plan["suspected_files"],
+                "root_cause_hypothesis": "The floor division discards fractions",
+                "planned_changes": ["Change // to /"],
+                "limitations": ["Scripted offline Planner; correctness unverified"]}}
+        ])
+        output = run_repair(
+            "divide(3,2) should return 1.5", str(self.root), self.commit,
+            planner_completion=lambda _: json.dumps(next(actions)),
+            coder_completion=lambda _: GOOD_PATCH,
+        )
+        self.assertEqual(output["plan"]["suspected_files"][0]["file_path"], "calc.py")
+        self.assertEqual(len(output["plan"]["evidence"]), 2)
+        self.assertEqual(output["patch_result"]["status"], "applied")
+        self.assertFalse(output["patch_result"]["execution_verified"])
+        self.assertEqual(
+            (self.root / "calc.py").read_text(encoding="utf-8"),
+            "def divide(a, b):\\n    return a // b\\n".replace("\\n", "\n"),
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
