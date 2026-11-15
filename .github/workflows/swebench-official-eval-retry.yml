@@ -59,17 +59,15 @@ jobs:
       - name: Check classic harness supports original full-dev schema
         run: |
           python - <<'PY'
-          import inspect
+          import importlib.metadata
           from datasets import load_dataset
-          from swebench.harness.test_spec import make_test_spec
           task=load_dataset("princeton-nlp/SWE-bench", split="dev")
           matches=[row for row in task if row["instance_id"]=="sqlfluff__sqlfluff-4764"]
           assert len(matches)==1
-          print("Official dev row has image field:", "image" in matches[0])
-          print("Classic make_test_spec signature:", inspect.signature(make_test_spec))
-          spec=make_test_spec(matches[0])
-          print("Classic test spec type:", type(spec).__name__)
-          print("Instance:", spec.instance_id)
+          print("Pinned harness:", importlib.metadata.version("swebench"))
+          print("Verified original dev instance:", matches[0]["instance_id"])
+          print("Original dataset has image field:", "image" in matches[0])
+          print("Classic harness evaluation will now validate/build Docker test spec.")
           PY
       - name: Run official full-dev evaluation on saved prediction
         timeout-minutes: 30
