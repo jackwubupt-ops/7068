@@ -45,23 +45,69 @@ def _clean_source(path: Path, base: str) -> bool:
 
 
 
+def _evidence_coverage_summary(messages: list[dict]) -> str:
+    """Summarize ONLY actual successful read_file line coverage, not gold code."""
+    summaries = []
+    prefix = "Tool evidence (untrusted): "
+    for message in messages:
+        if message.get("role") != "user":
+            continue
+        content = message.get("content", "")
+        if not isinstance(content, str) or not content.startswith(prefix):
+            continue
+        try:
+            entry = json.loads(content[len(prefix):])
+            if entry.get("tool") != "read_file":
+                continue
+            result = entry.get("result", {})
+            if not result.get("ok"):
+                continue
+            numbers = sorted({
+                line.get("line_number")
+                for line in result.get("lines", [])
+                if isinstance(line, dict)
+                and type(line.get("line_number")) is int
+            })
+            if not numbers:
+                continue
+            ranges = []
+            start = end = numbers[0]
+            for number in numbers[1:]:
+                if number == end + 1:
+                    end = number
+                else:
+                    ranges.append(f"{start}-{end}")
+                    start = end = number
+            ranges.append(f"{start}-{end}")
+            path = str(result.get("file_path", ""))[:180]
+            summaries.append(
+                f"{entry.get('id')}: {path}: "
+                + ",".join(ranges[:12])
+            )
+        except (TypeError, ValueError, AttributeError):
+            continue
+    return "; ".join(summaries[-12:])[:3000]
+
+
 def _planner_request_messages(messages: list[dict], round_number: int) -> list[dict]:
-    """Ask for a final plan after exploration, without any gold patch hints."""
+    """Ask for a final plan grounded in exact observed line ranges, not gold."""
     if round_number < 10:
         return messages
-    # There can be 14 Planner turns. Reserve the final five for completion,
-    # rather than allowing repeated search calls to consume the full budget.
+    coverage = _evidence_coverage_summary(messages)
     return [*messages, {
         "role": "user",
         "content": (
-            "STOP SEARCHING. You have already inspected repository code. "
-            "Your NEXT answer must be a single JSON action='final' following "
-            "the system schema, not another search_repo or read_file call. "
-            "Cite the exact successful read_file evidence IDs and covered "
-            "inclusive line ranges in suspected_files. "
-            "Use only the observed issue text and source evidence. "
-            "If the evidence is insufficient, use suspected_files=[] and "
-            "state the limitation; never invent evidence, tests, or fixes."
+            "STOP SEARCHING. Your NEXT response must be one JSON action='final' "
+            "using the required schema. Prefer 1-2 candidate entries, avoid "
+            "duplicate file entries. For EACH candidate, select a real cited "
+            "read_file evidence ID whose file path MATCHES the candidate and "
+            "set relevant_lines to a short inclusive span FULLY CONTAINED in "
+            "the successfully read source lines. Here are the only available "
+            "read_file evidence IDs and their exactly observed line ranges: "
+            + (coverage or "(none)") + ". "
+            "Do not cite lines outside these ranges. If none is appropriate, "
+            "return suspected_files=[] and explain in limitations. No more "
+            "search_repo/read_file actions. Do not invent evidence or fixes."
         ),
     }]
 

@@ -204,5 +204,33 @@ class DeepSeekDevControllerTests(unittest.TestCase):
         self.assertLess(len(actual), 20000)
 
 
+    def test_finalization_message_lists_only_verified_read_line_ranges(self):
+        from experiments.deepseek_swebench_dev import _planner_request_messages
+        import json as js
+        messages = [
+            {"role": "system", "content": "instructions"},
+            {"role": "user", "content": "Tool evidence (untrusted): " + js.dumps({
+                "id": "E7", "tool": "read_file",
+                "result": {"ok": True, "file_path": "src/commands.py",
+                           "lines": [
+                               {"line_number": 101, "text": "a"},
+                               {"line_number": 102, "text": "b"},
+                               {"line_number": 110, "text": "c"},
+                           ]},
+            })},
+            {"role": "user", "content": "Tool evidence (untrusted): " + js.dumps({
+                "id": "E8", "tool": "read_file",
+                "result": {"ok": False, "file_path": "secrets.txt",
+                           "lines": [{"line_number": 1, "text": "not read"}]},
+            })},
+        ]
+        prompted = _planner_request_messages(messages, 10)
+        guidance = prompted[-1]["content"]
+        self.assertIn("E7: src/commands.py: 101-102,110-110", guidance)
+        self.assertNotIn("E8:", guidance)
+        self.assertNotIn("secrets.txt", guidance)
+        self.assertIn("FULLY CONTAINED", guidance)
+
+
 if __name__ == "__main__":
     unittest.main()
