@@ -87,6 +87,32 @@ SWE-bench Lite has no official dev split; leave its test split for held-out eval
 See [Qwen + SWE-bench guide](docs/qwen-swebench.md) for GPU setup, safety,
 command lines, and official evaluation instructions.
 
+## Qwen 0.5B / 0.6B local GPU inference and real SWE-bench development
+
+**Primary model:** Qwen/Qwen2.5-Coder-0.5B-Instruct via a localhost-only vLLM server.
+The existing CodeNexus Demo and Task 1–3 remain available. Qwen is an opt-in
+experiment using a dedicated backend and NEVER silently falls back to DeepSeek.
+
+~~~bash
+bash scripts/setup_qwen_small.sh
+source .venv-qwen-server/bin/activate
+bash scripts/start_qwen_small.sh
+# In another terminal, using a separate PatchLoop client environment:
+python -m experiments.qwen_small_dev --mode preflight
+python -m experiments.qwen_small_dev --mode smoke --out /tmp/qwen-smoke-01
+python -m experiments.qwen_small_dev --mode dev --out /tmp/qwen-full-dev-01
+~~~
+
+Preflight and dev modes use ACTUAL model inference and require a running vLLM
+endpoint; smoke also requires a Docker daemon. A separate CI smoke with scripted
+model replies proves API/patch/Docker wiring but NOT Qwen model performance.
+
+Only an applicable diff creates SWE-bench predictions. An official Resolved
+or Unresolved verdict requires the pinned evaluation harness; historical
+sqlfluff dependency repair is disclosed as a nonstandard environment override.
+
+See [Qwen small-model guide](docs/qwen-small.md).
+
 ## Original demo and visualizations
 
 ```powershell
