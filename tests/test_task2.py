@@ -101,10 +101,7 @@ class Task2IntegrationTests(unittest.TestCase):
         self.assertEqual(len(output["plan"]["evidence"]), 2)
         self.assertEqual(output["patch_result"]["status"], "applied")
         self.assertFalse(output["patch_result"]["execution_verified"])
-        self.assertEqual(
-            (self.root / "calc.py").read_text(encoding="utf-8"),
-            "def divide(a, b):\\n    return a // b\\n".replace("\\n", "\n"),
-        )
+        self.assertEqual(subprocess.check_output(["git", "-C", str(self.root), "status", "--porcelain"]), b"")
 
 
 if __name__ == "__main__":
