@@ -1,7 +1,7 @@
 name: PatchLoop full regression
 on:
   push:
-    branches: [main, feature/patchloop-task2, feature/patchloop-task3, feature/qwen-swebench-dev]
+    branches: [main, feature/patchloop-task2, feature/patchloop-task3, feature/qwen-swebench-dev, experiment/deepseek-live-smoke]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -31,7 +31,7 @@ jobs:
       - name: Dependency consistency
         run: python -m pip check
       - name: Compile Python sources
-        run: python -m compileall -q app.py code_agent.py config.py demo_localization.py evaluator.py localize.py pipeline_agent.py prompt_agent.py repair.py repair_loop.py swebench_dev.py test_agent.py utils patchloop_task2 examples tests
+        run: python -m compileall -q app.py code_agent.py config.py demo_localization.py evaluator.py localize.py pipeline_agent.py prompt_agent.py repair.py repair_loop.py swebench_dev.py test_agent.py utils patchloop_task2 examples experiments tests
       - name: Full regression suite
         run: python -m unittest discover -s tests -v
       - name: Task 1 scripted offline demo
