@@ -33,6 +33,20 @@ The target repository must be clean and HEAD must match the commit. No clone, ch
 
 The offline demo uses real repository tools with scripted model actions. Omit `--offline` to run with the configured model. Neither a valid plan nor LLM scores establish that a repair works.
 
+## Task 2: generate and apply a candidate Git patch
+
+Task 2 reuses the Task 1 Planner output (suspected_files and verified read_file evidence).
+The Coder produces a unified Git diff; the controlled harness validates the patch and applies
+it only within a temporary detached Git worktree at the Base Commit.
+The target repo stays unchanged and no repository code/tests are executed in Task 2.
+
+~~~powershell
+.\.venv\Scripts\python.exe repair.py --repo C:\path\target --base-commit FULL_SHA --issue-file issue.txt --out result.json --out-patch C:\temp\candidate.patch
+~~~
+
+An applied patch is not evidence that the issue is resolved. The original Flask Demo
+and its generation route remain unchanged. See [Task 2 guide](docs/task2.md).
+
 ## Original demo and visualizations
 
 ```powershell
@@ -59,4 +73,4 @@ Generation scripts call the configured API and may incur charges. Visualizations
 
 `requirements.txt` contains direct dependency ranges; `requirements-lock.txt` records the installed versions. `.env`, virtual environments, caches and runtime logs are intentionally excluded from Git. Run the web app locally; its repository input grants access to local source files.
 
-Real model localization and SWE-bench evaluation have not been validated. Patch execution, Reviewer retries and QLoRA training belong to later tasks.
+Real model localization and SWE-bench evaluation have not been validated. Task 2 patch application has been implemented; test execution, Reviewer retries and QLoRA training remain future work.
