@@ -303,5 +303,16 @@ class DeepSeekDevControllerTests(unittest.TestCase):
         self.assertFalse(output["official_evaluated"])
 
 
+    def test_coder_prompt_requires_small_valid_git_diff(self):
+        from experiments.deepseek_swebench_dev import _minimal_coder_messages
+        original = [{"role": "user", "content": "Real issue and evidence"}]
+        modified = _minimal_coder_messages(original)
+        self.assertEqual(len(modified), 2)
+        self.assertIn("at most 60", modified[-1]["content"])
+        self.assertIn("hunk", modified[-1]["content"])
+        self.assertNotIn("some correct code", modified[-1]["content"])
+        self.assertEqual(len(original), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -115,6 +115,25 @@ def _planner_request_messages(messages: list[dict], round_number: int) -> list[d
     }]
 
 
+def _minimal_coder_messages(messages: list[dict]) -> list[dict]:
+    """Bound diff scope without supplying a gold patch or altering source evidence."""
+    return [*messages, {
+        "role": "user",
+        "content": (
+            "Return ONLY a minimal, complete, correctly formatted Git unified diff. "
+            "Fix the SINGLE most directly evidenced code path first. "
+            "Do not rewrite or reproduce entire functions or files. "
+            "Use no more than 3 hunks and at most 60 changed (+/-) lines total; "
+            "preserve surrounding existing code verbatim. "
+            "Make each @@ hunk's old/new line counts exactly match its included "
+            "context, removals and additions, otherwise git apply will reject it. "
+            "No markdown, explanation, placeholder ellipses, file additions or "
+            "commands. The patch must apply to the provided historical Base Commit."
+        ),
+    }]
+
+
+
 def run_real_dev(
     output_dir: str | Path, *,
     api=None, task_loader=select_dev_task, checkout_fn=checkout_dev_task,
@@ -235,7 +254,9 @@ def run_real_dev(
                     stage = "real_coder_patch"
                     proposal = _coder(
                         task.problem_statement, plan,
-                        completion=live.callback("coder"), revision=revision,
+                        completion=lambda messages: live.complete(
+                            "coder", _minimal_coder_messages(messages)
+                        ), revision=revision,
                     )
                     applied = apply_candidate(
                         checkout, task.base_commit, proposal,
