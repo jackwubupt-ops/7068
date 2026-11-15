@@ -4,6 +4,22 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Small Qwen live integration and official SWE-bench result (2026-11-15)
+
+### Added
+- Qwen/Qwen2.5-Coder-0.5B-Instruct as the default small-model vLLM backend, with Qwen/Qwen3-0.6B as an opt-in small-model comparison.
+- Live model preflight, real model Git/Docker repair smoke, real full-dev prediction, bounded prompt history and strict output budgets.
+- PATCHLOOP_MODEL_BACKEND=qwen to route the original CodeNexus Demo and Task 1-3 shared OpenAI client to local vLLM while preserving the default provider behavior.
+- Reproducible GPU server/client setup scripts, environment example, docs and offline Qwen model-contract tests.
+- Scoped historical sqlfluff dependency fix in pinned official SWE-bench 3.0.0 evaluator; strict Resolved/Unresolved/Infrastructure Error classification.
+- GitHub Actions cross-platform and real Docker scripted-model tests, plus a manually triggered official evaluation job.
+
+### Verified and not verified
+- Actual GitHub CI run 43713323015: Windows/Linux full regression, real Git+Docker scripted-Qwen smoke, actual SWE-bench dev checkout and evaluator job all completed successfully.
+- Same run: pinned official SWE-bench evaluated one SAVED **DeepSeek** model prediction: 1 completed instance, 0 environment errors, **Unresolved**. The environment-only types-pkg_resources -> types-setuptools override is disclosed and is NOT pristine evaluation.
+- The Qwen small model itself has **NOT YET been run on the user's GPU server**; CI fake replies do NOT establish live Qwen quality.
+- Do not report an official Qwen resolution score until actual inference and evaluation on the server complete.
+
 ## Qwen and real SWE-bench dev integration — 2026-11-15
 
 ### Added
