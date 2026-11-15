@@ -1,0 +1,56 @@
+# Changelog
+
+Record changes here so teammates can understand behavior and interface changes.
+Add new entries under **Unreleased** in the same commit as the implementation.
+These are development milestones, not published GitHub releases.
+
+## Unreleased — 2026-11-15
+
+### Changed
+- Converted both web pages to English and requested English generated descriptions and repair plans.
+- Changed `test_and_improve_code(code, prompt)` to return a report string instead of printing it. The web route uses the return value; the CLI pipeline prints it.
+- Removed global stdout reassignment from the web request handler.
+- Removed unused imports, obsolete comments, duplicate directory creation and the unused `utils/log_utils.py` module.
+- Removed duplicate credential validation and the redundant file-size precheck; SDK credential validation and bounded-read limits remain.
+- Removed the silent zero-score fallback when model scoring returns invalid JSON; parsing errors now propagate.
+- Simplified UTF-8 code saving with `pathlib` and fixed recursion detection counting a function's own definition as recursion.
+- Excluded runtime logs and local environment variants from Git, while retaining `.env.example`.
+- Added contributor instructions and a code review record; prepared the project for the public `7068` repository.
+
+### Compatibility
+- Original Flask startup commands, `/`, `/localize`, model configuration and Task 1 plan format remain available.
+- Callers of `test_and_improve_code` must now use its returned string; external callers relying on printed output should wrap the call in `print(...)`.
+- Path isolation, evidence validation, repository commit checks and resource budgets remain required by Task 1.
+
+### Validation
+- Unit tests cover English pages, report rendering, invalid score JSON, recursion detection, UTF-8 saving, existing generation and repository localization.
+- Actual run: 21 tests, 20 passed and 1 skipped because Windows did not permit creating a symlink. The Windows junction test passed.
+- The offline localization demo, `pip check`, syntax compilation and HTTP checks of both English pages passed.
+- Real LLM and SWE-bench evaluation remain unverified; offline actions are explicitly scripted.
+
+## Task 1 baseline — 2026-11-15
+
+### Added
+- `utils/repo_tools.py`: bounded literal search, numbered read-only file access, repository/commit checks and tracked-file validation.
+- `prompt_agent.plan_repair`: bounded JSON action loop, tool evidence and validated repair plans.
+- `pipeline_agent.run_localization`, `localize.py`, `/localize` and `demo_localization.py`.
+- Regression and security tests plus `docs/task1.md` and an offline demonstration record.
+
+### Preserved
+- CodeNexus prompt refinement, algorithm classification, code generation, static analysis and model review.
+- Shared API client and configurable compatible backend; no mandatory model migration.
+
+### Scope
+- No patch application, repository test execution, Reviewer retry system, QLoRA training or SWE-bench evaluation was implemented.
+
+## Environment baseline — 2026-11-15
+
+- Created a Python 3.11 virtual environment and recorded direct and locked dependencies.
+- Moved API credentials and endpoint configuration out of source code into `.env`.
+- Removed the hardcoded proxy and corrected visualization CSV paths.
+
+## Entry template
+
+For future changes, record: **what changed**, **why**, **affected interfaces**,
+**verification command/results**, and **known limitations**. Distinguish offline
+tests from real model calls; never record expected results as actual results.

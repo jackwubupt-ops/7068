@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>PatchLoop Bug Localization</title>
+<style>body{max-width:1000px;margin:40px auto;font:16px system-ui}input,textarea{display:block;width:100%;margin:8px 0 20px;padding:8px;box-sizing:border-box}pre{white-space:pre-wrap;background:#f2f4f8;padding:20px}button{padding:10px 24px}.error{color:#a00}</style>
+<a href="/">CodeNexus Code Generation Demo</a>
+<h1>PatchLoop: Repository Bug Localization</h1>
+<p>Analyze an issue in a local Git repository. The working tree must be clean and HEAD must match the base commit.</p>
+<form method="post">
+<label>GitHub Issue Description<textarea name="issue" rows="7" maxlength="20000" required>{{ request.form.get('issue', '') }}</textarea></label>
+<label>Local Repository Root<input name="repo_root" required value="{{ request.form.get('repo_root', '') }}"></label>
+<label>Base Commit SHA<input name="base_commit" required pattern="[0-9a-fA-F]{7,40}" value="{{ request.form.get('base_commit', '') }}"></label>
+<button>Generate Repair Plan</button>
+</form>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+{% if result %}<h2>Repair Plan and Code Evidence</h2><pre>{{ result }}</pre>{% endif %}
+</html>
