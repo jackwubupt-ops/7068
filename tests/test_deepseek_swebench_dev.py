@@ -163,5 +163,46 @@ class DeepSeekDevControllerTests(unittest.TestCase):
         self.assertEqual(len(original), 1)
 
 
+    def test_coder_compacts_repeated_cited_reads_without_making_up_code(self):
+        from patchloop_task2.coder import build_messages
+        line_text = "    # known source content " + ("x" * 140)
+        evidence = []
+        for i in range(6):
+            evidence.append({
+                "id": f"E{i+1}", "tool": "read_file",
+                "result": {"ok": True, "file_path": "src/commands.py",
+                           "lines": [
+                               {"line_number": n, "text": f"line{n}: {line_text}"}
+                               for n in range(1, 201)]},
+            })
+        evidence.append({
+            "id": "E999", "tool": "read_file",
+            "result": {"ok": True, "file_path": "secrets.txt",
+                       "lines": [{"line_number": 1, "text": "SECRET_DO_NOT_SEND"}]},
+        })
+        plan = {
+            "base_commit": EXPECTED_BASE,
+            "suspected_files": [
+                {"file_path": "src/commands.py", "evidence_ids": ["E1","E2"],
+                 "relevant_lines": [95, 110], "reason": "CLI parsing"},
+                {"file_path": "src/commands.py", "evidence_ids": ["E3","E4"],
+                 "relevant_lines": [145, 155], "reason": "CLI invocation"},
+                {"file_path": "src/commands.py", "evidence_ids": ["E5","E6"],
+                 "relevant_lines": [175, 185], "reason": "verbosity"},
+            ],
+            "root_cause_hypothesis": "Unexpected CLI output",
+            "planned_changes": ["Repair verbose output"],
+            "evidence": evidence,
+        }
+        messages = build_messages("CLI verbosity bug", plan)
+        actual = messages[1]["content"]
+        self.assertIn("line100:", actual)
+        self.assertIn("line150:", actual)
+        self.assertIn("line180:", actual)
+        self.assertNotIn("SECRET_DO_NOT_SEND", actual)
+        self.assertEqual(actual.count("line100:"), 1)
+        self.assertLess(len(actual), 20000)
+
+
 if __name__ == "__main__":
     unittest.main()
