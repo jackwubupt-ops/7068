@@ -1,6 +1,5 @@
 """Bounded Coder adapter. Task 1 emits suspected_files and read_file evidence."""
 import json
-from config import get_client, OPENAI_MODEL
 
 
 class CoderError(ValueError):
@@ -73,6 +72,7 @@ def extract_diff(response: str) -> str:
 def generate_patch(issue: str, plan: dict, *, completion=None) -> str:
     messages = build_messages(issue, plan)
     if completion is None:
+        from config import get_client, OPENAI_MODEL
         response = get_client().chat.completions.create(
             model=OPENAI_MODEL, messages=messages, temperature=0, max_tokens=3000)
         content = response.choices[0].message.content
