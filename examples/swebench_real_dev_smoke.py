@@ -10,16 +10,9 @@ from swebench_dev import checkout_dev_task, inspect_dev_task, select_dev_task
 
 
 def main():
-    last_error = None
-    # Prefer smaller repositories to keep CI smoke bounded.
-    for repository in ("psf/requests", "pytest-dev/pytest"):
-        try:
-            task = select_dev_task(repository=repository)
-            break
-        except ValueError as exc:
-            last_error = exc
-    else:
-        raise RuntimeError("No approved small-repository task in full dev") from last_error
+    # The full dev split is NOT guaranteed to contain pytest or requests.
+    # Select a genuine task from the split; never fall back to Lite test.
+    task = select_dev_task()
 
     with tempfile.TemporaryDirectory(prefix="swebench-real-dev-ci-") as temporary:
         checkout = checkout_dev_task(task, Path(temporary) / "checkout")
