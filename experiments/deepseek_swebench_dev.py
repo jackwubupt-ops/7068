@@ -16,7 +16,10 @@ import tempfile
 import time
 
 from experiments.live_deepseek import LiveDeepSeek, _safe_error
-from patchloop_task2.runner import apply_repair_plan
+from patchloop_task2.coder import permitted_paths
+from patchloop_task2.loop import _coder
+from patchloop_task2.reviewer import review_failure
+from patchloop_task2.workspace import apply_candidate
 from pipeline_agent import run_localization
 from swebench_dev import (
     DATASET_ID, DEVELOPMENT_SPLIT, checkout_dev_task, make_prediction,
@@ -134,6 +137,8 @@ def run_real_dev(
         "planner_calls": 0,
         "coder_calls": 0,
         "attempt_count": 0,
+        "reviewer_calls": 0,
+        "candidate_attempts": [],
         "patch_status": "not_started",
         "patch_sha256": None,
         "source_checkout_clean": None,
@@ -221,36 +226,75 @@ def run_real_dev(
                 report["status"] = "no_candidate_files"
                 report["patch_status"] = "not_attempted"
             else:
-                stage = "real_coder_patch"
+                # Task 3-style repair feedback for APPLY failures only.
+                # No tests run here; only the official evaluator can grade the issue.
+                allowed = permitted_paths(plan)
                 patch_path = target / "candidate.patch"
-                applied = apply_repair_plan(
-                    task.problem_statement, plan,
-                    coder_completion=live.callback("coder"),
-                    export_path=patch_path,
-                )
-                report["attempt_count"] = 1
-                report["patch_status"] = applied["status"]
-                if applied["status"] != "applied":
-                    report["status"] = "patch_failed"
-                    report["patch_error_code"] = applied.get("error_code")
-                    report["patch_error_message"] = str(applied.get("error_message", ""))[:500]
-                else:
-                    stage = "write_official_prediction"
-                    patch = patch_path.read_text(encoding="utf-8")
-                    prediction = make_prediction(
-                        task.instance_id, patch, model=live.model,
+                revision = None
+                for attempt in (1, 2):
+                    stage = "real_coder_patch"
+                    proposal = _coder(
+                        task.problem_statement, plan,
+                        completion=live.callback("coder"), revision=revision,
                     )
-                    prediction_path = target / "predictions.jsonl"
-                    prediction_path.write_text(
-                        json.dumps(prediction, ensure_ascii=False) + "\n",
-                        encoding="utf-8",
+                    applied = apply_candidate(
+                        checkout, task.base_commit, proposal,
+                        export_path=patch_path, allowed_paths=allowed,
                     )
-                    report["patch_sha256"] = hashlib.sha256(
-                        patch.encode("utf-8")
-                    ).hexdigest()
-                    report["patch_size_bytes"] = patch_path.stat().st_size
-                    report["prediction_available"] = True
-                    report["status"] = "prediction_ready"
+                    report["attempt_count"] = attempt
+                    report["patch_status"] = applied.status
+                    candidate = {
+                        "attempt": attempt,
+                        "patch_sha256": applied.patch_sha256,
+                        "patch_status": applied.status,
+                        "error_code": applied.error_code,
+                        "changed_files": list(applied.changed_files),
+                    }
+                    report["candidate_attempts"].append(candidate)
+                    if applied.status == "applied":
+                        stage = "write_official_prediction"
+                        patch = patch_path.read_text(encoding="utf-8")
+                        prediction = make_prediction(
+                            task.instance_id, patch, model=live.model,
+                        )
+                        (target / "predictions.jsonl").write_text(
+                            json.dumps(prediction, ensure_ascii=False) + "\n",
+                            encoding="utf-8",
+                        )
+                        report["patch_sha256"] = hashlib.sha256(
+                            patch.encode("utf-8")
+                        ).hexdigest()
+                        report["patch_size_bytes"] = patch_path.stat().st_size
+                        report["prediction_available"] = True
+                        report["status"] = "prediction_ready"
+                        break
+                    report["patch_error_code"] = applied.error_code
+                    report["patch_error_message"] = str(
+                        applied.error_message or ""
+                    )[:500]
+                    if applied.status == "workspace_failed":
+                        report["status"] = "workspace_error"
+                        break
+                    if attempt == 2:
+                        report["status"] = "patch_failed"
+                        break
+                    stage = "real_reviewer_apply_diagnosis"
+                    failure = {
+                        "stage": "apply",
+                        "status": applied.status,
+                        "error_code": applied.error_code,
+                        "log_tail": str(applied.error_message or "")[:1200],
+                    }
+                    feedback = review_failure(
+                        task.problem_statement, plan, proposal, failure,
+                        completion=live.callback("reviewer"),
+                    )
+                    candidate["reviewer_failure_type"] = feedback["failure_type"]
+                    revision = {
+                        "previous_patch": proposal[:10000],
+                        "failure": failure,
+                        "reviewer": feedback,
+                    }
             report["source_checkout_clean"] = _clean_source(
                 checkout, task.base_commit,
             )
@@ -274,6 +318,9 @@ def run_real_dev(
             )
             report["coder_calls"] = sum(
                 call["stage"] == "coder" for call in live.calls
+            )
+            report["reviewer_calls"] = sum(
+                call["stage"] == "reviewer" for call in live.calls
             )
             report["prompt_tokens"] = sum(
                 int(call.get("prompt_tokens") or 0) for call in live.calls

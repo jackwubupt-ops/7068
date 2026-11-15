@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from experiments.deepseek_swebench_dev import (
@@ -52,13 +53,21 @@ class DeepSeekDevControllerTests(unittest.TestCase):
             kwargs["completion"]([{"role": "user", "content": "search"}])
             return {"suspected_files": [{"file_path": "src/feature.py"}]}
 
-        def fake_patch(issue, plan, *, coder_completion, export_path):
-            coder_completion([{"role": "user", "content": "patch"}])
+        def fake_coder(issue, plan, *, completion, revision=None):
+            completion([{"role": "user", "content": "patch"}])
+            return DIFF
+
+        def fake_apply(root, base, proposal, *, export_path, allowed_paths):
             Path(export_path).write_text(DIFF, encoding="utf-8")
-            return {"status": "applied"}
+            return SimpleNamespace(
+                status="applied", patch_sha256="a" * 64,
+                error_code=None, error_message=None,
+                changed_files=["src/feature.py"],
+            )
 
         with patch("experiments.deepseek_swebench_dev.run_localization", side_effect=fake_plan), \
-             patch("experiments.deepseek_swebench_dev.apply_repair_plan", side_effect=fake_patch), \
+             patch("experiments.deepseek_swebench_dev._coder", side_effect=fake_coder), \
+             patch("experiments.deepseek_swebench_dev.apply_candidate", side_effect=fake_apply), \
              patch("experiments.deepseek_swebench_dev._clean_source", return_value=True):
             report = run_real_dev(
                 self.root / "predictions", api=self.api,
@@ -230,6 +239,68 @@ class DeepSeekDevControllerTests(unittest.TestCase):
         self.assertNotIn("E8:", guidance)
         self.assertNotIn("secrets.txt", guidance)
         self.assertIn("FULLY CONTAINED", guidance)
+
+
+    def test_reviewer_retries_failed_git_patch_and_exports_only_success(self):
+        def fake_coder(issue, plan, *, completion, revision=None):
+            completion([{"role": "user", "content": "patch"}])
+            if revision is not None:
+                self.assertIn("reviewer", revision)
+                return DIFF
+            return DIFF.replace("+return 2", "+return 3")
+
+        tries = []
+        def fake_apply(root, base, proposal, *, export_path, allowed_paths):
+            tries.append(proposal)
+            if len(tries) == 1:
+                return SimpleNamespace(
+                    status="apply_failed", patch_sha256="b" * 64,
+                    error_code="does_not_apply",
+                    error_message="error: corrupt patch at <stdin>:32",
+                    changed_files=["src/feature.py"],
+                )
+            Path(export_path).write_text(DIFF, encoding="utf-8")
+            return SimpleNamespace(
+                status="applied", patch_sha256="a" * 64,
+                error_code=None, error_message=None,
+                changed_files=["src/feature.py"],
+            )
+
+        def fake_review(issue, plan, proposal, failure, *, completion):
+            completion([{"role": "user", "content": "diagnose apply failure"}])
+            self.assertEqual(failure["error_code"], "does_not_apply")
+            return {
+                "failure_type": "patch_apply",
+                "diagnosis": "Bad unified diff hunk counts",
+                "suggested_fix": "Return a full patch with valid hunk headers",
+            }
+
+        with patch("experiments.deepseek_swebench_dev.run_localization",
+                   return_value={"suspected_files": [{"file_path": "src/feature.py"}]}), \
+             patch("experiments.deepseek_swebench_dev._coder",
+                   side_effect=fake_coder), \
+             patch("experiments.deepseek_swebench_dev.apply_candidate",
+                   side_effect=fake_apply), \
+             patch("experiments.deepseek_swebench_dev.review_failure",
+                   side_effect=fake_review), \
+             patch("experiments.deepseek_swebench_dev._clean_source",
+                   return_value=True):
+            output = run_real_dev(
+                self.root / "retried", api=self.api,
+                task_loader=lambda **kwargs: self.task,
+                checkout_fn=lambda task, path: path,
+            )
+        self.assertEqual(output["status"], "prediction_ready")
+        self.assertEqual(output["attempt_count"], 2)
+        self.assertEqual(output["coder_calls"], 2)
+        self.assertEqual(output["reviewer_calls"], 1)
+        self.assertEqual(output["candidate_attempts"][0]["patch_status"], "apply_failed")
+        self.assertEqual(output["candidate_attempts"][1]["patch_status"], "applied")
+        self.assertEqual(
+            json.loads((self.root / "retried/predictions.jsonl").read_text())["model_patch"],
+            DIFF,
+        )
+        self.assertFalse(output["official_evaluated"])
 
 
 if __name__ == "__main__":
