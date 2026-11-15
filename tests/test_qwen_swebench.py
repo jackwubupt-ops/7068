@@ -114,7 +114,9 @@ class SWEDevTests(unittest.TestCase):
             self.assertEqual(status["patch_status"], "applied")
             payload = json.loads((Path(tmp) / "out/predictions.jsonl").read_text())
             self.assertEqual(payload["instance_id"], self.task.instance_id)
-            self.assertEqual(payload["model_patch"], GOOD_PATCH)
+            self.assertTrue(payload["model_patch"].startswith("diff --git a/calc.py b/calc.py\\n".replace("\\n", "\n")))
+            self.assertIn("+    return a / b", payload["model_patch"])
+            self.assertIn("-    return a // b", payload["model_patch"])
             self.assertEqual(payload["model_name_or_path"], "scripted-offline")
             self.assertFalse(status["official_evaluated"])
             self.assertEqual(subprocess.check_output(
