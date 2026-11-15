@@ -50,7 +50,8 @@ source .venv-patchloop-client/bin/activate
 python -m pip install -U pip
 python -m pip install -r requirements-lock.txt
 python -m pip install "datasets>=3,<5"
-cp .env.qwen-small.example .env
+[ -f .env ] || cp .env.qwen-small.example .env
+# If .env already exists, add the QWEN_* and PATCHLOOP_MODEL_BACKEND settings to it manually.
 python -m experiments.qwen_small_dev --mode preflight
 ~~~
 
