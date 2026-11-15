@@ -18,6 +18,7 @@ import time
 from experiments.live_deepseek import LiveDeepSeek, _safe_error
 from patchloop_task2.coder import permitted_paths
 from patchloop_task2.loop import _coder
+from patchloop_task2.normalizer import normalize_hunk_counts
 from patchloop_task2.reviewer import review_failure
 from patchloop_task2.workspace import apply_candidate
 from pipeline_agent import run_localization
@@ -258,6 +259,12 @@ def run_real_dev(
                             "coder", _minimal_coder_messages(messages)
                         ), revision=revision,
                     )
+                    raw_patch_sha256 = hashlib.sha256(
+                        proposal.encode("utf-8")
+                    ).hexdigest()
+                    # Only @@ metadata counts are normalized. Actual proposed
+                    # code lines are never edited by the harness.
+                    proposal, corrected_headers = normalize_hunk_counts(proposal)
                     applied = apply_candidate(
                         checkout, task.base_commit, proposal,
                         export_path=patch_path, allowed_paths=allowed,
@@ -267,6 +274,8 @@ def run_real_dev(
                     candidate = {
                         "attempt": attempt,
                         "patch_sha256": applied.patch_sha256,
+                        "raw_model_patch_sha256": raw_patch_sha256,
+                        "hunk_header_corrections": corrected_headers,
                         "patch_status": applied.status,
                         "error_code": applied.error_code,
                         "changed_files": list(applied.changed_files),

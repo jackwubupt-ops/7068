@@ -314,5 +314,43 @@ class DeepSeekDevControllerTests(unittest.TestCase):
         self.assertEqual(len(original), 1)
 
 
+    def test_fix_hunk_counts_without_modifying_model_code_lines(self):
+        from patchloop_task2.normalizer import normalize_hunk_counts
+        from patchloop_task2.workspace import apply_candidate
+        from experiments.live_deepseek import create_real_git_fixture
+        malformed = (
+            "diff --git a/calc.py b/calc.py\n"
+            "--- a/calc.py\n+++ b/calc.py\n"
+            "@@ -1,3 +1,8 @@\n"
+            " def divide(a, b):\n"
+            "-    return a // b\n"
+            "+    return a / b\n"
+        )
+        fixed, changed = normalize_hunk_counts(malformed)
+        self.assertEqual(changed, 1)
+        self.assertIn("@@ -1,2 +1,2 @@", fixed)
+        self.assertIn("-    return a // b", fixed)
+        self.assertIn("+    return a / b", fixed)
+        with tempfile.TemporaryDirectory() as temp:
+            repo = Path(temp) / "fixture"
+            commit = create_real_git_fixture(repo)
+            outcome = apply_candidate(
+                repo, commit, fixed, allowed_paths={"calc.py"},
+            )
+            self.assertEqual(outcome.status, "applied", outcome.error_message)
+            self.assertEqual(
+                (repo / "calc.py").read_text(encoding="utf-8"),
+                "def divide(a, b):\n    return a // b\n",
+            )
+
+    def test_hunk_normalizer_rejects_corrupt_body(self):
+        from patchloop_task2.normalizer import normalize_hunk_counts
+        malformed = ("diff --git a/a.py b/a.py\n"
+                     "@@ -1,1 +1,1 @@\n"
+                     "raw line without diff prefix\n")
+        with self.assertRaisesRegex(ValueError, "Invalid unified diff body"):
+            normalize_hunk_counts(malformed)
+
+
 if __name__ == "__main__":
     unittest.main()
