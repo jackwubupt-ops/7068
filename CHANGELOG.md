@@ -4,6 +4,19 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Qwen and real SWE-bench dev integration — 2026-11-15
+
+### Added
+- Explicit Qwen2.5-Coder-7B-Instruct endpoint configuration and live /models + chat preflight.
+- Leakage-safe SWE-bench full dev adapter with only issue/repo/base_commit/instance_id exposed to agents.
+- CLI for historical Git checkout, read-only inspection, live Qwen single-patch inference, and official predictions export.
+- Cross-platform unit tests, real dev issue checkout CI smoke, `.env.qwen.example` and setup documentation.
+
+### Validation and limitations
+- Real `sqlfluff__sqlfluff-4764` full dev Issue and exact Git checkout/search verified in GitHub Actions without model inference.
+- Live Qwen 7B inference requires a GPU-hosted vLLM server and has not been run in GitHub CI.
+- Official SWE-bench resolution, QLoRA and held-out Lite test evaluations remain pending.
+
 ## Task 3 — execution-grounded repair and retries (2026-11-15)
 
 ### Added

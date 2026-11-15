@@ -66,6 +66,27 @@ tests with **scripted model outputs**, not a real LLM. Real model runs reuse
 the configured OpenAI-compatible adapter. An internal test pass is NOT
 equivalent to official SWE-bench resolution. See [Task 3 guide](docs/task3.md).
 
+## Real Qwen + SWE-bench development integration
+
+The model endpoint must genuinely serve Qwen2.5-Coder-7B-Instruct (e.g. vLLM
+on an NVIDIA GPU). Preserve the original CodeNexus API client: copy
+`.env.qwen.example` to your local `.env`, and start the Qwen server.
+
+~~~bash
+python -m patchloop_task2.qwen
+python -m pip install 'datasets>=3,<5'
+python swebench_dev.py --mode inspect --output-dir /tmp/patchloop-dev-inspect
+python swebench_dev.py --mode predict --instance-id sqlfluff__sqlfluff-4764 --output-dir /tmp/patchloop-qwen-dev
+~~~
+
+Inspect mode downloads a real historical Git repository from **full SWE-bench dev**.
+Predict mode requires a LIVE Qwen endpoint and exports an applicable candidate
+in official SWE-bench prediction format. An applicable patch is NOT a resolved issue.
+SWE-bench Lite has no official dev split; leave its test split for held-out evaluation.
+
+See [Qwen + SWE-bench guide](docs/qwen-swebench.md) for GPU setup, safety,
+command lines, and official evaluation instructions.
+
 ## Original demo and visualizations
 
 ```powershell
@@ -92,4 +113,4 @@ Generation scripts call the configured API and may incur charges. Visualizations
 
 `requirements.txt` contains direct dependency ranges; `requirements-lock.txt` records the installed versions. `.env`, virtual environments, caches and runtime logs are intentionally excluded from Git. Run the web app locally; its repository input grants access to local source files.
 
-Real model localization and SWE-bench evaluation have not been validated. Task 3 adds Docker execution and Reviewer retries. Live LLM repair quality, QLoRA training and official SWE-bench evaluation remain future work.
+Real model localization and SWE-bench evaluation have not been validated. Task 3 adds Docker execution and Reviewer retries. A real development Issue checkout and live Qwen endpoint preflight are available; live Qwen inference, QLoRA and official SWE-bench evaluation require GPU/Docker execution and remain unverified.
