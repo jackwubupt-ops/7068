@@ -74,6 +74,23 @@ def run_qwen_smoke(backend: QwenSmallBackend, *,
 def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path) -> dict:
     """Real public issue; no official benchmark verdict is claimed here."""
     result = run_real_dev(output_dir, api=backend)
+    # Classic SWE-bench uses model_name_or_path in artifact filenames.
+    # Preserve the exact HF ID in run_status but use a slash-free evaluation label.
+    label = {
+        "Qwen/Qwen2.5-Coder-0.5B-Instruct": "qwen2.5-coder-0.5b-instruct",
+        "Qwen/Qwen3-0.6B": "qwen3-0.6b",
+    }[backend.model]
+    if result["status"] == "prediction_ready":
+        predictions = output_dir / "predictions.jsonl"
+        record = json.loads(predictions.read_text(encoding="utf-8"))
+        if record["model_name_or_path"] != backend.model:
+            raise ValueError("Unexpected model identity in generated prediction")
+        record["model_name_or_path"] = label
+        predictions.write_text(
+            json.dumps(record, ensure_ascii=False) + "\\n".replace("\\n", "\n"),
+            encoding="utf-8",
+        )
+    result["prediction_model_label"] = label
     result["experiment"] = "qwen-small-real-swebench-full-dev-v1"
     result["official_evaluated"] = False
     result["official_resolved"] = None
