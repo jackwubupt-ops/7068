@@ -1,0 +1,20 @@
+# vLLM server environment for NVIDIA drivers that only support CUDA 12.x
+# (e.g. AutoDL RTX 4090 D, driver 560.35.03 -> CUDA 12.6 driver API).
+#
+# Why these pins (verified against PyPI metadata and vLLM release tags):
+# - vllm 0.19.1 is the LAST release whose default PyPI wheel is built with
+#   CUDA 12 (docker/Dockerfile CUDA_VERSION=12.9.1, arch list includes sm_89).
+#   From vllm 0.20.0 the default wheel is CUDA 13.0 and pins torch>=2.11,
+#   whose PyPI wheels are CUDA 13 (nvidia-*-cu13). CUDA 13 needs driver >= 580.
+# - torch 2.10.0 on PyPI (Linux x86_64) is the cu128 build
+#   (nvidia-cuda-runtime-cu12==12.8.90). CUDA 12.8/12.9 runtimes run on a
+#   CUDA 12.6 driver through CUDA minor-version compatibility (driver >= 525.60.13).
+# - transformers/tokenizers/huggingface-hub match vLLM v0.19.1 requirements/test.txt.
+#   Leaving them unpinned lets pip pull transformers releases newer than vLLM 0.19.1.
+vllm==0.19.1
+torch==2.10.0
+torchvision==0.25.0
+torchaudio==2.10.0
+transformers==5.5.3
+tokenizers==0.22.2
+huggingface-hub==1.10.2

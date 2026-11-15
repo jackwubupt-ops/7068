@@ -94,9 +94,9 @@ The existing CodeNexus Demo and Task 1–3 remain available. Qwen is an opt-in
 experiment using a dedicated backend and NEVER silently falls back to DeepSeek.
 
 ~~~bash
-bash scripts/setup_qwen_small.sh
-source .venv-qwen-server/bin/activate
-bash scripts/start_qwen_small.sh
+bash scripts/setup_qwen_small.sh           # pinned CUDA 12 stack: vllm 0.19.1 + torch 2.10.0
+source .venv-qwen-vllm-cu12/bin/activate
+QWEN_MODEL_PATH=/path/to/Qwen2.5-Coder-0.5B-Instruct bash scripts/start_qwen_small.sh  # path optional
 # In another terminal, using a separate PatchLoop client environment:
 python -m experiments.qwen_small_dev --mode preflight
 python -m experiments.qwen_small_dev --mode smoke --out /tmp/qwen-smoke-01
