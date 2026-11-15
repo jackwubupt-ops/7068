@@ -143,5 +143,29 @@ class SettingsTests(unittest.TestCase):
             )
 
 
+    def test_official_report_distinguishes_build_error_from_unresolved(self):
+        from experiments.swebench_report import classify_official_report
+        issue = "sqlfluff__sqlfluff-4764"
+        error = classify_official_report({
+            "submitted_instances": 1, "completed_instances": 0,
+            "error_instances": 1, "error_ids": [issue],
+        }, issue)
+        self.assertEqual(error["status"], "infrastructure_error")
+        self.assertIsNone(error["official_resolved"])
+        good = classify_official_report({
+            "submitted_instances": 1, "completed_instances": 1,
+            "resolved_instances": 1, "error_instances": 0,
+            "resolved_ids": [issue],
+        }, issue)
+        self.assertEqual(good["status"], "resolved")
+        bad = classify_official_report({
+            "submitted_instances": 1, "completed_instances": 1,
+            "unresolved_instances": 1, "error_instances": 0,
+            "unresolved_ids": [issue],
+        }, issue)
+        self.assertEqual(bad["status"], "unresolved")
+        self.assertFalse(bad["official_resolved"])
+
+
 if __name__ == "__main__":
     unittest.main()
