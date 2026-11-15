@@ -63,6 +63,9 @@ jobs:
         run: python -m examples.swebench_real_dev_smoke
 
   pinned-official-evaluator:
+    # The official baseline has already been evaluated; rerun ONLY manually to
+    # avoid rebuilding large Docker images on every unrelated source commit.
+    if: github.event_name == 'workflow_dispatch'
     name: Historical SWE-bench environment fix / saved DeepSeek patch (NO Qwen GPU)
     runs-on: ubuntu-latest
     timeout-minutes: 45
