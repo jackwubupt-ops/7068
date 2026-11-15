@@ -4,6 +4,19 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Task 2 integration — 2026-11-15
+
+### Added
+- Controlled Coder bridge consuming Task 1 suspected_files and read_file evidence.
+- Unified diff validator, tracked-file whitelist and detached temporary Git worktree patch application.
+- repair.py CLI and docs/task2.md; retained the original Flask Demo and Task 1 entry points.
+- tests/test_task2.py: 7 offline tests with real temporary Git repos and deterministic model outputs.
+
+### Limits / validation
+- Task 2's standalone integration suite ran locally: 7 tests passed.
+- Full combined repository regression and live LLM execution are not yet verified.
+- A successful git apply does not establish functional repair; Docker tests/Reviewer/SWE-bench remain future work.
+
 ## Unreleased — 2026-11-15
 
 ### Changed
