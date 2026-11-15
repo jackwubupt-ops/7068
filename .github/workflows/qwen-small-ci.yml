@@ -1,0 +1,115 @@
+name: Qwen 0.5B integration and pinned SWE-bench evaluation
+
+on:
+  push:
+    branches: [feature/qwen-small-end2end]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  unit:
+    name: Original Demo + Task1-3 + Qwen contracts / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install project dependencies
+        run: python -m pip install -r requirements-lock.txt
+      - name: Compile all code
+        run: python -m compileall -q patchloop_task2 experiments tests examples scripts
+      - name: Regression and new Qwen adapter tests
+        run: python -m unittest discover -s tests -v
+      - name: Offline original Demo
+        run: python demo_localization.py --offline
+
+  scripted-qwen-docker:
+    name: Scripted Qwen API + REAL Git and Docker tests (no GPU)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install minimal API client
+        run: python -m pip install "openai>=2,<3" "python-dotenv>=1,<2"
+      - name: Pull trusted Docker image
+        run: docker pull python:3.11-slim
+      - name: Scripted model and real Docker smoke
+        run: python -m examples.qwen_small_scripted_smoke
+      - name: Original Task 3 Docker regression
+        run: python -m examples.task3_docker_smoke
+
+  real-swebench-readonly:
+    name: Actual full-dev Issue + historical Git checkout (no inference)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install benchmark reader
+        run: python -m pip install "datasets>=3,<5" "openai>=2,<3" python-dotenv
+      - name: Verify actual benchmark instance
+        run: python -m examples.swebench_real_dev_smoke
+
+  pinned-official-evaluator:
+    name: Historical SWE-bench environment fix / saved DeepSeek patch (NO Qwen GPU)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download unchanged REAL DeepSeek prediction from previous experiment
+        uses: actions/download-artifact@v4
+        with:
+          repository: jackwubupt-ops/7068
+          run-id: 43686861492
+          github-token: ${{ github.token }}
+          name: deepseek-swebench-dev-prediction
+          path: ${{ runner.temp }}/saved-baseline
+      - name: Confirm baseline prediction SHA and target
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          path=Path(os.environ["RUNNER_TEMP"])/"saved-baseline/predictions.jsonl"
+          data=json.loads(path.read_text(encoding="utf-8"))
+          assert data["instance_id"]=="sqlfluff__sqlfluff-4764"
+          assert data["model_name_or_path"]=="deepseek-flash"
+          sha=hashlib.sha256(data["model_patch"].encode("utf-8")).hexdigest()
+          assert sha=="f9b212ba9764ab490f6dea775ec15f678add899435c253ee865972139c5890e1",sha
+          print("Saved DeepSeek baseline verified:",sha)
+          PY
+      - name: Install pinned original benchmark package
+        run: python -m pip install "swebench==3.0.0"
+      - name: Run official tests with disclosed sqlfluff environment dependency fix
+        shell: bash
+        timeout-minutes: 32
+        run: |
+          bash scripts/evaluate_saved_swebench.sh \
+            "$RUNNER_TEMP/saved-baseline/predictions.jsonl" \
+            "swebench-envfix-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Preserve logs and verdict even if Docker build fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qwen-branch-official-eval-envfix-baseline-deepseek
+          path: |
+            logs/
+            swebench-verdict-*.json
+            deepseek-flash.swebench-envfix-*.json
+          if-no-files-found: ignore
+          retention-days: 14
