@@ -4,6 +4,19 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Task 3 — execution-grounded repair and retries (2026-11-15)
+
+### Added
+- Isolated Docker test runner with network disabled, read-only mounted worktree, non-root execution and resource/timeout limits.
+- Reviewer JSON diagnoses and a bounded Coder revision loop (max 3 independent candidates).
+- Structured per-attempt statuses, JSONL trace, internal-success-only diff export and operator-controlled CLI.
+- Real Docker smoke with a deliberately failing first candidate, Reviewer correction and passing second candidate.
+- Offline unit tests and cross-platform CI regression plus Ubuntu Docker smoke.
+
+### Compatibility and limits
+- Original CodeNexus routes, Task 1 Planner, Task 2 Coder/patch CLI and output schemas remain accessible.
+- Internal tests passed does not imply SWE-bench resolved; QLoRA and official evaluation are not implemented.
+- GitHub Actions run uses scripted model responses; live LLM repair quality is not yet verified.
 ## Task 2 integration — 2026-11-15
 
 ### Added
