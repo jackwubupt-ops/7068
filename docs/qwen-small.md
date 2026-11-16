@@ -73,6 +73,20 @@ Defaults: `QWEN_MAX_MODEL_LEN=16384` (Coder prompts can reach about 8K tokens pl
 3.5K output tokens, so 8192 can reject real requests) and `QWEN_GPU_MEMORY_UTIL=0.65`.
 If CUDA graph capture or torch.compile fails, retry with `QWEN_ENFORCE_EAGER=1`.
 
+### 1.3 Optional: Qwen3-0.6B comparison
+
+Qwen3 runs in thinking mode by default. `start_qwen_small.sh` passes
+`--default-chat-template-kwargs '{"enable_thinking": false}'` when
+`QWEN_MODEL=Qwen/Qwen3-0.6B`, so replies are bare text/JSON like Qwen2.5-Coder.
+Set `QWEN3_ENABLE_THINKING=1` only for a separate thinking-mode experiment.
+The client `.env` must use the same `QWEN_MODEL`.
+
+~~~bash
+modelscope download --model Qwen/Qwen3-0.6B --local_dir /root/autodl-tmp/qwen-models/Qwen3-0.6B
+QWEN_MODEL=Qwen/Qwen3-0.6B QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen3-0.6B \
+  bash scripts/start_qwen_small.sh
+~~~
+
 Verify the endpoint:
 
 ~~~bash

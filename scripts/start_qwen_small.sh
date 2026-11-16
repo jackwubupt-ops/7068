@@ -42,6 +42,12 @@ EXTRA=()
 if [ "${QWEN_ENFORCE_EAGER:-0}" = "1" ]; then
   EXTRA+=(--enforce-eager)
 fi
+# Qwen3 thinks by default (<think>...</think> before the answer). PatchLoop's
+# Planner/Reviewer expect bare JSON and preflight allows only 32 tokens, so
+# disable thinking server-side unless QWEN3_ENABLE_THINKING=1.
+if [ "$MODEL" = "Qwen/Qwen3-0.6B" ] && [ "${QWEN3_ENABLE_THINKING:-0}" != "1" ]; then
+  EXTRA+=(--default-chat-template-kwargs '{"enable_thinking": false}')
+fi
 
 # Do not expose an unauthenticated endpoint on 0.0.0.0.
 # From a different machine, use SSH: ssh -L 8000:127.0.0.1:8000 host
