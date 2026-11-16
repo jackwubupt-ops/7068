@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 # MODEL is the ID the PatchLoop client checks in /v1/models (QWEN_MODEL).
 MODEL="${QWEN_MODEL:-Qwen/Qwen2.5-Coder-0.5B-Instruct}"
 case "$MODEL" in
-  "Qwen/Qwen2.5-Coder-0.5B-Instruct"|"Qwen/Qwen3-0.6B") ;;
+  "Qwen/Qwen2.5-Coder-0.5B-Instruct"|"Qwen/Qwen3-0.6B"|"Qwen/Qwen2.5-Coder-7B-Instruct") ;;
   *) echo "Unsupported model: $MODEL" >&2; exit 2 ;;
 esac
 # Optional: already-downloaded weights (e.g. from ModelScope). Served under $MODEL.
@@ -38,6 +38,12 @@ if command -v nvidia-smi >/dev/null; then
   nvidia-smi --query-gpu=index,name,driver_version,memory.total,memory.free --format=csv,noheader
 fi
 
+# 7B bf16 weights are ~15.2 GiB, so 0.65 of a 24 GiB card leaves almost no KV cache.
+case "$MODEL" in
+  *-7B-*) GPU_UTIL="${QWEN_GPU_MEMORY_UTIL:-0.90}" ;;
+  *) GPU_UTIL="${QWEN_GPU_MEMORY_UTIL:-0.65}" ;;
+esac
+
 EXTRA=()
 if [ "${QWEN_ENFORCE_EAGER:-0}" = "1" ]; then
   EXTRA+=(--enforce-eager)
@@ -61,5 +67,5 @@ exec vllm serve "$SOURCE" \
   --dtype auto \
   --tensor-parallel-size 1 \
   --max-model-len "${QWEN_MAX_MODEL_LEN:-16384}" \
-  --gpu-memory-utilization "${QWEN_GPU_MEMORY_UTIL:-0.65}" \
+  --gpu-memory-utilization "$GPU_UTIL" \
   ${EXTRA[@]+"${EXTRA[@]}"}
