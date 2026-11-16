@@ -163,6 +163,39 @@ The Harness accepts diffs only for Planner-suspected, tracked regular files. It 
 
 Only when status=prediction_ready does it produce candidate.patch, official-format predictions.jsonl, and a detailed run_status.json. A Git-applicable patch does NOT mean the Issue is resolved.
 
+## 4b. Batch runs on SWE-bench Lite dev (proposal: smoke -> pilot)
+
+SWE-bench Lite has a 23-task `dev` split (sqlfluff 5, pvlib 5, astroid 5, pydicom 5,
+marshmallow 2, pyvista 1). `experiments.lite_batch` runs the same per-task pipeline as
+`--mode dev` on each task, with a fresh model budget per task. It only ever loads `dev`.
+
+Mirror the repositories first so a flaky GitHub proxy cannot fail tasks. This adds
+per-URL `url.<mirror>.insteadOf` entries to your global git config:
+
+~~~bash
+source /etc/network_turbo
+HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --list-repos | bash scripts/mirror_repos.sh
+unset http_proxy https_proxy
+~~~
+
+Smoke run, one task per repository:
+
+~~~bash
+HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --out /root/autodl-tmp/lite-smoke-01 \
+  --instances sqlfluff__sqlfluff-1625,marshmallow-code__marshmallow-1359,pvlib__pvlib-python-1707,pylint-dev__astroid-1978,pyvista__pyvista-4315,pydicom__pydicom-1694
+~~~
+
+Pilot run, all 23 tasks; add `--resume` with the same arguments to continue after an interruption:
+
+~~~bash
+HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-01
+~~~
+
+Each output directory contains `manifest.json` (task IDs, model, PatchLoop commit, budgets),
+one sub-directory per task, `results.jsonl`, `all_preds.jsonl` (input for the official
+harness) and `summary.json`. `prediction_ready` counts Git-applicable candidates, not
+resolved issues. No Docker tests run in this mode.
+
 ## 5. OFFICIAL SWE-bench evaluation, with disclosed environment fix
 
 Use x86_64 Linux with Docker Engine and enough free disk/RAM. The official project recommends roughly 120 GB free disk and 16 GB memory for general evaluation, though one instance may need less.

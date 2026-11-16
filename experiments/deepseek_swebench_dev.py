@@ -138,8 +138,18 @@ def _minimal_coder_messages(messages: list[dict]) -> list[dict]:
 def run_real_dev(
     output_dir: str | Path, *,
     api=None, task_loader=select_dev_task, checkout_fn=checkout_dev_task,
+    instance_id: str = INSTANCE_ID,
+    expected_repo: str | None = EXPECTED_REPO,
+    expected_base: str | None = EXPECTED_BASE,
+    dataset_id: str = DATASET_ID,
+    split: str = DEVELOPMENT_SPLIT,
 ) -> dict:
-    """Use real model API by default; injectable dependencies are for offline unit tests."""
+    """Use real model API by default; injectable dependencies are for offline unit tests.
+
+    Defaults reproduce the original single sqlfluff instance. Batch runs pass
+    another dev instance; expected_repo/expected_base=None skips those pins
+    (the instance ID must still match exactly).
+    """
     target = Path(output_dir).expanduser().resolve()
     if target.exists() and any(target.iterdir()):
         raise ValueError("Output directory must be new or empty to avoid stale predictions")
@@ -147,11 +157,11 @@ def run_real_dev(
 
     report = {
         "experiment": "patchloop-deepseek-real-swebench-full-dev-v1",
-        "instance_id": INSTANCE_ID,
-        "dataset": DATASET_ID,
-        "split": DEVELOPMENT_SPLIT,
-        "repo": EXPECTED_REPO,
-        "base_commit": EXPECTED_BASE,
+        "instance_id": instance_id,
+        "dataset": dataset_id,
+        "split": split,
+        "repo": expected_repo,
+        "base_commit": expected_base,
         "status": "not_started",
         "live_api_preflight": False,
         "planner_calls": 0,
@@ -177,12 +187,16 @@ def run_real_dev(
         live = api if api is not None else LiveDeepSeek(max_calls=16, coder_max_tokens=5500)
         report["model"] = live.model
         stage = "load_official_dev_task"
-        task = task_loader(instance_id=INSTANCE_ID)
+        task = task_loader(instance_id=instance_id)
         if (
-            task.instance_id != INSTANCE_ID or task.repo != EXPECTED_REPO
-            or task.base_commit.lower() != EXPECTED_BASE
+            task.instance_id != instance_id
+            or (expected_repo is not None and task.repo != expected_repo)
+            or (expected_base is not None
+                and task.base_commit.lower() != expected_base.lower())
         ):
             raise RuntimeError("DEV_TASK_MISMATCH: official instance fields changed")
+        report["repo"] = task.repo
+        report["base_commit"] = task.base_commit
         stage = "checkout_real_base_commit"
         with tempfile.TemporaryDirectory(prefix="patchloop-deepseek-swebench-dev-") as temp:
             checkout = checkout_fn(task, Path(temp) / "checkout")

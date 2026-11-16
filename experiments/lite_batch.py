@@ -1,0 +1,236 @@
+"""Batch PatchLoop inference over SWE-bench Lite DEV (proposal: smoke -> pilot).
+
+Each task runs the same single-instance pipeline as `qwen_small_dev --mode dev`
+(Planner -> Coder -> Reviewer apply-retry, up to 2 candidates) with a FRESH model
+backend, so per-task call/token budgets are identical and independent.
+
+    python -m experiments.lite_batch --out /root/autodl-tmp/lite-dev-smoke-01 --limit 5
+    python -m experiments.lite_batch --out ... --resume          # continue after a crash
+    python -m experiments.lite_batch --list-repos                # repos to mirror first
+
+Outputs in --out:
+  manifest.json        what was run (task IDs, model, PatchLoop git commit, budgets)
+  <instance_id>/       run_status.json (+ candidate.patch, predictions.jsonl)
+  results.jsonl        one summary line per finished task
+  all_preds.jsonl      every prediction, ready for the official SWE-bench harness
+  summary.json         status counts and totals
+
+Only the dev split is ever loaded. "prediction_ready" means a Git-applicable
+candidate, NOT a resolved issue; only the official evaluator decides that.
+"""
+from __future__ import annotations
+
+import argparse
+from collections import Counter
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import platform
+import subprocess
+import time
+from typing import Callable, Iterable
+
+from swebench_dev import DEVELOPMENT_SPLIT, LITE_DATASET_ID, DevelopmentTask, load_dev_tasks
+
+EXPERIMENT = "patchloop-lite-dev-batch-v1"
+SUMMARY_FIELDS = (
+    "instance_id", "repo", "status", "patch_status", "suspected_files",
+    "planner_calls", "coder_calls", "reviewer_calls", "attempt_count",
+    "prompt_tokens", "completion_tokens", "duration_seconds",
+    "prediction_available", "failed_stage", "error",
+)
+
+
+def select_tasks(tasks: list[DevelopmentTask], *, instance_ids: Iterable[str] | None = None,
+                 limit: int | None = None) -> list[DevelopmentTask]:
+    """Deterministic subset: explicit IDs in the given order, else the first `limit`."""
+    if instance_ids:
+        wanted = list(dict.fromkeys(instance_ids))
+        by_id = {task.instance_id: task for task in tasks}
+        missing = [item for item in wanted if item not in by_id]
+        if missing:
+            raise ValueError(f"Not in the dev split: {', '.join(missing)}")
+        chosen = [by_id[item] for item in wanted]
+    else:
+        chosen = list(tasks)
+    if limit is not None:
+        if limit < 1:
+            raise ValueError("--limit must be >= 1")
+        chosen = chosen[:limit]
+    return chosen
+
+
+def _patchloop_commit() -> str | None:
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(Path(__file__).resolve().parents[1]), "rev-parse", "HEAD"],
+            capture_output=True, text=True, timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if out.returncode != 0:
+        return None
+    return out.stdout.strip() or None
+
+
+def build_manifest(tasks: list[DevelopmentTask], *, dataset_id: str,
+                   settings: dict) -> dict:
+    return {
+        "experiment": EXPERIMENT,
+        "dataset": dataset_id,
+        "split": DEVELOPMENT_SPLIT,
+        "instance_ids": [task.instance_id for task in tasks],
+        "task_count": len(tasks),
+        "patchloop_commit": _patchloop_commit(),
+        "python": platform.python_version(),
+        "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        **settings,
+    }
+
+
+def _summary_line(report: dict) -> dict:
+    return {key: report.get(key) for key in SUMMARY_FIELDS}
+
+
+def _read_jsonl(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
+              run_one: Callable[[DevelopmentTask, Path], dict],
+              manifest: dict, resume: bool = False,
+              log: Callable[[str], None] = print) -> dict:
+    """Run tasks sequentially; finished tasks (run_status.json present) are skipped on resume."""
+    out_dir = Path(out_dir).expanduser().resolve()
+    manifest_path = out_dir / "manifest.json"
+    if out_dir.exists() and any(out_dir.iterdir()):
+        if not resume:
+            raise ValueError("--out must be new or empty (use --resume to continue a batch)")
+        if not manifest_path.exists():
+            raise ValueError("--resume target has no manifest.json; not a batch directory")
+        previous = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if previous.get("instance_ids") != manifest["instance_ids"]:
+            raise ValueError("--resume task list differs from the existing manifest")
+        manifest = {**previous, "resumed_at": manifest["started_at"]}
+    out_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    results_path = out_dir / "results.jsonl"
+    done = {line["instance_id"] for line in _read_jsonl(results_path)}
+    began = time.monotonic()
+    for index, task in enumerate(tasks, 1):
+        task_dir = out_dir / task.instance_id
+        if task.instance_id in done:
+            log(f"[{index}/{len(tasks)}] {task.instance_id}: already done, skipping")
+            continue
+        if task_dir.exists():
+            # Interrupted mid-task: keep the evidence, retry in a fresh directory.
+            task_dir.rename(out_dir / f"{task.instance_id}.interrupted-{int(time.time())}")
+        log(f"[{index}/{len(tasks)}] {task.instance_id} ({task.repo}) ...")
+        t0 = time.monotonic()
+        try:
+            report = run_one(task, task_dir)
+        except Exception as exc:  # run_real_dev catches its own errors; this is a last resort
+            report = {"instance_id": task.instance_id, "repo": task.repo,
+                      "status": "batch_error", "error": f"{type(exc).__name__}: {exc}"[:500]}
+            task_dir.mkdir(parents=True, exist_ok=True)
+            (task_dir / "run_status.json").write_text(
+                json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        line = _summary_line({"repo": task.repo, **report, "instance_id": task.instance_id})
+        with results_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(line, ensure_ascii=False) + "\n")
+        log(f"    -> {line['status']} in {time.monotonic() - t0:.1f}s")
+
+    return write_summary(out_dir, tasks, elapsed=time.monotonic() - began)
+
+
+def write_summary(out_dir: Path, tasks: list[DevelopmentTask], *, elapsed: float) -> dict:
+    lines = {line["instance_id"]: line for line in _read_jsonl(out_dir / "results.jsonl")}
+    predictions = []
+    for task in tasks:
+        pred = out_dir / task.instance_id / "predictions.jsonl"
+        if task.instance_id in lines and lines[task.instance_id].get("status") == "prediction_ready" and pred.exists():
+            predictions.extend(_read_jsonl(pred))
+    (out_dir / "all_preds.jsonl").write_text(
+        "".join(json.dumps(item, ensure_ascii=False) + "\n" for item in predictions), encoding="utf-8")
+    statuses = Counter(line.get("status") for line in lines.values())
+    finished = len(lines)
+    summary = {
+        "experiment": EXPERIMENT,
+        "tasks_total": len(tasks),
+        "tasks_finished": finished,
+        "status_counts": dict(sorted(statuses.items())),
+        "prediction_ready": statuses.get("prediction_ready", 0),
+        "prediction_ready_rate": round(statuses.get("prediction_ready", 0) / finished, 4) if finished else None,
+        "localized_any_file": sum(1 for line in lines.values() if line.get("suspected_files")),
+        "prompt_tokens": sum(int(line.get("prompt_tokens") or 0) for line in lines.values()),
+        "completion_tokens": sum(int(line.get("completion_tokens") or 0) for line in lines.values()),
+        "model_seconds_total": round(sum(float(line.get("duration_seconds") or 0) for line in lines.values()), 1),
+        "this_session_seconds": round(elapsed, 1),
+        "official_evaluated": False,
+        "note": "prediction_ready = Git-applicable candidate, not an official resolution.",
+    }
+    (out_dir / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return summary
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--out", help="New output directory (or existing one with --resume)")
+    parser.add_argument("--dataset", default=LITE_DATASET_ID,
+                        choices=(LITE_DATASET_ID, "princeton-nlp/SWE-bench"))
+    parser.add_argument("--instances", help="Comma-separated instance IDs (default: dataset order)")
+    parser.add_argument("--limit", type=int, help="Run only the first N selected tasks")
+    parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--list-repos", action="store_true",
+                        help="Print the GitHub repos of the selected tasks and exit (for mirroring)")
+    args = parser.parse_args()
+
+    tasks = select_tasks(
+        load_dev_tasks(args.dataset),
+        instance_ids=[item.strip() for item in args.instances.split(",") if item.strip()] if args.instances else None,
+        limit=args.limit,
+    )
+    if args.list_repos:
+        for repo in sorted({task.repo for task in tasks}):
+            print(repo)
+        return 0
+    if not args.out:
+        parser.error("--out is required")
+
+    from experiments.qwen_small_dev import run_qwen_dev
+    from patchloop_task2.qwen_small import STAGE_TOKENS, QwenSettings, QwenSmallBackend
+
+    settings = QwenSettings.from_env()
+    QwenSmallBackend(settings).verify()  # fail fast before any task if vLLM is down
+    by_id = {task.instance_id: task for task in tasks}
+
+    def run_one(task: DevelopmentTask, task_dir: Path) -> dict:
+        backend = QwenSmallBackend(settings)  # fresh per-task call and token budget
+        return run_qwen_dev(
+            backend, task_dir,
+            instance_id=task.instance_id, expected_repo=task.repo,
+            expected_base=task.base_commit, dataset_id=args.dataset,
+            task_loader=lambda instance_id: by_id[instance_id],
+        )
+
+    manifest = build_manifest(tasks, dataset_id=args.dataset, settings={
+        "model": settings.model,
+        "endpoint": settings.endpoint,
+        "max_calls_per_task": settings.max_calls,
+        "context_chars": settings.context_chars,
+        "timeout_seconds": settings.timeout_seconds,
+        "stage_max_tokens": STAGE_TOKENS,
+        "temperature": 0,
+        "max_candidates": 2,
+        "docker_tests": False,
+    })
+    summary = run_batch(tasks, Path(args.out), run_one=run_one, manifest=manifest, resume=args.resume)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

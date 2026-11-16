@@ -71,9 +71,13 @@ def run_qwen_smoke(backend: QwenSmallBackend, *,
         }
 
 
-def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path) -> dict:
-    """Real public issue; no official benchmark verdict is claimed here."""
-    result = run_real_dev(output_dir, api=backend)
+def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path, **task_options) -> dict:
+    """Real public issue; no official benchmark verdict is claimed here.
+
+    task_options are forwarded to run_real_dev (instance_id, task_loader, ...);
+    with none given this is the original single sqlfluff dev instance.
+    """
+    result = run_real_dev(output_dir, api=backend, **task_options)
     # Classic SWE-bench uses model_name_or_path in artifact filenames.
     # Preserve the exact HF ID in run_status but use a slash-free evaluation label.
     label = {
