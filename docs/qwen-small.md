@@ -188,8 +188,19 @@ HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --out /root/a
 Pilot run, all 23 tasks; add `--resume` with the same arguments to continue after an interruption:
 
 ~~~bash
-HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-01
+HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-01 --workers 4
 ~~~
+
+`--workers N` (default 1, max 16) runs N tasks at once. Each task still has its own
+checkout, worktrees and model budget; only the vLLM server is shared, and vLLM batches
+the concurrent requests, so throughput rises roughly with N until the KV cache is full.
+For 7B on a 24 GiB GPU (about 5–6 GiB of KV cache) start with 4. If requests start
+hitting `QWEN_TIMEOUT`, lower N or raise the timeout. vLLM's V1 engine enables
+automatic prefix caching by default (check `enable_prefix_caching=True` in the startup
+log), which reuses the repeated Planner/Coder context. Note: greedy decoding is not
+guaranteed to be bit-identical across batch sizes, so record `workers` (it is in
+`manifest.json`) and keep it fixed within one comparison. Ctrl+C stops scheduling new
+tasks; tasks already running finish, and anything cut off is retried by `--resume`.
 
 Each output directory contains `manifest.json` (task IDs, model, PatchLoop commit, budgets),
 one sub-directory per task, `results.jsonl`, `all_preds.jsonl` (input for the official

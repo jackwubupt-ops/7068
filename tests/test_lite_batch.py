@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import tempfile
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -132,6 +133,64 @@ class BatchTests(unittest.TestCase):
         summary = self.run_it(run_one=flaky)
         self.assertEqual(summary["status_counts"].get("batch_error"), 1)
         self.assertEqual(summary["tasks_finished"], 3)
+
+
+class ParallelBatchTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.out = Path(temp.name) / "batch"
+        self.tasks = [make_task(n) for n in (1, 2, 3, 11)]
+        self.manifest = build_manifest(self.tasks, dataset_id=LITE_DATASET_ID, settings={})
+
+    def run_it(self, run_one=fake_run_one, **kwargs):
+        return run_batch(self.tasks, self.out, run_one=run_one, manifest=self.manifest,
+                         log=lambda _: None, **kwargs)
+
+    def test_tasks_really_overlap_and_summary_matches_sequential(self):
+        barrier = threading.Barrier(4, timeout=10)
+
+        def overlapping(task, task_dir):
+            barrier.wait()  # only passes if all 4 tasks are in flight at once
+            return fake_run_one(task, task_dir)
+
+        summary = self.run_it(run_one=overlapping, workers=4)
+        self.assertEqual(summary["tasks_finished"], 4)
+        self.assertEqual(summary["status_counts"], {"no_candidate_files": 2, "prediction_ready": 2})
+        lines = [json.loads(x) for x in (self.out / "results.jsonl").read_text().splitlines()]
+        self.assertEqual(sorted(x["instance_id"] for x in lines),
+                         sorted(t.instance_id for t in self.tasks))
+        preds = (self.out / "all_preds.jsonl").read_text().splitlines()
+        self.assertEqual(len(preds), 2)
+
+    def test_worker_exception_is_recorded_without_stopping_others(self):
+        def flaky(task, task_dir):
+            if task.instance_id == "owner__proj-2":
+                raise RuntimeError("boom")
+            return fake_run_one(task, task_dir)
+
+        summary = self.run_it(run_one=flaky, workers=3)
+        self.assertEqual(summary["status_counts"].get("batch_error"), 1)
+        self.assertEqual(summary["tasks_finished"], 4)
+
+    def test_interrupt_in_worker_propagates_and_resume_finishes(self):
+        def interrupt(task, task_dir):
+            if task.instance_id == "owner__proj-3":
+                task_dir.mkdir(parents=True)
+                raise KeyboardInterrupt
+            return fake_run_one(task, task_dir)
+
+        with self.assertRaises(KeyboardInterrupt):
+            self.run_it(run_one=interrupt, workers=2)
+        summary = self.run_it(resume=True, workers=2)
+        self.assertEqual(summary["tasks_finished"], 4)
+        lines = [json.loads(x) for x in (self.out / "results.jsonl").read_text().splitlines()]
+        self.assertEqual(len({x["instance_id"] for x in lines}), len(lines))  # no duplicates
+
+    def test_rejects_bad_worker_counts(self):
+        for bad in (0, 17, "4"):
+            with self.assertRaises(ValueError):
+                self.run_it(workers=bad)
 
 
 class GeneralizedDevRunTests(unittest.TestCase):
