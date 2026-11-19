@@ -202,6 +202,32 @@ guaranteed to be bit-identical across batch sizes, so record `workers` (it is in
 `manifest.json`) and keep it fixed within one comparison. Ctrl+C stops scheduling new
 tasks; tasks already running finish, and anything cut off is retried by `--resume`.
 
+### Coder edit format: `--edit-format search_replace`
+
+By default the Coder writes a unified diff. 7B models often get the diff bookkeeping
+wrong (line numbers, context, hunk counts) even when the intended change is right, so
+`--edit-format search_replace` (in `lite_batch` and `qwen_small_dev --mode dev`) asks for
+SEARCH/REPLACE blocks instead:
+
+~~~text
+FILE: src/pkg/module.py
+<<<<<<< SEARCH
+exact original lines
+=======
+replacement lines
+>>>>>>> REPLACE
+~~~
+
+The harness reads each file at the base commit (`git show BASE:path`), requires SEARCH
+to match the original lines exactly and exactly once, inserts REPLACE verbatim and
+lets Git compute the diff, which then goes through the same validator and
+`git apply --check` as before. It never edits model-written code: no whitespace or
+fuzzy matching. A mismatch (`search_not_found`, `search_ambiguous`, `no_blocks`, ...)
+is recorded as an `edit_invalid` attempt and goes to the Reviewer like an apply
+failure. The prompt evidence is the same bounded, cited read_file lines; only the
+output instructions differ. The format is recorded in `manifest.json` and
+`run_status.json`; compare formats on the same tasks with everything else fixed.
+
 Each output directory contains `manifest.json` (task IDs, model, PatchLoop commit, budgets),
 one sub-directory per task, `results.jsonl`, `all_preds.jsonl` (input for the official
 harness) and `summary.json`. `prediction_ready` counts Git-applicable candidates, not

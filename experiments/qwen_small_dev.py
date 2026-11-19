@@ -113,6 +113,8 @@ def main() -> int:
                         default="preflight")
     parser.add_argument("--out", help="NEW output directory for dev or report")
     parser.add_argument("--max-candidates", type=int, default=2)
+    parser.add_argument("--edit-format", choices=("diff", "search_replace"), default="diff",
+                        help="dev mode Coder output: unified diff or SEARCH/REPLACE blocks")
     args = parser.parse_args()
 
     backend = QwenSmallBackend(QwenSettings.from_env())
@@ -129,7 +131,7 @@ def main() -> int:
             parser.error("--out must be a new or empty directory")
         target.mkdir(parents=True, exist_ok=True)
         backend.verify()
-        result = run_qwen_dev(backend, target)
+        result = run_qwen_dev(backend, target, edit_format=args.edit_format)
     result["duration_seconds"] = round(time.monotonic() - t0, 2)
     if args.out and args.mode != "dev":
         target = Path(args.out).expanduser().resolve()

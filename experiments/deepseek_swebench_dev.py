@@ -17,10 +17,13 @@ import time
 
 from experiments.live_deepseek import LiveDeepSeek, _safe_error
 from patchloop_task2.coder import permitted_paths
+from patchloop_task2.edit_blocks import (
+    EditBlockError, build_search_replace_messages, edit_blocks_to_diff, git_show_reader,
+)
 from patchloop_task2.loop import _coder
 from patchloop_task2.normalizer import normalize_hunk_counts
 from patchloop_task2.reviewer import review_failure
-from patchloop_task2.workspace import apply_candidate
+from patchloop_task2.workspace import ApplyResult, apply_candidate
 from pipeline_agent import run_localization
 from swebench_dev import (
     DATASET_ID, DEVELOPMENT_SPLIT, checkout_dev_task, make_prediction,
@@ -31,6 +34,7 @@ INSTANCE_ID = "sqlfluff__sqlfluff-4764"
 EXPECTED_REPO = "sqlfluff/sqlfluff"
 EXPECTED_BASE = "a820c139ccbe6d1865d73c4a459945cd69899f8f"
 MAX_PLANNER_STEPS = 14
+EDIT_FORMATS = ("diff", "search_replace")
 
 
 def _clean_source(path: Path, base: str) -> bool:
@@ -143,6 +147,7 @@ def run_real_dev(
     expected_base: str | None = EXPECTED_BASE,
     dataset_id: str = DATASET_ID,
     split: str = DEVELOPMENT_SPLIT,
+    edit_format: str = "diff",
 ) -> dict:
     """Use real model API by default; injectable dependencies are for offline unit tests.
 
@@ -150,6 +155,8 @@ def run_real_dev(
     another dev instance; expected_repo/expected_base=None skips those pins
     (the instance ID must still match exactly).
     """
+    if edit_format not in EDIT_FORMATS:
+        raise ValueError(f"edit_format must be one of {EDIT_FORMATS}")
     target = Path(output_dir).expanduser().resolve()
     if target.exists() and any(target.iterdir()):
         raise ValueError("Output directory must be new or empty to avoid stale predictions")
@@ -163,6 +170,7 @@ def run_real_dev(
         "repo": expected_repo,
         "base_commit": expected_base,
         "status": "not_started",
+        "edit_format": edit_format,
         "live_api_preflight": False,
         "planner_calls": 0,
         "coder_calls": 0,
@@ -267,22 +275,48 @@ def run_real_dev(
                 revision = None
                 for attempt in (1, 2):
                     stage = "real_coder_patch"
-                    proposal = _coder(
-                        task.problem_statement, plan,
-                        completion=lambda messages: live.complete(
-                            "coder", _minimal_coder_messages(messages)
-                        ), revision=revision,
-                    )
-                    raw_patch_sha256 = hashlib.sha256(
-                        proposal.encode("utf-8")
-                    ).hexdigest()
-                    # Only @@ metadata counts are normalized. Actual proposed
-                    # code lines are never edited by the harness.
-                    proposal, corrected_headers = normalize_hunk_counts(proposal)
-                    applied = apply_candidate(
-                        checkout, task.base_commit, proposal,
-                        export_path=patch_path, allowed_paths=allowed,
-                    )
+                    edit_meta = {}
+                    if edit_format == "search_replace":
+                        raw = live.complete("coder", build_search_replace_messages(
+                            task.problem_statement, plan, revision))
+                        raw_patch_sha256 = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+                        try:
+                            # SEARCH must match the base file exactly; REPLACE is used
+                            # verbatim. Git computes the diff; no code is altered.
+                            proposal, edit_meta = edit_blocks_to_diff(
+                                raw, allowed, git_show_reader(checkout, task.base_commit))
+                        except EditBlockError as exc:
+                            proposal = raw  # the Reviewer sees the failed blocks
+                            corrected_headers = 0
+                            edit_meta = {"edit_error_code": exc.code}
+                            applied = ApplyResult(
+                                status="edit_invalid", base_commit=task.base_commit,
+                                changed_files=[], patch_sha256=raw_patch_sha256,
+                                error_code=exc.code, error_message=str(exc),
+                            )
+                        else:
+                            proposal, corrected_headers = normalize_hunk_counts(proposal)
+                            applied = apply_candidate(
+                                checkout, task.base_commit, proposal,
+                                export_path=patch_path, allowed_paths=allowed,
+                            )
+                    else:
+                        proposal = _coder(
+                            task.problem_statement, plan,
+                            completion=lambda messages: live.complete(
+                                "coder", _minimal_coder_messages(messages)
+                            ), revision=revision,
+                        )
+                        raw_patch_sha256 = hashlib.sha256(
+                            proposal.encode("utf-8")
+                        ).hexdigest()
+                        # Only @@ metadata counts are normalized. Actual proposed
+                        # code lines are never edited by the harness.
+                        proposal, corrected_headers = normalize_hunk_counts(proposal)
+                        applied = apply_candidate(
+                            checkout, task.base_commit, proposal,
+                            export_path=patch_path, allowed_paths=allowed,
+                        )
                     report["attempt_count"] = attempt
                     report["patch_status"] = applied.status
                     candidate = {
@@ -293,6 +327,7 @@ def run_real_dev(
                         "patch_status": applied.status,
                         "error_code": applied.error_code,
                         "changed_files": list(applied.changed_files),
+                        **edit_meta,
                     }
                     report["candidate_attempts"].append(candidate)
                     if applied.status == "applied":
@@ -324,18 +359,21 @@ def run_real_dev(
                         break
                     stage = "real_reviewer_apply_diagnosis"
                     failure = {
-                        "stage": "apply",
+                        "stage": "edit_blocks" if applied.status == "edit_invalid" else "apply",
                         "status": applied.status,
                         "error_code": applied.error_code,
                         "log_tail": str(applied.error_message or "")[:1200],
                     }
+                    # In search_replace mode the model wrote blocks, so show those back.
+                    shown = raw if edit_format == "search_replace" else proposal
                     feedback = review_failure(
-                        task.problem_statement, plan, proposal, failure,
+                        task.problem_statement, plan, shown, failure,
                         completion=live.callback("reviewer"),
                     )
                     candidate["reviewer_failure_type"] = feedback["failure_type"]
                     revision = {
-                        "previous_patch": proposal[:10000],
+                        ("previous_edit_blocks" if edit_format == "search_replace"
+                         else "previous_patch"): shown[:10000],
                         "failure": failure,
                         "reviewer": feedback,
                     }

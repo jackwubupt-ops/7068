@@ -217,6 +217,8 @@ def main() -> int:
     parser.add_argument("--instances", help="Comma-separated instance IDs (default: dataset order)")
     parser.add_argument("--limit", type=int, help="Run only the first N selected tasks")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--edit-format", choices=("diff", "search_replace"), default="diff",
+                        help="Coder output: unified diff (default) or SEARCH/REPLACE blocks")
     parser.add_argument("--workers", type=int, default=1,
                         help=f"Tasks run concurrently against vLLM (1..{MAX_WORKERS}; 4 suits 7B on a 24 GiB GPU)")
     parser.add_argument("--list-repos", action="store_true",
@@ -249,6 +251,7 @@ def main() -> int:
             instance_id=task.instance_id, expected_repo=task.repo,
             expected_base=task.base_commit, dataset_id=args.dataset,
             task_loader=lambda instance_id: by_id[instance_id],
+            edit_format=args.edit_format,
         )
 
     manifest = build_manifest(tasks, dataset_id=args.dataset, settings={
@@ -261,6 +264,7 @@ def main() -> int:
         "temperature": 0,
         "max_candidates": 2,
         "docker_tests": False,
+        "edit_format": args.edit_format,
         # Greedy decoding can still differ slightly between batch sizes in vLLM.
         "workers": args.workers,
     })
