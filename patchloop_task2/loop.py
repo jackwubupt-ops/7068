@@ -11,6 +11,7 @@ import json
 
 from .coder import CoderError, build_messages, extract_diff, permitted_paths
 from .execution import DockerTestRunner, DockerTestSpec
+from .normalizer import normalize_hunk_counts
 from .reviewer import ReviewerError, review_failure
 from .workspace import (
     WorkspaceError, _good_result, _run_git, apply_candidate,
@@ -60,10 +61,13 @@ def run_from_plan(
     coder_completion=None, reviewer_completion=None,
     test_runner=None, max_candidates: int = 3,
     export_path: str | Path | None = None, trace_path: str | Path | None = None,
+    normalize_hunks: bool = False,
 ) -> dict:
     """Run bounded candidate repair loop. Plan must be Task 1's validated output."""
     if type(max_candidates) is not int or not 1 <= max_candidates <= 3:
         raise ValueError("max_candidates must be in [1,3]")
+    if type(normalize_hunks) is not bool:
+        raise ValueError("normalize_hunks must be a boolean")
     if not isinstance(spec, DockerTestSpec):
         raise TypeError("DockerTestSpec must be operator-provided")
     if not isinstance(plan, dict):
@@ -99,14 +103,18 @@ def run_from_plan(
             result["error_message"] = str(exc)[:800]
             break
         try:
-            patch = _coder(issue, plan, completion=coder_completion, revision=revision)
+            raw_patch = _coder(issue, plan, completion=coder_completion, revision=revision)
+            patch, header_fixes = (normalize_hunk_counts(raw_patch)
+                                   if normalize_hunks else (raw_patch, 0))
         except Exception as exc:
             result["status"] = "model_error"
             result["error_message"] = str(exc)[:800]
             break
         digest = hashlib.sha256(patch.encode("utf-8")).hexdigest()
-        attempt = {"number": number, "patch_sha256": digest, "patch_status": None,
-                   "test": None, "reviewer": None}
+        attempt = {"number": number, "patch_sha256": digest,
+                   "raw_model_patch_sha256": hashlib.sha256(raw_patch.encode("utf-8")).hexdigest(),
+                   "hunk_header_corrections": header_fixes,
+                   "patch_status": None, "test": None, "reviewer": None}
         result["attempt_count"] = number
         result["attempts"].append(attempt)
 

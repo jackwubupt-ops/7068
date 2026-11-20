@@ -1,0 +1,56 @@
+name: LIVE DeepSeek API repair experiment
+
+on:
+  push:
+    branches: [experiment/deepseek-live-smoke]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-deepseek:
+    name: Real API -> Planner/Coder/Reviewer -> Docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      DEEPSEEK_MODEL: deepseek-flash
+    steps:
+      - name: Checkout reviewed experiment source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install minimum API requirements
+        run: python -m pip install "openai>=1.68,<3" "python-dotenv>=1,<2"
+      - name: Check API credentials are configured
+        shell: bash
+        run: |
+          if [ -z "$DEEPSEEK_API_KEY" ]; then
+            echo "::error::NOT_RUN_MISSING_CREDENTIALS: repository Actions secret DEEPSEEK_API_KEY is not configured."
+            echo "### LIVE API experiment: NOT RUN" >> "$GITHUB_STEP_SUMMARY"
+            echo "Reason: missing repository secret DEEPSEEK_API_KEY; no API request was sent." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "Credentials exist (value not printed). Live API testing authorized by the experiment request." >> "$GITHUB_STEP_SUMMARY"
+      - name: Pull trusted Python Docker image
+        run: docker pull python:3.11-slim
+      - name: Run paid REAL DeepSeek completions and isolated Docker tests
+        run: python -m experiments.live_deepseek --report "$RUNNER_TEMP/deepseek-live-result.json"
+      - name: Add non-sensitive result summary
+        if: always()
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/deepseek-live-result.json" ]; then
+            python -c 'import json,os; r=json.load(open(os.environ["RUNNER_TEMP"]+"/deepseek-live-result.json")); f=open(os.environ["GITHUB_STEP_SUMMARY"],"a"); f.write("\n### Live DeepSeek result\n\n- Status: "+str(r["status"])+"\n- API preflight: "+str(r["api_preflight_passed"])+"\n- Real model calls: "+str(len(r["model_calls"]))+"\n- Internal tests passed: "+str(r["internal_tests_passed"])+"\n- Official SWE-bench evaluated: "+str(r["official_swebench_evaluated"])+"\n")'
+          fi
+      - name: Upload report (no credentials, no raw prompts)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deepseek-live-api-result
+          path: ${{ runner.temp }}/deepseek-live-result.json
+          if-no-files-found: ignore
+          retention-days: 7
