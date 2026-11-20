@@ -6,9 +6,16 @@ model only copies the exact original lines it wants to change (SEARCH) and
 writes their replacement (REPLACE); the harness locates SEARCH in the base
 commit and lets Git compute the diff.
 
-The harness NEVER edits model-written code: SEARCH must match the original
-lines exactly (no whitespace or fuzzy matching), exactly once, and REPLACE is
-used verbatim. Any mismatch is reported back as a failed attempt.
+Matching is deterministic and conservative, tried in order, and a SEARCH is
+used only if it matches exactly ONE place:
+  1. exact;
+  2. ignoring trailing whitespace on each line (REPLACE still verbatim);
+  3. the whole SEARCH is shifted by ONE constant indentation prefix (the model
+     dropped or added the same leading spaces on every line). REPLACE is then
+     shifted by that same prefix, so its relative structure is unchanged.
+No other edits to model-written code: no token-level fuzziness, no similarity
+thresholds. The mode used per block is recorded in the metadata. Anything else
+is reported back as a failed attempt.
 
     FILE: src/pkg/module.py
     <<<<<<< SEARCH
@@ -119,28 +126,82 @@ def parse_edit_blocks(text: str, allowed_paths: set[str]) -> list[EditBlock]:
     return blocks
 
 
-def _apply_block(lines: list[str], block: EditBlock) -> list[str]:
-    """Replace the unique exact occurrence of block.search in lines (with endings)."""
-    keys = [item[:-1] if item.endswith("\n") else item for item in lines]
-    width = len(block.search)
-    hits = [i for i in range(len(keys) - width + 1) if tuple(keys[i:i + width]) == block.search]
-    if not hits:
-        loose = [i for i in range(len(keys) - width + 1)
-                 if [k.strip() for k in keys[i:i + width]] == [s.strip() for s in block.search]]
-        hint = (" (it matches if indentation/whitespace is ignored: copy whitespace exactly)"
-                if loose else "")
-        raise EditBlockError("search_not_found",
-                             f"SEARCH for {block.path} does not match the original file{hint}. "
-                             f"First SEARCH line: {block.search[0][:200]!r}")
+def _unique(hits: list[int], block: EditBlock) -> int | None:
     if len(hits) > 1:
         raise EditBlockError("search_ambiguous",
                              f"SEARCH for {block.path} matches {len(hits)} places; add context lines")
-    start = hits[0]
+    return hits[0] if hits else None
+
+
+def _first_indent(lines) -> str | None:
+    for line in lines:
+        if line.strip():
+            return line[:len(line) - len(line.lstrip())]
+    return None
+
+
+def _indent_shift(original: list[str], search: tuple[str, ...]) -> tuple[str, str] | None:
+    """(add, remove) such that every non-blank original line == add + line[len(remove):]
+    of the SEARCH line, with ONE constant prefix for the whole block; else None."""
+    pairs = [(o, s) for o, s in zip(original, search) if o.strip() or s.strip()]
+    if not pairs or any(not o.strip() or not s.strip() for o, s in pairs):
+        return None
+    o0, s0 = pairs[0]
+    oi, si = o0[:len(o0) - len(o0.lstrip())], s0[:len(s0) - len(s0.lstrip())]
+    if oi.startswith(si):
+        add, remove = oi[len(si):], ""
+    elif si.startswith(oi):
+        add, remove = "", si[len(oi):]
+    else:
+        return None
+    if not add and not remove:
+        return None
+    for o, s in pairs:
+        if not s.startswith(remove) or o.rstrip() != (add + s[len(remove):]).rstrip():
+            return None
+    return add, remove
+
+
+def _apply_block(lines: list[str], block: EditBlock) -> tuple[list[str], str]:
+    """Replace the unique occurrence of block.search in lines (with endings)."""
+    keys = [item[:-1] if item.endswith("\n") else item for item in lines]
+    width = len(block.search)
+    windows = range(len(keys) - width + 1)
+    replace = list(block.replace)
+    mode = "exact"
+    start = _unique([i for i in windows if tuple(keys[i:i + width]) == block.search], block)
+    if start is None:
+        mode = "trailing_whitespace"
+        wanted = [line.rstrip() for line in block.search]
+        start = _unique([i for i in windows
+                         if [k.rstrip() for k in keys[i:i + width]] == wanted], block)
+    if start is None:
+        mode = "indent_shift"
+        shifted = [(i, _indent_shift(keys[i:i + width], block.search)) for i in windows]
+        shifted = [(i, shift) for i, shift in shifted if shift is not None]
+        start = _unique([i for i, _ in shifted], block)
+        if start is not None:
+            add, remove = shifted[0][1]
+            if (_first_indent(replace) not in (None, _first_indent(block.search))
+                    or any(line.strip() and not line.startswith(remove) for line in replace)):
+                # REPLACE is not written in the same indentation frame as SEARCH,
+                # so the shift cannot be transferred without guessing.
+                start = None
+            else:
+                replace = [add + line[len(remove):] if line.strip() else line for line in replace]
+    if start is None:
+        loose = [i for i in windows
+                 if [k.strip() for k in keys[i:i + width]] == [s.strip() for s in block.search]]
+        hint = (" (it matches only if indentation is ignored, and not by one consistent shift: "
+                "copy whitespace exactly)" if loose else "")
+        raise EditBlockError("search_not_found",
+                             f"SEARCH for {block.path} does not match the original file{hint}. "
+                             f"First SEARCH line: {block.search[0][:200]!r}")
     end = start + width
-    new = [item + "\n" for item in block.replace]
+    new = [item + "\n" for item in replace]
     if end == len(lines) and not lines[-1].endswith("\n") and new:
         new[-1] = new[-1][:-1]  # keep the original "no newline at end of file"
-    return lines[:start] + new + lines[end:]
+    return lines[:start] + new + lines[end:], mode
 
 
 def _git_diff(path: str, old: str, new: str) -> str:
@@ -167,6 +228,7 @@ def edit_blocks_to_diff(text: str, allowed_paths: set[str],
     blocks = parse_edit_blocks(text, allowed_paths)
     originals: dict[str, str] = {}
     current: dict[str, list[str]] = {}
+    modes: list[str] = []
     for block in blocks:
         if block.path not in originals:
             try:
@@ -177,7 +239,8 @@ def edit_blocks_to_diff(text: str, allowed_paths: set[str],
                 raise EditBlockError("unsupported_file", f"{block.path} has CRLF/NUL content")
             originals[block.path] = content
             current[block.path] = content.splitlines(keepends=True)
-        current[block.path] = _apply_block(current[block.path], block)
+        current[block.path], mode = _apply_block(current[block.path], block)
+        modes.append(mode)
     parts = []
     for path in originals:  # first-mention order
         new = "".join(current[path])
@@ -185,7 +248,8 @@ def edit_blocks_to_diff(text: str, allowed_paths: set[str],
             parts.append(_git_diff(path, originals[path], new))
     if not parts:
         raise EditBlockError("no_change", "Edit blocks do not change any file")
-    return "".join(parts), {"edit_blocks": len(blocks), "edited_files": list(originals)}
+    return "".join(parts), {"edit_blocks": len(blocks), "edited_files": list(originals),
+                            "search_match_modes": modes}
 
 
 def git_show_reader(checkout: str | Path, base_commit: str) -> Callable[[str], str]:
