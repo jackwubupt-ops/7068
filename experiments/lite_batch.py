@@ -5,6 +5,7 @@ Each task runs the same single-instance pipeline as `qwen_small_dev --mode dev`
 backend, so per-task call/token budgets are identical and independent.
 
     python -m experiments.lite_batch --out /root/autodl-tmp/lite-dev-smoke-01 --limit 5
+    python -m experiments.lite_batch --out ... --workers 4       # 4 tasks at once (7B, 24 GiB)
     python -m experiments.lite_batch --out ... --resume          # continue after a crash
     python -m experiments.lite_batch --list-repos                # repos to mirror first
 
@@ -22,20 +23,23 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 import json
 from pathlib import Path
 import platform
 import subprocess
+import threading
 import time
 from typing import Callable, Iterable
 
 from swebench_dev import DEVELOPMENT_SPLIT, LITE_DATASET_ID, DevelopmentTask, load_dev_tasks
 
 EXPERIMENT = "patchloop-lite-dev-batch-v1"
+MAX_WORKERS = 16
 SUMMARY_FIELDS = (
-    "instance_id", "repo", "status", "patch_status", "suspected_files",
-    "planner_calls", "coder_calls", "reviewer_calls", "attempt_count",
+    "instance_id", "repo", "agent", "status", "patch_status", "suspected_files",
+    "planner_calls", "coder_calls", "reviewer_calls", "agent_calls", "attempt_count",
     "prompt_tokens", "completion_tokens", "duration_seconds",
     "prediction_available", "failed_stage", "error",
 )
@@ -100,9 +104,11 @@ def _read_jsonl(path: Path) -> list[dict]:
 
 def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
               run_one: Callable[[DevelopmentTask, Path], dict],
-              manifest: dict, resume: bool = False,
+              manifest: dict, resume: bool = False, workers: int = 1,
               log: Callable[[str], None] = print) -> dict:
-    """Run tasks sequentially; finished tasks (run_status.json present) are skipped on resume."""
+    """Run tasks (in parallel when workers > 1); tasks in results.jsonl are skipped on resume."""
+    if type(workers) is not int or not 1 <= workers <= MAX_WORKERS:
+        raise ValueError(f"workers must be an integer from 1 to {MAX_WORKERS}")
     out_dir = Path(out_dir).expanduser().resolve()
     manifest_path = out_dir / "manifest.json"
     if out_dir.exists() and any(out_dir.iterdir()):
@@ -120,6 +126,9 @@ def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
     results_path = out_dir / "results.jsonl"
     done = {line["instance_id"] for line in _read_jsonl(results_path)}
     began = time.monotonic()
+    lock = threading.Lock()  # guards results.jsonl appends and log lines
+
+    pending = []
     for index, task in enumerate(tasks, 1):
         task_dir = out_dir / task.instance_id
         if task.instance_id in done:
@@ -128,7 +137,11 @@ def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
         if task_dir.exists():
             # Interrupted mid-task: keep the evidence, retry in a fresh directory.
             task_dir.rename(out_dir / f"{task.instance_id}.interrupted-{int(time.time())}")
-        log(f"[{index}/{len(tasks)}] {task.instance_id} ({task.repo}) ...")
+        pending.append((index, task, task_dir))
+
+    def run_and_record(index: int, task: DevelopmentTask, task_dir: Path) -> None:
+        with lock:
+            log(f"[{index}/{len(tasks)}] {task.instance_id} ({task.repo}) ...")
         t0 = time.monotonic()
         try:
             report = run_one(task, task_dir)
@@ -139,9 +152,29 @@ def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
             (task_dir / "run_status.json").write_text(
                 json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         line = _summary_line({"repo": task.repo, **report, "instance_id": task.instance_id})
-        with results_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(line, ensure_ascii=False) + "\n")
-        log(f"    -> {line['status']} in {time.monotonic() - t0:.1f}s")
+        with lock:
+            with results_path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(line, ensure_ascii=False) + "\n")
+            log(f"    [{index}/{len(tasks)}] {task.instance_id} -> {line['status']} "
+                f"in {time.monotonic() - t0:.1f}s")
+
+    if workers <= 1:
+        for item in pending:
+            run_and_record(*item)
+    else:
+        # Each task has its own checkout, worktrees and model backend; the only shared
+        # resource is the vLLM server, which batches concurrent requests.
+        pool = ThreadPoolExecutor(max_workers=workers, thread_name_prefix="lite-task")
+        futures = [pool.submit(run_and_record, *item) for item in pending]
+        try:
+            for future in as_completed(futures):
+                future.result()  # re-raise KeyboardInterrupt/SystemExit from a worker
+        except BaseException:
+            # Stop scheduling new tasks; in-flight ones finish (their dirs are retried
+            # on --resume if the process is killed first).
+            pool.shutdown(wait=False, cancel_futures=True)
+            raise
+        pool.shutdown(wait=True)
 
     return write_summary(out_dir, tasks, elapsed=time.monotonic() - began)
 
@@ -184,6 +217,12 @@ def main() -> int:
     parser.add_argument("--instances", help="Comma-separated instance IDs (default: dataset order)")
     parser.add_argument("--limit", type=int, help="Run only the first N selected tasks")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--agent", choices=("pcr", "single"), default="pcr",
+                        help="pcr = Planner-Coder-Reviewer (default); single = single-agent baseline (RQ3)")
+    parser.add_argument("--edit-format", choices=("diff", "search_replace"), default="diff",
+                        help="Coder output: unified diff (default) or SEARCH/REPLACE blocks")
+    parser.add_argument("--workers", type=int, default=1,
+                        help=f"Tasks run concurrently against vLLM (1..{MAX_WORKERS}; 4 suits 7B on a 24 GiB GPU)")
     parser.add_argument("--list-repos", action="store_true",
                         help="Print the GitHub repos of the selected tasks and exit (for mirroring)")
     args = parser.parse_args()
@@ -210,10 +249,11 @@ def main() -> int:
     def run_one(task: DevelopmentTask, task_dir: Path) -> dict:
         backend = QwenSmallBackend(settings)  # fresh per-task call and token budget
         return run_qwen_dev(
-            backend, task_dir,
+            backend, task_dir, agent=args.agent,
             instance_id=task.instance_id, expected_repo=task.repo,
             expected_base=task.base_commit, dataset_id=args.dataset,
             task_loader=lambda instance_id: by_id[instance_id],
+            edit_format=args.edit_format,
         )
 
     manifest = build_manifest(tasks, dataset_id=args.dataset, settings={
@@ -224,10 +264,15 @@ def main() -> int:
         "timeout_seconds": settings.timeout_seconds,
         "stage_max_tokens": STAGE_TOKENS,
         "temperature": 0,
+        "agent": args.agent,
         "max_candidates": 2,
         "docker_tests": False,
+        "edit_format": args.edit_format,
+        # Greedy decoding can still differ slightly between batch sizes in vLLM.
+        "workers": args.workers,
     })
-    summary = run_batch(tasks, Path(args.out), run_one=run_one, manifest=manifest, resume=args.resume)
+    summary = run_batch(tasks, Path(args.out), run_one=run_one, manifest=manifest,
+                        resume=args.resume, workers=args.workers)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
     return 0
 

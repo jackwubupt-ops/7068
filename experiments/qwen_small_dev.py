@@ -71,20 +71,30 @@ def run_qwen_smoke(backend: QwenSmallBackend, *,
         }
 
 
-def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path, **task_options) -> dict:
+def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path, *, agent: str = "pcr",
+                 **task_options) -> dict:
     """Real public issue; no official benchmark verdict is claimed here.
 
-    task_options are forwarded to run_real_dev (instance_id, task_loader, ...);
-    with none given this is the original single sqlfluff dev instance.
+    agent="pcr" runs Planner -> Coder -> Reviewer (run_real_dev); agent="single"
+    runs the single-agent baseline (RQ3). task_options are forwarded (instance_id,
+    task_loader, ...); with none given this is the original sqlfluff dev instance.
     """
-    result = run_real_dev(output_dir, api=backend, **task_options)
+    if agent == "pcr":
+        result = run_real_dev(output_dir, api=backend, **task_options)
+    elif agent == "single":
+        from experiments.deepseek_swebench_dev import INSTANCE_ID
+        from experiments.single_agent_dev import run_single_dev
+        task_options.setdefault("instance_id", INSTANCE_ID)
+        result = run_single_dev(output_dir, api=backend, **task_options)
+    else:
+        raise ValueError("agent must be 'pcr' or 'single'")
     # Classic SWE-bench uses model_name_or_path in artifact filenames.
     # Preserve the exact HF ID in run_status but use a slash-free evaluation label.
     label = {
         "Qwen/Qwen2.5-Coder-0.5B-Instruct": "qwen2.5-coder-0.5b-instruct",
         "Qwen/Qwen3-0.6B": "qwen3-0.6b",
         "Qwen/Qwen2.5-Coder-7B-Instruct": "qwen2.5-coder-7b-instruct",
-    }[backend.model]
+    }[backend.model] + ("-single-agent" if agent == "single" else "")
     if result["status"] == "prediction_ready":
         predictions = output_dir / "predictions.jsonl"
         record = json.loads(predictions.read_text(encoding="utf-8"))
@@ -96,7 +106,9 @@ def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path, **task_options) ->
             encoding="utf-8",
         )
     result["prediction_model_label"] = label
-    result["experiment"] = "qwen-small-real-swebench-full-dev-v1"
+    result["experiment"] = ("qwen-small-real-swebench-full-dev-v1" if agent == "pcr"
+                            else "qwen-single-agent-swebench-dev-v1")
+    result["agent"] = agent
     result["official_evaluated"] = False
     result["official_resolved"] = None
     (output_dir / "run_status.json").write_text(
@@ -113,6 +125,10 @@ def main() -> int:
                         default="preflight")
     parser.add_argument("--out", help="NEW output directory for dev or report")
     parser.add_argument("--max-candidates", type=int, default=2)
+    parser.add_argument("--agent", choices=("pcr", "single"), default="pcr",
+                        help="dev mode: Planner-Coder-Reviewer (default) or single-agent baseline")
+    parser.add_argument("--edit-format", choices=("diff", "search_replace"), default="diff",
+                        help="dev mode Coder output: unified diff or SEARCH/REPLACE blocks")
     args = parser.parse_args()
 
     backend = QwenSmallBackend(QwenSettings.from_env())
@@ -129,7 +145,7 @@ def main() -> int:
             parser.error("--out must be a new or empty directory")
         target.mkdir(parents=True, exist_ok=True)
         backend.verify()
-        result = run_qwen_dev(backend, target)
+        result = run_qwen_dev(backend, target, agent=args.agent, edit_format=args.edit_format)
     result["duration_seconds"] = round(time.monotonic() - t0, 2)
     if args.out and args.mode != "dev":
         target = Path(args.out).expanduser().resolve()
