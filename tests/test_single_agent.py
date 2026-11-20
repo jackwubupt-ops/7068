@@ -87,6 +87,22 @@ class SingleAgentLoopTests(unittest.TestCase):
         self.assertEqual([e["action"] for e in result.trace], ["search_repo", "read_file", "submit"])
         self.assertNotIn("protocol_error", result.trace[0])
 
+    def test_repeated_identical_action_is_not_rerun_and_agent_is_nudged(self):
+        result, model = self.run_agent([SEARCH, READ, SEARCH, READ, GOOD])
+        self.assertEqual(result.status, "prediction_ready")
+        self.assertEqual([e.get("repeat_of_step") for e in result.trace], [None, None, 1, 2, None])
+        self.assertIn("Repeated action", model.seen[3][-1]["content"])
+        self.assertIn("submit your SEARCH/REPLACE edit", model.seen[3][-1]["content"])
+        # Repeats still consume the shared step budget.
+        result, _ = self.run_agent([SEARCH, SEARCH, SEARCH], max_steps=3)
+        self.assertEqual((result.status, result.stop_reason), ("no_submission", "step_budget_exhausted"))
+
+    def test_same_file_different_range_is_not_a_repeat(self):
+        other = json.dumps({"action": "read_file", "arguments": {"relative_path": "pkg/mod.py", "start_line": 2}})
+        result, _ = self.run_agent([READ, other, GOOD])
+        self.assertEqual(result.status, "prediction_ready")
+        self.assertNotIn("repeat_of_step", result.trace[1])
+
     def test_protocol_error_records_raw_head(self):
         result, _ = self.run_agent(["<tool_call>oops", READ, GOOD])
         self.assertEqual(result.trace[0]["raw_head"], "<tool_call>oops")

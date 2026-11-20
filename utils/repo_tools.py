@@ -1,5 +1,6 @@
 """Bounded, read-only repository inspection. No shell or repository code executes."""
 import ast
+import json
 import os
 from pathlib import Path, PureWindowsPath
 import re
@@ -74,6 +75,20 @@ def _text(path):
 def _integer(value, low, high, label):
     if type(value) is not int or not low <= value <= high:
         raise ValueError(f'{label} must be an integer in [{low}, {high}]')
+
+
+def action_key(name, arguments):
+    """Canonical identity of a read-only tool call (after argument clamping)."""
+    return name + ':' + json.dumps(arguments, sort_keys=True, ensure_ascii=False)
+
+
+def repeated_action_message(name, first_step, finish_hint):
+    """Same nudge for Planner and single agent (RQ3 parity) when a 7B model
+    re-issues an identical call at temperature 0 instead of moving on."""
+    return (f'Repeated action: this exact {name} call was already made at step {first_step} '
+            'and its result is earlier in this conversation. It was not run again. '
+            'Use that result, read a different line range or file, search a different '
+            f'keyword, or {finish_hint}.')
 
 
 def read_file(repo_root, relative_path, *, start_line=1, end_line=None):
