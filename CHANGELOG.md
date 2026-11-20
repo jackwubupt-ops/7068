@@ -7,10 +7,13 @@ These are development milestones, not published GitHub releases.
 ## Alibaba Cloud server and local official evaluation (2026-11-20)
 
 ### Added
-- `docs/aliyun-runbook.md`: one Alibaba Cloud GPU VM (Hong Kong region, A10 24GB, Docker) runs both 7B inference and the official harness; includes a gold-patch evaluator self-check.
+- `docs/aliyun-runbook.md`: a CPU-only Alibaba Cloud VM (Hong Kong region, x86_64, Docker) runs only the official harness; AutoDL keeps inference and QLoRA training. Includes a gold-patch evaluator self-check and the AutoDL → Alibaba Cloud transfer steps.
 - `experiments/official_eval.py`: evaluates a whole `lite_batch` directory with pinned `swebench==4.1.0` (prebuilt `swebench/sweb.eval.*` images, separate venv) and writes `official_eval.json` over the full task list (unpredicted tasks count as not resolved; harness errors mark the run incomplete).
 - `experiments/paired_compare.py`: paired table, exact McNemar p-value and seeded bootstrap CI for two evaluated batches.
 - `requirements-swebench-eval.txt`.
+
+### Fixed
+- `lite_batch --workers N`: on Ctrl+C the batch now waits for in-flight tasks to record their results before exiting. Previously a still-running task could append to `results.jsonl` after the interrupt, racing a later `--resume` (flaky test, ~25%).
 
 ### Verified and not verified
 - Offline tests only (122 pass, 1 skipped). Prebuilt images for all 23 Lite dev tasks were confirmed to exist on Docker Hub; nothing has run on Alibaba Cloud yet.

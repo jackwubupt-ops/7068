@@ -170,9 +170,14 @@ def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
             for future in as_completed(futures):
                 future.result()  # re-raise KeyboardInterrupt/SystemExit from a worker
         except BaseException:
-            # Stop scheduling new tasks; in-flight ones finish (their dirs are retried
-            # on --resume if the process is killed first).
-            pool.shutdown(wait=False, cancel_futures=True)
+            # Stop scheduling new tasks, then let in-flight ones finish and record their
+            # results BEFORE re-raising, so nothing appends to results.jsonl after we
+            # return (a later --resume would otherwise rerun or duplicate them). The
+            # interpreter would join these threads at exit anyway; a second Ctrl+C
+            # aborts the wait, and unfinished dirs are retried on --resume.
+            with lock:
+                log("Interrupted: waiting for in-flight tasks to finish (Ctrl+C again to abort)")
+            pool.shutdown(wait=True, cancel_futures=True)
             raise
         pool.shutdown(wait=True)
 

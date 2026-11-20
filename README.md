@@ -8,10 +8,11 @@ the bug with read-only tools, writes a candidate patch, applies it in an isolate
 exports it in official SWE-bench prediction format. Whether an issue is *resolved* is decided only
 by the official SWE-bench harness.
 
-> **New here? Use the [Alibaba Cloud runbook](docs/aliyun-runbook.md)** (Chinese, step by step with
-> pass criteria): one GPU VM with Docker → offline tests → Qwen2.5-Coder-7B on vLLM → SWE-bench Lite
-> dev smoke and pilot → **local official evaluation** (`swebench==4.1.0`) → paired statistics → backup.
-> Stage details are shared with the [full test runbook](docs/full-test-runbook.md) (AutoDL / sb-cli variant).
+> **New here?** Two machines, two runbooks (Chinese, step by step with pass criteria):
+> - **GPU box (AutoDL, RTX 4090)**: [full test runbook](docs/full-test-runbook.md): offline tests → Qwen2.5-Coder-7B
+>   on vLLM → SWE-bench Lite dev smoke and pilot (and later QLoRA training; no Docker needed).
+> - **CPU evaluation box (Alibaba Cloud, Docker)**: [Alibaba Cloud runbook](docs/aliyun-runbook.md): copy the batch
+>   directories over → **official evaluation** (`swebench==4.1.0`, prebuilt images) → paired statistics.
 
 ---
 
@@ -62,7 +63,7 @@ budgets and edit format (the RQ3 baseline).
 | Lite dev batch runner (`--workers`, `--resume`) | implemented, offline-tested; live smoke pending |
 | SEARCH/REPLACE edit format | implemented, offline-tested; live effect not measured |
 | Single-agent baseline (RQ3) | implemented, offline-tested; live run pending |
-| Execution feedback in the loop (RQ2) | not built (planned on Alibaba Cloud with Docker: SWE-bench instance images) |
+| Execution feedback in the loop (RQ2) | not built (needs Docker during generation; planned: SWE-bench instance images) |
 | QLoRA (RQ1) | not started |
 | Batch official evaluation + paired stats | `experiments.official_eval` (local Docker harness) and `experiments.paired_compare` (McNemar, bootstrap); offline-tested |
 | Official resolution rate on Lite | no data yet |
@@ -86,7 +87,7 @@ python -m unittest discover -s tests
 PYTHON=python3.11 bash scripts/setup_qwen_small.sh          # new venv: vllm 0.19.1 + torch 2.10.0 (CUDA 12)
 source .venv-qwen-vllm-cu12/bin/activate
 QWEN_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct \
-QWEN_MODEL_PATH=/data/qwen-models/Qwen2.5-Coder-7B-Instruct \
+QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen2.5-Coder-7B-Instruct \
   bash scripts/start_qwen_small.sh                          # binds 127.0.0.1:8000 only
 ```
 
@@ -107,6 +108,7 @@ Then score each batch with the official harness (separate venv with `requirement
 and compare configurations on the same tasks:
 
 ```bash
+# on the Docker machine, after copying the batch directories there
 python -m experiments.official_eval --batch runs/lite-pilot-pcr --harness-python /data/venvs/swebench/bin/python
 python -m experiments.official_eval --batch runs/lite-pilot-single --harness-python /data/venvs/swebench/bin/python
 python -m experiments.paired_compare runs/lite-pilot-pcr runs/lite-pilot-single
@@ -176,8 +178,8 @@ workers), one sub-directory per task with `run_status.json` (+ `candidate.patch`
 
 ## Documentation
 
-- [Alibaba Cloud runbook](docs/aliyun-runbook.md): current server setup, local official evaluation (Chinese)
-- [Full test runbook](docs/full-test-runbook.md): the end-to-end procedure, AutoDL/sb-cli variant (Chinese)
+- [Full test runbook](docs/full-test-runbook.md): GPU box (AutoDL): setup, serving, batches (Chinese)
+- [Alibaba Cloud runbook](docs/aliyun-runbook.md): CPU evaluation box with Docker: official evaluation, paired stats (Chinese)
 - [Qwen small-model and 7B guide](docs/qwen-small.md): CUDA/driver compatibility, serving, batch options, edit formats, single agent
 - [Qwen + SWE-bench guide](docs/qwen-swebench.md): official evaluation details
 - [Task 1](docs/task1.md) · [Task 2](docs/task2.md) · [Task 3](docs/task3.md): Planner, Coder/apply harness, Docker Reviewer loop
