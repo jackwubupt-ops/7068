@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PatchLoop</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1d2433; --muted:#667085; --line:#e4e7ec;
+          --accent:#2457d6; --ok:#13804b; --warn:#b54708; --bad:#c0282d; --code:#0f172a; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--ink); }
+  header { display:flex; align-items:center; gap:12px; padding:12px 20px; background:var(--card); border-bottom:1px solid var(--line); }
+  header h1 { font-size:18px; margin:0; }
+  header .sub { color:var(--muted); }
+  .badge { margin-left:auto; padding:3px 10px; border-radius:999px; font-size:12px; background:#eef2ff; color:var(--accent); }
+  .badge.down { background:#fdecec; color:var(--bad); }
+  main { display:grid; grid-template-columns: 380px 1fr; gap:16px; padding:16px 20px; }
+  @media (max-width: 900px) { main { grid-template-columns:1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; }
+  h2 { font-size:15px; margin:0 0 10px; }
+  label { display:block; font-size:12px; color:var(--muted); margin:10px 0 4px; }
+  input, select, textarea { width:100%; padding:7px 9px; border:1px solid var(--line); border-radius:7px; font:inherit; background:#fff; }
+  textarea { min-height:170px; resize:vertical; font-family:ui-monospace,Menlo,monospace; font-size:12.5px; }
+  .tabs { display:flex; gap:6px; } .tabs button { flex:1; }
+  button { padding:7px 12px; border-radius:7px; border:1px solid var(--line); background:#fff; font:inherit; cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.ok { background:var(--ok); border-color:var(--ok); color:#fff; }
+  button.bad { color:var(--bad); }
+  button.on { border-color:var(--accent); color:var(--accent); font-weight:600; }
+  button:disabled { opacity:.5; cursor:default; }
+  .row { display:flex; gap:8px; } .row > * { flex:1; }
+  .status { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; background:#eef2ff; color:var(--accent); }
+  .status.awaiting_confirmation, .status.accepted { background:#e7f6ee; color:var(--ok); }
+  .status.needs_clarification, .status.rejected, .status.cancelled { background:#fff4e5; color:var(--warn); }
+  .status.failed { background:#fdecec; color:var(--bad); }
+  .meta { color:var(--muted); font-size:12px; }
+  .timeline { list-style:none; margin:10px 0 0; padding:0; max-height:46vh; overflow:auto; border-top:1px solid var(--line); }
+  .timeline li { padding:6px 4px; border-bottom:1px solid var(--line); display:grid; grid-template-columns:44px 22px 1fr; gap:6px; }
+  .timeline .t { color:var(--muted); font-size:12px; text-align:right; }
+  .timeline details summary { cursor:pointer; }
+  .timeline pre, .diff { white-space:pre-wrap; word-break:break-word; font:12px/1.45 ui-monospace,Menlo,monospace; background:#f8fafc; border:1px solid var(--line); border-radius:6px; padding:8px; margin:6px 0 0; }
+  .k-decision .ic { color:var(--accent); } .k-tool .ic { color:#0e7490; } .k-warning .ic { color:var(--warn); }
+  .k-error .ic { color:var(--bad); } .k-stop .ic { color:var(--ok); } .k-apply .ic { color:var(--ok); } .k-review .ic { color:#7c3aed; }
+  .k-thinking { color:var(--muted); }
+  .diff { max-height:42vh; overflow:auto; background:#fff; }
+  .diff .add { color:var(--ok); background:#ecfdf3; display:block; } .diff .del { color:var(--bad); background:#fef3f2; display:block; }
+  .diff .hunk { color:#7c3aed; display:block; }
+  .panel { margin-top:12px; padding:12px; border-radius:8px; border:1px solid var(--line); background:#fcfcfd; }
+  .panel.ask { border-color:#fedf89; background:#fffcf5; }
+  .panel ul { margin:6px 0; padding-left:18px; }
+  .history { margin-top:12px; } .history a { display:block; color:var(--accent); text-decoration:none; font-size:12.5px; padding:2px 0; cursor:pointer; }
+  .empty { color:var(--muted); padding:30px; text-align:center; }
+  .err { color:var(--bad); font-size:12.5px; margin-top:8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PatchLoop</h1>
+  <span class="sub">issue → localized, Git-applicable patch, with you in the loop</span>
+  <span id="health" class="badge">checking model…</span>
+</header>
+<main>
+  <section class="card">
+    <h2>New repair request</h2>
+    <div class="tabs">
+      <button id="tab-swebench" class="on" onclick="setSource('swebench')">Example task</button>
+      <button id="tab-local" onclick="setSource('local')">Local repository</button>
+    </div>
+    <div id="src-swebench">
+      <label>SWE-bench Lite dev issue (repository and commit are fixed)</label>
+      <select id="task" onchange="loadTask()"><option value="">Loading…</option></select>
+    </div>
+    <div id="src-local" style="display:none">
+      <label>Path to a Git repository on the server</label>
+      <input id="repo_path" placeholder="/data/demo-repos/myproject">
+      <label>Commit or branch</label>
+      <input id="commit" value="HEAD">
+    </div>
+    <label>Issue (edit freely: this is what the agent works from)</label>
+    <textarea id="issue" placeholder="Describe the bug: what happens, what you expected, error messages…"></textarea>
+    <div class="row">
+      <div><label>Agent</label>
+        <select id="agent"><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select></div>
+      <div><label>Retrieval (top files)</label>
+        <select id="retrieval_k"><option>10</option><option>5</option><option value="0">off</option></select></div>
+    </div>
+    <div style="margin-top:12px"><button class="primary" style="width:100%" onclick="startRun()">Run agent</button></div>
+    <div id="form-err" class="err"></div>
+    <div class="history"><h2 style="margin-top:14px">Sessions</h2><div id="history" class="meta">none yet</div></div>
+  </section>
+
+  <section class="card" id="view"><div class="empty">Choose an issue and press <b>Run agent</b>. Every decision, tool call and recovery step appears here as it happens.</div></section>
+</main>
+
+<script>
+let source = 'swebench', current = null, since = 0, timer = null, events = [];
+const ICON = {decision:'➜', tool:'⚙', warning:'!', error:'✕', stop:'■', apply:'✓', review:'✎', edit:'✎', info:'·', thinking:'…'};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+
+async function api(path, opts={}) {
+  const r = await fetch(path, {headers:{'Content-Type':'application/json'}, ...opts});
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(body.error || r.statusText);
+  return body;
+}
+function setSource(s) {
+  source = s;
+  $('tab-swebench').classList.toggle('on', s === 'swebench'); $('tab-local').classList.toggle('on', s === 'local');
+  $('src-swebench').style.display = s === 'swebench' ? '' : 'none'; $('src-local').style.display = s === 'local' ? '' : 'none';
+}
+async function loadTasks() {
+  try {
+    const tasks = await api('/api/tasks');
+    $('task').innerHTML = '<option value="">— choose an issue —</option>' +
+      tasks.map(t => `<option value="${esc(t.instance_id)}">${esc(t.instance_id)} — ${esc(t.title)}</option>`).join('');
+    if (!tasks.length) setSource('local');
+  } catch (e) { $('task').innerHTML = '<option value="">unavailable</option>'; }
+}
+async function loadTask() {
+  const id = $('task').value; if (!id) return;
+  const t = await api('/api/tasks/' + encodeURIComponent(id)); $('issue').value = t.issue;
+}
+async function health() {
+  try { const h = await api('/api/health'); $('health').textContent = `model ready: ${h.model}`; $('health').className = 'badge'; }
+  catch (e) { $('health').textContent = 'model server DOWN: ' + e.message.slice(0, 60); $('health').className = 'badge down'; }
+}
+async function startRun(extra={}) {
+  $('form-err').textContent = '';
+  const body = {source, issue:$('issue').value, agent:$('agent').value, retrieval_k:+$('retrieval_k').value,
+                instance_id:$('task').value || null, repo_path:$('repo_path').value, commit:$('commit').value, ...extra};
+  try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
+  catch (e) { $('form-err').textContent = e.message; }
+}
+function openSession(id) { current = id; since = 0; events = []; clearInterval(timer); poll(); timer = setInterval(poll, 1200); history(); }
+async function poll() {
+  if (!current) return;
+  const s = await api(`/api/sessions/${current}?since=${since}`);
+  events = events.concat(s.events); since = s.event_count; render(s);
+  if (!['queued','checking','running'].includes(s.status)) { clearInterval(timer); history(); }
+}
+function diffHtml(p) {
+  return p.split('\n').map(l => l.startsWith('+') && !l.startsWith('+++') ? `<span class="add">${esc(l)}</span>`
+    : l.startsWith('-') && !l.startsWith('---') ? `<span class="del">${esc(l)}</span>`
+    : l.startsWith('@@') ? `<span class="hunk">${esc(l)}</span>` : esc(l) + '\n').join('');
+}
+function render(s) {
+  const r = s.result || {}, busy = ['queued','checking','running'].includes(s.status);
+  const tl = events.filter(e => e.kind !== 'thinking' || e === events[events.length - 1]).map(e => `
+    <li class="k-${e.kind}"><span class="t">${e.t}s</span><span class="ic">${ICON[e.kind] || '·'}</span>
+    <div>${e.detail ? `<details${['stop','error'].includes(e.kind) ? ' open' : ''}><summary>${esc(e.title)}</summary><pre>${esc(e.detail)}</pre></details>` : esc(e.title)}</div></li>`).join('');
+  let action = '';
+  if (busy) action = `<div class="panel">Working… <button class="bad" onclick="act('cancel')">Cancel</button></div>`;
+  if (s.status === 'awaiting_confirmation') action = `<div class="panel"><b>Patch ready for your review.</b>
+      <div class="meta">Applied cleanly in an isolated checkout. No tests were run: treat it as a candidate, not a verified fix.</div>
+      <div class="diff">${diffHtml(s.patch)}</div>
+      <div class="row" style="margin-top:10px"><button class="ok" onclick="act('accept')">Accept${s.request.source === 'local' ? ' → commit on a new branch' : ' → save patch'}</button>
+      <button class="bad" onclick="act('reject')">Reject</button></div></div>`;
+  if (s.status === 'accepted') action = `<div class="panel">Accepted. ${r.branch ? `Committed on branch <code>${esc(r.branch)}</code>.` : ''}
+      Patch file: <code>${esc(r.patch_file)}</code> · <a href="/api/sessions/${s.id}/patch">download</a></div>`;
+  if (s.status === 'needs_clarification') action = `<div class="panel ask"><b>The agent stopped and needs your input.</b>
+      <ul>${(s.questions || []).map(q => `<li>${esc(q)}</li>`).join('')}</ul></div>`;
+  const follow = busy || s.status === 'awaiting_confirmation' ? '' : `<div class="panel">
+      <b>Follow-up or changed request</b><div class="meta">Your text is appended to the issue; you can also switch agent or retrieval.</div>
+      <textarea id="guidance" style="min-height:70px" placeholder="e.g. The bug is in rules/L031.py, function _lint_aliases_in_join. Only aliases in JOINs should be checked."></textarea>
+      <div class="row" style="margin-top:8px">
+        <select id="f-agent"><option value="">same agent (${esc(s.request.agent)})</option><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select>
+        <button class="primary" onclick="followUp()">Send follow-up</button></div>
+      ${s.status === 'needs_clarification' && !r.status ? `<button style="margin-top:8px" onclick="followUp(true)">Run anyway without more detail</button>` : ''}</div>`;
+  $('view').innerHTML = `
+    <div class="row" style="align-items:center"><h2 style="margin:0">Session ${esc(s.id)} <span class="status ${s.status}">${s.status.replaceAll('_', ' ')}</span></h2></div>
+    <div class="meta">round ${s.round}${s.parent ? ` · follow-up of ${esc(s.parent)}` : ''} · agent ${esc(s.request.agent)} · retrieval ${s.request.retrieval_k || 'off'}
+      ${r.prompt_tokens ? ` · ${r.prompt_tokens} prompt + ${r.completion_tokens} completion tokens` : ''}${r.duration_seconds ? ` · ${r.duration_seconds}s` : ''}</div>
+    ${action}<ul class="timeline">${tl}</ul>${follow}`;
+}
+async function act(a) { try { await api(`/api/sessions/${current}/${a}`, {method:'POST'}); poll(); } catch (e) { alert(e.message); } }
+async function followUp(anyway=false) {
+  const g = anyway ? '' : ($('guidance')?.value || '');
+  const agent = $('f-agent')?.value || null;
+  try { const s = await api(`/api/sessions/${current}/followup`, {method:'POST', body:JSON.stringify({guidance:g, agent})}); openSession(s.id); }
+  catch (e) { alert(e.message); }
+}
+async function history() {
+  const rows = await api('/api/sessions');
+  $('history').innerHTML = rows.length ? rows.map(r => `<a onclick="openSession('${r.id}')">${esc(r.id)} · ${esc(r.status)} · r${r.round} · ${esc(r.agent)} · ${esc(r.target || '')}</a>`).join('') : 'none yet';
+}
+loadTasks(); health(); history(); setInterval(health, 30000);
+</script>
+</body>
+</html>
