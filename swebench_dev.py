@@ -1,7 +1,8 @@
 """Leakage-safe adapter for REAL SWE-bench full development instances.
 
-The Lite dataset has no dev split. We use princeton-nlp/SWE-bench dev
-for development; reserve SWE-bench_Lite test for final evaluation.
+Development uses dev splits only: princeton-nlp/SWE-bench dev (single-instance
+runs) or princeton-nlp/SWE-bench_Lite dev (23 tasks, batch runs). SWE-bench_Lite
+test is reserved for final evaluation and is never loaded here.
 Neither gold patch, test patch, test labels nor hints are passed to agents.
 """
 from __future__ import annotations
@@ -14,6 +15,8 @@ import subprocess
 import tempfile
 
 DATASET_ID = "princeton-nlp/SWE-bench"
+LITE_DATASET_ID = "princeton-nlp/SWE-bench_Lite"
+DEV_DATASETS = {DATASET_ID, LITE_DATASET_ID}
 DEVELOPMENT_SPLIT = "dev"
 _REPO = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+")
 _SHA = re.compile(r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}")
@@ -45,6 +48,19 @@ def sanitize_task(raw: dict) -> DevelopmentTask:
         instance_id=raw["instance_id"], repo=raw["repo"],
         base_commit=raw["base_commit"], problem_statement=raw["problem_statement"],
     )
+
+
+def load_dev_tasks(dataset_id: str = LITE_DATASET_ID, *, loader=None) -> list[DevelopmentTask]:
+    """All tasks of a DEV split, in dataset order, with only inference-safe fields."""
+    if dataset_id not in DEV_DATASETS:
+        raise ValueError("Unsupported development dataset")
+    if loader is None:
+        try:
+            from datasets import load_dataset as loader
+        except ImportError as exc:
+            raise RuntimeError("Install optional dev dependency: pip install datasets") from exc
+    # The split is hard-coded: the Lite test split must never be loaded for development.
+    return [sanitize_task(item) for item in loader(dataset_id, split=DEVELOPMENT_SPLIT)]
 
 
 def select_dev_task(*, instance_id: str | None = None,
