@@ -24,6 +24,7 @@ from utils.repo_tools import is_tracked, read_file, search_repo, validate_reposi
 from .coder import CoderError, extract_diff
 from .edit_blocks import SEARCH_MARK, EditBlockError, edit_blocks_to_diff, git_show_reader
 from .normalizer import normalize_hunk_counts
+from .qwen_small import clean_json_fence
 from .workspace import ApplyResult, apply_candidate
 
 EDIT_INSTRUCTIONS = {
@@ -131,7 +132,8 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
             continue
 
         try:
-            action = json.loads(raw)
+            # Same outer ```json fence tolerance the Planner/Reviewer get (RQ3 parity).
+            action = json.loads(clean_json_fence(raw))
             if not isinstance(action, dict):
                 raise ValueError("Action must be a JSON object")
             name = action.get("action")
@@ -163,6 +165,7 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
         except (ValueError, TypeError, KeyError) as exc:
             event.setdefault("action", "invalid")
             event["protocol_error"] = str(exc)[:140]
+            event["raw_head"] = raw[:120]
             messages.append({"role": "user", "content": "Protocol error: " + str(exc)
                              + ". Reply with one JSON tool action or an edit submission."})
     else:
