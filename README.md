@@ -66,6 +66,10 @@ tests with **scripted model outputs**, not a real LLM. Real model runs reuse
 the configured OpenAI-compatible adapter. An internal test pass is NOT
 equivalent to official SWE-bench resolution. See [Task 3 guide](docs/task3.md).
 
+## Full test runbook (start here)
+
+[docs/full-test-runbook.md](docs/full-test-runbook.md): fresh AutoDL server → offline tests → Qwen2.5-Coder-7B on vLLM → Lite dev smoke (P-C-R diff / P-C-R search_replace / single agent) → 23-task pilot for RQ3 → sb-cli official evaluation → backup.
+
 ## Real Qwen + SWE-bench development integration
 
 The model endpoint must genuinely serve Qwen2.5-Coder-7B-Instruct (e.g. vLLM
