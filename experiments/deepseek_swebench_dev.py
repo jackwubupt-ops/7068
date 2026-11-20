@@ -22,7 +22,7 @@ from patchloop_task2.edit_blocks import (
 )
 from patchloop_task2.loop import _coder
 from patchloop_task2.normalizer import normalize_hunk_counts
-from patchloop_task2.reviewer import review_failure
+from patchloop_task2.reviewer import ReviewerError, review_failure
 from patchloop_task2.workspace import ApplyResult, apply_candidate
 from pipeline_agent import run_localization
 from swebench_dev import (
@@ -276,43 +276,64 @@ def run_real_dev(
                 for attempt in (1, 2):
                     stage = "real_coder_patch"
                     edit_meta = {}
-                    if edit_format == "search_replace":
-                        raw = live.complete("coder", build_search_replace_messages(
-                            task.problem_statement, plan, revision))
-                        raw_patch_sha256 = hashlib.sha256(raw.encode("utf-8")).hexdigest()
-                        try:
-                            # SEARCH must match the base file exactly; REPLACE is used
-                            # verbatim. Git computes the diff; no code is altered.
-                            proposal, edit_meta = edit_blocks_to_diff(
-                                raw, allowed, git_show_reader(checkout, task.base_commit))
-                        except EditBlockError as exc:
-                            proposal = raw  # the Reviewer sees the failed blocks
-                            corrected_headers = 0
-                            edit_meta = {"edit_error_code": exc.code}
-                            applied = ApplyResult(
-                                status="edit_invalid", base_commit=task.base_commit,
-                                changed_files=[], patch_sha256=raw_patch_sha256,
-                                error_code=exc.code, error_message=str(exc),
-                            )
+                    captured: dict = {}
+                    proposal = None
+                    output_error = None  # (code, message): the MODEL's output was unusable
+
+                    def coder_call(messages, _captured=captured):
+                        _captured["raw"] = live.complete("coder", messages)
+                        return _captured["raw"]
+
+                    try:
+                        if edit_format == "search_replace":
+                            coder_call(build_search_replace_messages(
+                                task.problem_statement, plan, revision))
                         else:
-                            proposal, corrected_headers = normalize_hunk_counts(proposal)
-                            applied = apply_candidate(
-                                checkout, task.base_commit, proposal,
-                                export_path=patch_path, allowed_paths=allowed,
+                            proposal = _coder(
+                                task.problem_statement, plan,
+                                completion=lambda messages: coder_call(
+                                    _minimal_coder_messages(messages)),
+                                revision=revision,
                             )
-                    else:
-                        proposal = _coder(
-                            task.problem_statement, plan,
-                            completion=lambda messages: live.complete(
-                                "coder", _minimal_coder_messages(messages)
-                            ), revision=revision,
+                    except RuntimeError as exc:
+                        if "QWEN_TRUNCATED_OUTPUT" not in str(exc):
+                            raise
+                        output_error = ("truncated_output",
+                                        "Coder output hit the token limit and was cut off")
+                    except ValueError as exc:
+                        if "raw" not in captured:
+                            raise  # context building failed before any model call
+                        output_error = ("invalid_diff", str(exc))
+                    raw = captured.get("raw") or "(no usable Coder output: " + (
+                        output_error[1] if output_error else "empty") + ")"
+                    raw_patch_sha256 = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+                    corrected_headers = 0
+                    if output_error is None:
+                        try:
+                            if edit_format == "search_replace":
+                                # SEARCH must match the base file exactly; REPLACE is used
+                                # verbatim. Git computes the diff; no code is altered.
+                                proposal, edit_meta = edit_blocks_to_diff(
+                                    raw, allowed, git_show_reader(checkout, task.base_commit))
+                            # Only @@ metadata counts are normalized. Actual proposed
+                            # code lines are never edited by the harness.
+                            proposal, corrected_headers = normalize_hunk_counts(proposal)
+                        except EditBlockError as exc:
+                            edit_meta = {"edit_error_code": exc.code}
+                            output_error = (exc.code, str(exc))
+                        except ValueError as exc:
+                            output_error = ("invalid_diff", str(exc))
+                    if output_error is not None:
+                        # A model-output failure is a failed attempt (Reviewer + retry),
+                        # never an experiment_error, same as the single agent.
+                        proposal = raw  # the Reviewer sees what the Coder wrote
+                        edit_meta.setdefault("edit_error_code", output_error[0])
+                        applied = ApplyResult(
+                            status="edit_invalid", base_commit=task.base_commit,
+                            changed_files=[], patch_sha256=raw_patch_sha256,
+                            error_code=output_error[0], error_message=output_error[1],
                         )
-                        raw_patch_sha256 = hashlib.sha256(
-                            proposal.encode("utf-8")
-                        ).hexdigest()
-                        # Only @@ metadata counts are normalized. Actual proposed
-                        # code lines are never edited by the harness.
-                        proposal, corrected_headers = normalize_hunk_counts(proposal)
+                    else:
                         applied = apply_candidate(
                             checkout, task.base_commit, proposal,
                             export_path=patch_path, allowed_paths=allowed,
@@ -366,10 +387,18 @@ def run_real_dev(
                     }
                     # In search_replace mode the model wrote blocks, so show those back.
                     shown = raw if edit_format == "search_replace" else proposal
-                    feedback = review_failure(
-                        task.problem_statement, plan, shown, failure,
-                        completion=live.callback("reviewer"),
-                    )
+                    try:
+                        feedback = review_failure(
+                            task.problem_statement, plan, shown, failure,
+                            completion=live.callback("reviewer"),
+                        )
+                    except ReviewerError as exc:
+                        # Unusable Reviewer output (bad JSON / unknown failure_type):
+                        # the Coder still gets the raw failure log, like the single agent.
+                        candidate["reviewer_error"] = str(exc)[:200]
+                        feedback = {"failure_type": "unknown",
+                                    "diagnosis": "Reviewer output was not usable.",
+                                    "suggested_fix": "Use the raw failure log above."}
                     candidate["reviewer_failure_type"] = feedback["failure_type"]
                     revision = {
                         ("previous_edit_blocks" if edit_format == "search_replace"
