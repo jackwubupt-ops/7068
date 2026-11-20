@@ -263,8 +263,12 @@ def commit_to_branch(root: Path, base: str, patch: str, branch: str, message: st
     worktree = root.parent / f".patchloop-wt-{uuid.uuid4().hex[:8]}"
     _git("-C", str(root), "worktree", "add", "-q", "-b", branch, str(worktree), base)
     try:
-        subprocess.run(["git", "-C", str(worktree), "apply", "--index", "-"], input=patch,
-                       text=True, capture_output=True, check=True, timeout=60)
+        # Bytes, not text: text-mode stdin would turn \n into \r\n on Windows.
+        applied = subprocess.run(["git", "-C", str(worktree), "apply", "--index", "-"],
+                                 input=patch.encode("utf-8"), capture_output=True, timeout=60)
+        if applied.returncode:
+            raise ValueError("The patch no longer applies to this repository: "
+                             + applied.stderr.decode("utf-8", "replace").strip()[:300])
         _git("-C", str(worktree), "-c", "user.name=PatchLoop", "-c", "user.email=patchloop@localhost",
              "commit", "-q", "-m", message)
         return _git("-C", str(worktree), "rev-parse", "HEAD")
