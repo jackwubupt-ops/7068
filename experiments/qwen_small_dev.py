@@ -79,6 +79,7 @@ def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path) -> dict:
     label = {
         "Qwen/Qwen2.5-Coder-0.5B-Instruct": "qwen2.5-coder-0.5b-instruct",
         "Qwen/Qwen3-0.6B": "qwen3-0.6b",
+        "Qwen/Qwen2.5-Coder-7B-Instruct": "qwen2.5-coder-7b-instruct",
     }[backend.model]
     if result["status"] == "prediction_ready":
         predictions = output_dir / "predictions.jsonl"

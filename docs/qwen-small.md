@@ -87,6 +87,20 @@ QWEN_MODEL=Qwen/Qwen3-0.6B QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen3-0.
   bash scripts/start_qwen_small.sh
 ~~~
 
+### 1.4 Proposal base model: Qwen2.5-Coder-7B-Instruct
+
+The project proposal uses Qwen2.5-Coder-7B-Instruct as the RQ1 baseline and QLoRA base.
+bf16 weights are about 15.2 GiB; the start script defaults `--gpu-memory-utilization`
+to 0.90 for 7B (0.65 for the small models), which leaves roughly 5–6 GiB of KV cache on
+a 24 GiB RTX 4090 — enough for `--max-model-len 16384`. The client `.env` must use the
+same `QWEN_MODEL`; raise `QWEN_TIMEOUT` (for example 300) because 7B decoding is slower.
+
+~~~bash
+modelscope download --model Qwen/Qwen2.5-Coder-7B-Instruct --local_dir /root/autodl-tmp/qwen-models/Qwen2.5-Coder-7B-Instruct
+QWEN_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen2.5-Coder-7B-Instruct \
+  bash scripts/start_qwen_small.sh
+~~~
+
 Verify the endpoint:
 
 ~~~bash

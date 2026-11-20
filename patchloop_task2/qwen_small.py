@@ -15,6 +15,8 @@ from urllib.parse import urlparse
 MODELS = {
     "Qwen/Qwen2.5-Coder-0.5B-Instruct",
     "Qwen/Qwen3-0.6B",
+    # Proposal base model (RQ1 baseline and QLoRA base).
+    "Qwen/Qwen2.5-Coder-7B-Instruct",
 }
 DEFAULT_MODEL = "Qwen/Qwen2.5-Coder-0.5B-Instruct"
 STAGE_TOKENS = {"preflight": 32, "planner": 1500, "coder": 3500, "reviewer": 900}
@@ -31,7 +33,7 @@ class QwenSettings:
 
     def __post_init__(self):
         if self.model not in MODELS:
-            raise ValueError("Unsupported Qwen small model; choose 0.5B Coder or Qwen3-0.6B")
+            raise ValueError("Unsupported Qwen model; choose Qwen2.5-Coder-0.5B/7B-Instruct or Qwen3-0.6B")
         uri = urlparse(self.endpoint)
         if (uri.scheme not in {"http", "https"} or not uri.hostname
                 or not self.endpoint.rstrip("/").endswith("/v1")
