@@ -49,6 +49,9 @@ base commit and fix it with a minimal edit to existing files.
 To use a tool, reply with exactly one JSON object, no markdown:
 {{"action":"search_repo","arguments":{{"query":"literal keyword"}}}}
 {{"action":"read_file","arguments":{{"relative_path":"src/file.py","start_line":1,"end_line":120}}}}
+When you have read the code you will change, stop investigating and reply
+{{"action":"edit"}}
+You will then be asked for the edit itself.
 You may only edit tracked files you have successfully read with read_file.
 {edit}
 Your submission is validated and applied with git; you will see any error and may
@@ -141,6 +144,11 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                 raise ValueError("Action must be a JSON object")
             name = action.get("action")
             event["action"] = str(name)[:35]
+            if name == "edit":
+                # JSON way to finish investigating, like the Planner's "final"
+                # action: the next reply in this SAME conversation is the edit.
+                messages.append({"role": "user", "content": _edit_request(edit_format, read_paths)})
+                continue
             if name not in tools:
                 raise ValueError("Unknown action; use search_repo, read_file, or submit an edit")
             arguments = action.get("arguments")
@@ -159,8 +167,7 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
             if key in seen_actions:
                 event["repeat_of_step"] = seen_actions[key]
                 messages.append({"role": "user", "content": repeated_action_message(
-                    name, seen_actions[key], "submit your SEARCH/REPLACE edit"
-                    if edit_format == "search_replace" else "submit your unified diff")})
+                    name, seen_actions[key], 'reply {"action":"edit"} to write your fix')})
                 continue
             seen_actions[key] = step
             if name == "read_file" and not is_tracked(root, arguments.get("relative_path", "")):
@@ -183,6 +190,15 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
         result.stop_reason = "step_budget_exhausted"
     result.read_files = sorted(read_paths)
     return result
+
+
+def _edit_request(edit_format: str, read_paths: set[str]) -> str:
+    if not read_paths:
+        return ("You have not read any file yet. Read the code you will change with "
+                "read_file first, then reply {\"action\":\"edit\"}.")
+    return ("Now write the fix. Reply with the edit ONLY, no JSON and no explanation.\n"
+            "Files you have read and may edit: " + ", ".join(sorted(read_paths)) + "\n"
+            + EDIT_INSTRUCTIONS[edit_format])
 
 
 def _submit(raw: str, edit_format: str, checkout, base: str, read_paths: set[str],
