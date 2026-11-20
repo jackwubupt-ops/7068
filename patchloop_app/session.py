@@ -315,7 +315,7 @@ class SessionManager:
             self._run(session)
         return session
 
-    def follow_up(self, sid: str, guidance: str, **changes) -> Session:
+    def follow_up(self, sid: str, guidance: str, *, run_async: bool = True, **changes) -> Session:
         parent = self.get(sid)
         if parent.status in ("queued", "checking", "running"):
             raise ValueError("Wait for the current run to finish (or cancel it) first")
@@ -328,7 +328,7 @@ class SessionManager:
             issue += f"\n\nMaintainer follow-up (round {parent.round + 1}): {guidance}"
         fields = {**base.__dict__, "issue": issue, "skip_clarification": True}
         fields.update({k: v for k, v in changes.items() if v is not None and k in fields})
-        return self.start(Request(**fields), parent=parent)
+        return self.start(Request(**fields), parent=parent, run_async=run_async)
 
     # ----------------------------------------------------------------- run
     def _task(self, session: Session):

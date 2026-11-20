@@ -1,0 +1,9 @@
+{
+  "name": "04_failure_bad_repo",
+  "kind": "failure case: invalid repository",
+  "description": "The maintainer points the agent at a path that is not a Git repository.",
+  "request": {"source": "local", "repo_path": "/tmp/patchloop-not-a-repo",
+              "issue": "Parsing a config file with an empty section raises KeyError in load_config; it should return an empty dict for that section.",
+              "agent": "pcr", "retrieval_k": 10},
+  "expect": "failed with a clear message that the path is not a Git repository; no model calls, nothing exported."
+}

@@ -1,0 +1,8 @@
+{
+  "name": "03_failure_vague",
+  "kind": "failure case: under-specified request",
+  "description": "The maintainer only writes 'it is broken'. The agent must not guess.",
+  "request": {"source": "swebench", "instance_id": "sqlfluff__sqlfluff-1625", "issue": "it is broken",
+              "agent": "pcr", "retrieval_k": 10},
+  "expect": "needs_clarification with questions, and ZERO model calls."
+}
