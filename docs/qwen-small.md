@@ -18,22 +18,96 @@ CI that uses scripted model responses NEVER proves real Qwen repair capability.
 
 ## 1. GPU server (Linux + NVIDIA CUDA)
 
-Run in the existing PatchLoop repository on the GPU server. Use SEPARATE Python environments for vLLM and the client so the OpenPI environment is not overwritten.
+### 1.1 Driver / CUDA / PyTorch compatibility (read first)
+
+| Layer | Where to read it | Example (AutoDL RTX 4090 D) |
+|---|---|---|
+| Kernel driver | `nvidia-smi` "Driver Version" | 560.35.03 |
+| Highest CUDA the driver supports | `nvidia-smi` "CUDA Version" | 12.6 |
+| CUDA runtime PyTorch was built with | `python -c "import torch; print(torch.version.cuda)"` | must be 12.x |
+
+`nvidia-smi`'s CUDA Version is a ceiling set by the driver, not the runtime in use.
+A CUDA 12.8/12.9 runtime works on a 12.6 driver (CUDA minor-version compatibility,
+driver >= 525.60.13). A CUDA 13 runtime needs driver >= 580 and fails with
+`The NVIDIA driver on your system is too old (found version 12060)`.
+
+An unpinned `pip install vllm` installs the newest vLLM. Since vLLM 0.20.0 the
+default PyPI wheel is CUDA 13 and pins torch >= 2.11, whose PyPI wheels are cu13.
+`requirements-qwen-server.txt` pins the last CUDA 12 line instead:
+
+- `vllm==0.19.1`: default wheel built with CUDA 12.9.1, includes sm_89 (RTX 4090).
+- `torch==2.10.0`: the PyPI Linux wheel is cu128.
+- `transformers==5.5.3`, `tokenizers==0.22.2`, `huggingface-hub==1.10.2`: the versions vLLM v0.19.1 CI tests with.
+
+Do not upgrade the NVIDIA driver inside an AutoDL container. If your driver is
+>= 580 you may use a newer vLLM, but this pinned stack also works there.
+
+### 1.2 Install and start
+
+Use a NEW environment. Do not reuse an env that already holds vLLM 0.20+/torch cu13
+wheels, and do not install into the OpenPI environment.
 
 ~~~bash
-git clone https://github.com/jackwubupt-ops/7068.git
-cd 7068
-git switch feature/qwen-small-end2end
+cd /root/autodl-tmp/7068
+git switch feature/qwen-small-end2end && git pull
 nvidia-smi
 df -h .
 
-# Create an independent vLLM environment. Weights download on first launch.
-bash scripts/setup_qwen_small.sh
-source .venv-qwen-server/bin/activate
-bash scripts/start_qwen_small.sh
+# Creates .venv-qwen-vllm-cu12 (override with QWEN_SERVER_VENV). Refuses an existing path.
+PYTHON=python3.11 bash scripts/setup_qwen_small.sh
+source .venv-qwen-vllm-cu12/bin/activate
+python scripts/check_cuda_compat.py   # expects torch_cuda_runtime 12.x, compatible=true
+
+# Serve already-downloaded weights (ModelScope/HF) under the HF model ID the client expects.
+# HF_HUB_OFFLINE=1 is set automatically, so nothing is re-downloaded.
+QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen2.5-Coder-0.5B-Instruct \
+  bash scripts/start_qwen_small.sh
 ~~~
 
-The inference server binds only to 127.0.0.1:8000, NEVER a public network interface. The defaults of 16K max sequence length and 0.65 GPU memory utilization are starting points, not guarantees.
+Without `QWEN_MODEL_PATH` the model is fetched from Hugging Face on first launch.
+The script runs `check_cuda_compat.py` first and stops with a readable error if
+the torch CUDA runtime is newer than the driver supports.
+
+The inference server binds only to 127.0.0.1:8000, NEVER a public network interface.
+Defaults: `QWEN_MAX_MODEL_LEN=16384` (Coder prompts can reach about 8K tokens plus
+3.5K output tokens, so 8192 can reject real requests) and `QWEN_GPU_MEMORY_UTIL=0.65`.
+If CUDA graph capture or torch.compile fails, retry with `QWEN_ENFORCE_EAGER=1`.
+
+### 1.3 Optional: Qwen3-0.6B comparison
+
+Qwen3 runs in thinking mode by default. `start_qwen_small.sh` passes
+`--default-chat-template-kwargs '{"enable_thinking": false}'` when
+`QWEN_MODEL=Qwen/Qwen3-0.6B`, so replies are bare text/JSON like Qwen2.5-Coder.
+Set `QWEN3_ENABLE_THINKING=1` only for a separate thinking-mode experiment.
+The client `.env` must use the same `QWEN_MODEL`.
+
+~~~bash
+modelscope download --model Qwen/Qwen3-0.6B --local_dir /root/autodl-tmp/qwen-models/Qwen3-0.6B
+QWEN_MODEL=Qwen/Qwen3-0.6B QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen3-0.6B \
+  bash scripts/start_qwen_small.sh
+~~~
+
+### 1.4 Proposal base model: Qwen2.5-Coder-7B-Instruct
+
+The project proposal uses Qwen2.5-Coder-7B-Instruct as the RQ1 baseline and QLoRA base.
+bf16 weights are about 15.2 GiB; the start script defaults `--gpu-memory-utilization`
+to 0.90 for 7B (0.65 for the small models), which leaves roughly 5–6 GiB of KV cache on
+a 24 GiB RTX 4090 — enough for `--max-model-len 16384`. The client `.env` must use the
+same `QWEN_MODEL`; raise `QWEN_TIMEOUT` (for example 300) because 7B decoding is slower.
+
+~~~bash
+modelscope download --model Qwen/Qwen2.5-Coder-7B-Instruct --local_dir /root/autodl-tmp/qwen-models/Qwen2.5-Coder-7B-Instruct
+QWEN_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen2.5-Coder-7B-Instruct \
+  bash scripts/start_qwen_small.sh
+~~~
+
+Verify the endpoint:
+
+~~~bash
+curl -s http://127.0.0.1:8000/v1/models
+curl -s http://127.0.0.1:8000/v1/chat/completions -H 'Content-Type: application/json' \
+  -d '{"model":"Qwen/Qwen2.5-Coder-0.5B-Instruct","messages":[{"role":"user","content":"Reply with READY"}],"max_tokens":8,"temperature":0}'
+~~~
 
 If running the PatchLoop client on another computer, use SSH port forwarding, not an unauthenticated public API:
 

@@ -45,8 +45,9 @@ class SettingsTests(unittest.TestCase):
 
     def test_model_and_endpoint_restrictions(self):
         QwenSettings(model="Qwen/Qwen3-0.6B")
+        QwenSettings(model="Qwen/Qwen2.5-Coder-7B-Instruct")
         with self.assertRaises(ValueError):
-            QwenSettings(model="Qwen/Qwen2.5-Coder-7B-Instruct")
+            QwenSettings(model="Qwen/Qwen2.5-Coder-32B-Instruct")
         with self.assertRaises(ValueError):
             QwenSettings(endpoint="http://gpu.example:8000/v1")
         with self.assertRaises(ValueError):
