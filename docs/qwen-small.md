@@ -163,6 +163,105 @@ The Harness accepts diffs only for Planner-suspected, tracked regular files. It 
 
 Only when status=prediction_ready does it produce candidate.patch, official-format predictions.jsonl, and a detailed run_status.json. A Git-applicable patch does NOT mean the Issue is resolved.
 
+## 4b. Batch runs on SWE-bench Lite dev (proposal: smoke -> pilot)
+
+SWE-bench Lite has a 23-task `dev` split (sqlfluff 5, pvlib 5, astroid 5, pydicom 5,
+marshmallow 2, pyvista 1). `experiments.lite_batch` runs the same per-task pipeline as
+`--mode dev` on each task, with a fresh model budget per task. It only ever loads `dev`.
+
+Mirror the repositories first so a flaky GitHub proxy cannot fail tasks. This adds
+per-URL `url.<mirror>.insteadOf` entries to your global git config:
+
+~~~bash
+source /etc/network_turbo
+HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --list-repos | bash scripts/mirror_repos.sh
+unset http_proxy https_proxy
+~~~
+
+Smoke run, one task per repository:
+
+~~~bash
+HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --out /root/autodl-tmp/lite-smoke-01 \
+  --instances sqlfluff__sqlfluff-1625,marshmallow-code__marshmallow-1359,pvlib__pvlib-python-1707,pylint-dev__astroid-1978,pyvista__pyvista-4315,pydicom__pydicom-1694
+~~~
+
+Pilot run, all 23 tasks; add `--resume` with the same arguments to continue after an interruption:
+
+~~~bash
+HF_ENDPOINT=https://hf-mirror.com python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-01 --workers 4
+~~~
+
+`--workers N` (default 1, max 16) runs N tasks at once. Each task still has its own
+checkout, worktrees and model budget; only the vLLM server is shared, and vLLM batches
+the concurrent requests, so throughput rises roughly with N until the KV cache is full.
+For 7B on a 24 GiB GPU (about 5–6 GiB of KV cache) start with 4. If requests start
+hitting `QWEN_TIMEOUT`, lower N or raise the timeout. vLLM's V1 engine enables
+automatic prefix caching by default (check `enable_prefix_caching=True` in the startup
+log), which reuses the repeated Planner/Coder context. Note: greedy decoding is not
+guaranteed to be bit-identical across batch sizes, so record `workers` (it is in
+`manifest.json`) and keep it fixed within one comparison. Ctrl+C stops scheduling new
+tasks; tasks already running finish, and anything cut off is retried by `--resume`.
+
+### Coder edit format: `--edit-format search_replace`
+
+By default the Coder writes a unified diff. 7B models often get the diff bookkeeping
+wrong (line numbers, context, hunk counts) even when the intended change is right, so
+`--edit-format search_replace` (in `lite_batch` and `qwen_small_dev --mode dev`) asks for
+SEARCH/REPLACE blocks instead:
+
+~~~text
+FILE: src/pkg/module.py
+<<<<<<< SEARCH
+exact original lines
+=======
+replacement lines
+>>>>>>> REPLACE
+~~~
+
+The harness reads each file at the base commit (`git show BASE:path`), requires SEARCH
+to match the original lines exactly and exactly once, inserts REPLACE verbatim and
+lets Git compute the diff, which then goes through the same validator and
+`git apply --check` as before. It never edits model-written code: no whitespace or
+fuzzy matching. A mismatch (`search_not_found`, `search_ambiguous`, `no_blocks`, ...)
+is recorded as an `edit_invalid` attempt and goes to the Reviewer like an apply
+failure. The prompt evidence is the same bounded, cited read_file lines; only the
+output instructions differ. The format is recorded in `manifest.json` and
+`run_status.json`; compare formats on the same tasks with everything else fixed.
+
+### Single-agent baseline (RQ3): `--agent single`
+
+`--agent single` (in `lite_batch` and `qwen_small_dev --mode dev`) replaces
+Planner -> Coder -> Reviewer with ONE conversation that searches/reads the repository
+with the same read-only tools and bounds as the Planner and then submits an edit.
+There is no separate plan, Coder prompt or Reviewer: a rejected submission's raw
+validator/Git error goes back into the same conversation.
+
+Matched to P-C-R so the comparison isolates the multi-agent structure:
+
+| | P-C-R (`--agent pcr`) | single (`--agent single`) |
+|---|---|---|
+| Model calls / output tokens per task | backend caps (`QWEN_MAX_CALLS`, 15000) | same caps |
+| Exploration | Planner, up to 14 turns | shared 16 replies in total |
+| Edit attempts | 2 Coder attempts | 2 submissions |
+| Files it may edit | Planner-read suspected files | files it has read |
+| Edit format | `--edit-format` | same `--edit-format` |
+
+Run both on the same tasks with everything else fixed, e.g.
+
+~~~bash
+python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-pcr    --agent pcr    --edit-format search_replace --workers 4
+python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-single --agent single --edit-format search_replace --workers 4
+~~~
+
+Single-agent predictions use the label `<model>-single-agent`. In its `run_status.json`,
+`suspected_files` means the files the agent actually edited and `read_files` lists
+everything it read.
+
+Each output directory contains `manifest.json` (task IDs, model, PatchLoop commit, budgets),
+one sub-directory per task, `results.jsonl`, `all_preds.jsonl` (input for the official
+harness) and `summary.json`. `prediction_ready` counts Git-applicable candidates, not
+resolved issues. No Docker tests run in this mode.
+
 ## 5. OFFICIAL SWE-bench evaluation, with disclosed environment fix
 
 Use x86_64 Linux with Docker Engine and enough free disk/RAM. The official project recommends roughly 120 GB free disk and 16 GB memory for general evaluation, though one instance may need less.
