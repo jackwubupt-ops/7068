@@ -1,4 +1,4 @@
-# 阿里云香港 GPU 单机流程（推理 + 官方评测，一台机器全包）
+# 阿里云 GPU 单机流程（推理 + 官方评测 + 网页 agent，一台机器全包）
 
 > **这是现在的主流程。** 它取代了"AutoDL 推理 + 阿里云 CPU 机评测"的双机方案。
 > 旧文档 [full-test-runbook.md](full-test-runbook.md)（AutoDL）和 [aliyun-runbook.md](aliyun-runbook.md)（CPU 评测机）先保留作参考。
@@ -59,12 +59,12 @@ AutoDL 用下来有两个绕不过去的问题：
 | 项目 | 推荐 | 说明 |
 |---|---|---|
 | 付费模式 | 按量付费 | 不用时停机 |
-| 地域 | **中国香港** | 直连 GitHub、HF、Docker Hub。**不要选内地地域**，否则又回到 AutoDL 的网络问题 |
+| 地域 | **中国香港或新加坡** | 直连 GitHub、HF、Docker Hub。**不要选内地地域**，否则又回到 AutoDL 的网络问题。实测：新加坡 A 区 `ecs.gn7i-c8g1.2xlarge`（A10，8 vCPU，30 GiB）可用 |
 | 规格 | GPU 计算型 **gn7i**（NVIDIA A10，24 GB），**16 vCPU** 那一档 | A10 的 24 GB 显存和 4090 一样，7B 推理和以后的 QLoRA 都够用。16 核用来同时跑官方评测。8 核那一档也能用，但评测的并发要调低 |
 | 架构 | x86_64 | 评测镜像都是 x86_64 的 |
 | 镜像 | 公共镜像 **Ubuntu 22.04 64 位**，勾选**"安装 GPU 驱动"** | 驱动版本 ≥ 525 就行，CUDA 版本无所谓。我们的 vLLM 环境自带 CUDA 12 运行时 |
 | 系统盘 | ESSD 100 GB | |
-| 数据盘 | ESSD **300 GB** | 7B 权重约 15 GB、各个 venv 约 15 GB、dev 评测镜像约 29 GB。以后跑 Lite test 300 题需要更多空间，到时先看实际占用再扩容 |
+| 数据盘 | ESSD **300 GB**（也可以不要数据盘，直接把系统盘设为 300 GB，跳过阶段 1.1，在 `/` 下建 `/data` 目录） | 7B 权重约 15 GB、各个 venv 约 15 GB、dev 评测镜像约 29 GB。以后跑 Lite test 300 题需要更多空间，到时先看实际占用再扩容 |
 | 公网 | 分配公网 IPv4，按流量计费，带宽 50–100 Mbps | 下载权重和镜像要用，带宽越大下载越快 |
 | 安全组 | **只开放 22 端口**，来源只填你自己的 IP | 这台机器不对外提供任何服务 |
 | 登录 | 密钥对，或者自定义 root 密码 | |
@@ -105,6 +105,8 @@ mkfs.ext4 /dev/vdb && mkdir -p /data && mount /dev/vdb /data && echo "/dev/vdb /
 
 ### 1.2 安装 Docker 和工具，Docker 数据放到 `/data`
 
+> **实测说明：** 阿里云的"Ubuntu 22.04 + GPU 驱动"镜像已经预装了 Docker（`docker-ce` 和 `containerd.io`）。此时再装 `docker.io` 会报 `containerd.io : Conflicts: containerd`。先用 `docker --version` 检查：如果已经有了，就**跳过下面的安装命令**。如果只有一块系统盘，Docker 的数据目录保持默认的 `/var/lib/docker` 即可，不用改。
+
 ```bash
 apt-get update && apt-get install -y git screen curl docker.io && mkdir -p /data/docker /etc/docker && echo '{"data-root": "/data/docker"}' > /etc/docker/daemon.json && systemctl restart docker && docker info | grep -E "Docker Root Dir|Server Version" && docker run --rm hello-world | head -3
 ```
@@ -120,7 +122,7 @@ apt-get update && apt-get install -y git screen curl docker.io && mkdir -p /data
 
 ### 2.1 环境变量和 Python 3.11
 
-所有缓存都放到数据盘上。香港直连 HF，**不需要设置 `HF_ENDPOINT`**。
+所有缓存都放到数据盘上。香港和新加坡都能直连 HF，**不需要设置 `HF_ENDPOINT`**。
 
 ```bash
 cat >> ~/.bashrc <<'EOF'
@@ -412,6 +414,69 @@ scp root@<公网IP>:/data/patchloop-runs-*.tar.gz .
 
 确认已经下载到本地之后，再去控制台停机。停机前注意阶段 A 里关于 GPU 库存的提醒。
 
+## 阶段 13：DeepSeek 后端（可选，需要付费 API key）
+
+在 `.env` 末尾加两行，key 只存在服务器上，**不要提交，也不要发到聊天里**：
+
+```text
+DEEPSEEK_API_KEY=<你的key>
+DEEPSEEK_MODEL=deepseek-flash
+```
+
+```bash
+cd /data/7068 && git check-ignore .env && echo ".env 已被 git 忽略"
+```
+
+批量运行时加上 `--backend deepseek`，其他参数不变，例如：
+
+```bash
+cd /data/7068 && source .venv-patchloop-client/bin/activate && for agent in pcr single; do python -m experiments.lite_batch --backend deepseek --out /data/runs/lite-pilot-ds-$agent --agent $agent --edit-format search_replace --workers 4 --retrieval-k 10 > /data/runs/lite-pilot-ds-$agent.log 2>&1; done
+```
+
+DeepSeek 和本地 7B 使用相同的输出上限、调用预算和历史裁剪，两者的结果可以直接比较。**注意：** 用 DeepSeek 时，issue 文本和 agent 读到的代码都会发送给 DeepSeek，并且按 token 计费。
+
+## 阶段 14：修复评测镜像的依赖漂移，并重新做 gold 自检
+
+用 gold 补丁自检全部 23 道 dev 题时，有 8 道连标准答案都通不过：pvlib 全部 5 道（NumPy 2）、pydicom-1139 和 1413（pytest 8）、pyvista-4315（缺 libGL）。修复方法是在原镜像上加一层，只改依赖，不改代码和测试：
+
+```bash
+cd /data/7068 && bash scripts/fix_eval_images.sh
+```
+
+```bash
+cd /data/eval-selftest && /data/venvs/swebench/bin/python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Lite --split dev --predictions_path gold --max_workers 4 --run_id gold-all-dev-fixed 2>&1 | grep -E "Instances resolved|Instances unresolved"
+```
+
+只有 gold 能通过的题才计入解决率。报告里要写明修了哪些镜像、怎么修的。
+
+## 阶段 15：交互网页（agent 系统的入口）
+
+```bash
+screen -S app
+```
+
+在 screen 里执行：
+
+```bash
+cd /data/7068 && source .venv-patchloop-client/bin/activate && mkdir -p /data/app-runs && python -m patchloop_app.web --port 7860 --runs-dir /data/app-runs
+```
+
+在你自己的电脑上开一个 SSH 隧道，然后在浏览器里打开 `http://127.0.0.1:7860`：
+
+```bash
+ssh -L 7860:127.0.0.1:7860 root@<公网IP>
+```
+
+如果 SSH 不方便：在安全组里只对你自己的 IP 开放 7860 端口，用 `--host 0.0.0.0 --token <随机字符串>` 启动网页，然后访问 `http://<公网IP>:7860/?token=<随机字符串>`。
+
+## 阶段 16：跑示例输入，保存 trace
+
+```bash
+cd /data/7068 && source .venv-patchloop-client/bin/activate && python -m patchloop_app.samples --backend deepseek --out /data/results/samples
+```
+
+每个示例会生成一个 `.json`（完整的事件记录）和一个 `.md`（可读的 trace）。这些文件要放进提交的 ZIP 包里。
+
 ## 以后的阶段在这台机器上怎么做
 
 - **RQ2 执行反馈：** 测试直接在本机的 Docker 里跑，用 SWE-bench 预构建的实例镜像，不再需要远程调用。泄漏红线不变：只能运行仓库原有的测试和模型自己写的复现脚本，`test_patch` 和 FAIL_TO_PASS 测试一律不能用。
@@ -426,7 +491,10 @@ scp root@<公网IP>:/data/patchloop-runs-*.tar.gz .
 | vLLM 启动时显存不够（OOM） | 先确认没有其他进程占用 GPU（`nvidia-smi`）；还是不够的话，把 `QWEN_MAX_MODEL_LEN` 降到 24576，并把 `QWEN_CONTEXT_CHARS` 降到 36000 |
 | 请求报 `maximum context length` | prompt 超过了 vLLM 的上下文长度。确认阶段 5 的 `max_seq_len=32768` 已经生效 |
 | 单题卡在 `checkout_real_base_commit`，正好 240 秒 | 镜像是浅克隆或者不完整。删掉 `/data/git-mirrors/<仓库>`，重新运行阶段 7 的镜像命令 |
-| 拉取 `swebench/sweb.eval...` 超时 | 确认地域是香港；用 `docker pull hello-world` 测试网络 |
+| 拉取 `swebench/sweb.eval...` 超时 | 确认地域是香港或新加坡；用 `docker pull hello-world` 测试网络 |
+| vLLM 启动报 `huggingface-hub>=1.5.0,<2.0 is required ... found 2.x` | vLLM 环境里的包被升级了：`.venv-qwen-vllm-cu12/bin/python -m pip install "huggingface-hub==1.10.2"`。**这个环境里不要再 pip install 任何东西** |
+| gold 自检里 pvlib / pydicom-1139、1413 / pyvista-4315 不通过 | 评测镜像的依赖漂移，按阶段 14 修复后重新做 gold 自检 |
+| 网页启动时提示 `backend deepseek unavailable` | `.env` 里没有 `DEEPSEEK_API_KEY`，或者 key 不正确。只用本地 7B 的话可以忽略 |
 | `exec format error` | 买成了 ARM 实例，需要换成 x86_64 |
 | 磁盘满了 | `docker system df` 查看占用；确认没有正在运行的评测后，再执行 `docker image prune` |
 | `run id ... already used` | 换一个新的 `--run-id` |
