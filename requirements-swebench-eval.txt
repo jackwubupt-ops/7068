@@ -1,0 +1,6 @@
+# Official SWE-bench evaluator, installed in its OWN venv (never in the vLLM or client venv).
+# 4.1.0 (2025-09) evaluates with prebuilt images swebench/sweb.eval.x86_64.<id>:latest
+# from Docker Hub (--namespace swebench), so no per-repo environment builds are needed.
+# The images for all 23 SWE-bench Lite dev tasks were confirmed on Docker Hub (2026-11-20).
+# swebench 5.x changed the image pipeline; do not upgrade without re-validating with gold.
+swebench==4.1.0

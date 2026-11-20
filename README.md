@@ -8,9 +8,10 @@ the bug with read-only tools, writes a candidate patch, applies it in an isolate
 exports it in official SWE-bench prediction format. Whether an issue is *resolved* is decided only
 by the official SWE-bench harness.
 
-> **New here? Run the [full test runbook](docs/full-test-runbook.md)** (Chinese, step by step with
-> pass criteria): fresh GPU server → offline tests → Qwen2.5-Coder-7B on vLLM → SWE-bench Lite
-> dev smoke and pilot → official evaluation with sb-cli → backup.
+> **New here? Use the [Alibaba Cloud runbook](docs/aliyun-runbook.md)** (Chinese, step by step with
+> pass criteria): one GPU VM with Docker → offline tests → Qwen2.5-Coder-7B on vLLM → SWE-bench Lite
+> dev smoke and pilot → **local official evaluation** (`swebench==4.1.0`) → paired statistics → backup.
+> Stage details are shared with the [full test runbook](docs/full-test-runbook.md) (AutoDL / sb-cli variant).
 
 ---
 
@@ -61,11 +62,12 @@ budgets and edit format (the RQ3 baseline).
 | Lite dev batch runner (`--workers`, `--resume`) | implemented, offline-tested; live smoke pending |
 | SEARCH/REPLACE edit format | implemented, offline-tested; live effect not measured |
 | Single-agent baseline (RQ3) | implemented, offline-tested; live run pending |
-| Execution feedback in the loop (RQ2) | not built (AutoDL has no Docker; planned: per-repo conda test envs) |
+| Execution feedback in the loop (RQ2) | not built (planned on Alibaba Cloud with Docker: SWE-bench instance images) |
 | QLoRA (RQ1) | not started |
+| Batch official evaluation + paired stats | `experiments.official_eval` (local Docker harness) and `experiments.paired_compare` (McNemar, bootstrap); offline-tested |
 | Official resolution rate on Lite | no data yet |
 
-Offline test suite: 111 tests pass, 1 skipped. These use scripted model replies and prove
+Offline test suite: 122 tests pass, 1 skipped. These use scripted model replies and prove
 wiring only, **not** model quality.
 
 ## Quick start
@@ -84,7 +86,7 @@ python -m unittest discover -s tests
 PYTHON=python3.11 bash scripts/setup_qwen_small.sh          # new venv: vllm 0.19.1 + torch 2.10.0 (CUDA 12)
 source .venv-qwen-vllm-cu12/bin/activate
 QWEN_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct \
-QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen2.5-Coder-7B-Instruct \
+QWEN_MODEL_PATH=/data/qwen-models/Qwen2.5-Coder-7B-Instruct \
   bash scripts/start_qwen_small.sh                          # binds 127.0.0.1:8000 only
 ```
 
@@ -101,7 +103,16 @@ python -m experiments.lite_batch --out runs/lite-pilot-pcr    --agent pcr    --e
 python -m experiments.lite_batch --out runs/lite-pilot-single --agent single --edit-format search_replace --workers 4
 ```
 
-Then submit each `all_preds.jsonl` for official evaluation (see the runbook, stage 8).
+Then score each batch with the official harness (separate venv with `requirements-swebench-eval.txt`, Docker required)
+and compare configurations on the same tasks:
+
+```bash
+python -m experiments.official_eval --batch runs/lite-pilot-pcr --harness-python /data/venvs/swebench/bin/python
+python -m experiments.official_eval --batch runs/lite-pilot-single --harness-python /data/venvs/swebench/bin/python
+python -m experiments.paired_compare runs/lite-pilot-pcr runs/lite-pilot-single
+```
+
+Without Docker, use sb-cli instead (full test runbook, stage 8).
 
 ## Batch runner options (`python -m experiments.lite_batch`)
 
@@ -150,6 +161,7 @@ workers), one sub-directory per task with `run_status.json` (+ `candidate.patch`
 | `experiments/lite_batch.py` | SWE-bench Lite dev batch runner |
 | `experiments/deepseek_swebench_dev.py` | single-task P-C-R pipeline on a real SWE-bench instance (`run_real_dev`) |
 | `experiments/single_agent_dev.py` | single-task single-agent pipeline |
+| `experiments/official_eval.py`, `paired_compare.py` | batch official evaluation (local harness) and McNemar/bootstrap comparison |
 | `experiments/qwen_small_dev.py` | Qwen preflight / Docker smoke / single dev task CLI |
 | `patchloop_task2/qwen_small.py` | local vLLM client with per-task call and token budgets |
 | `patchloop_task2/coder.py`, `edit_blocks.py` | diff Coder; SEARCH/REPLACE parsing and conversion |
@@ -164,7 +176,8 @@ workers), one sub-directory per task with `run_status.json` (+ `candidate.patch`
 
 ## Documentation
 
-- [Full test runbook](docs/full-test-runbook.md): the end-to-end procedure (Chinese)
+- [Alibaba Cloud runbook](docs/aliyun-runbook.md): current server setup, local official evaluation (Chinese)
+- [Full test runbook](docs/full-test-runbook.md): the end-to-end procedure, AutoDL/sb-cli variant (Chinese)
 - [Qwen small-model and 7B guide](docs/qwen-small.md): CUDA/driver compatibility, serving, batch options, edit formats, single agent
 - [Qwen + SWE-bench guide](docs/qwen-swebench.md): official evaluation details
 - [Task 1](docs/task1.md) · [Task 2](docs/task2.md) · [Task 3](docs/task3.md): Planner, Coder/apply harness, Docker Reviewer loop
@@ -191,7 +204,7 @@ incur charges; `Visualization1.py` and `Visualization2.py` plot the included CSV
 
 ## Roadmap
 
-1. Lite dev smoke and 23-task pilot with live 7B (P-C-R diff vs. search_replace, P-C-R vs. single agent), scored with sb-cli.
-2. Execution feedback (RQ2): per-repository test environments, existing tests plus model-written reproduction scripts, up to 3 candidates.
+1. Lite dev smoke and 23-task pilot with live 7B (P-C-R diff vs. search_replace, P-C-R vs. single agent), scored with the local official harness.
+2. Execution feedback (RQ2): run existing tests and model-written reproduction scripts inside the SWE-bench instance images (never the eval script / test_patch), up to 3 candidates.
 3. Lite test (300) paired runs with McNemar tests and bootstrap CIs.
 4. QLoRA on SWE-smith with repository and near-duplicate leakage filtering (RQ1).
