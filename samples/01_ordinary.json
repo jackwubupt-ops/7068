@@ -1,0 +1,8 @@
+{
+  "name": "01_ordinary",
+  "kind": "ordinary task",
+  "description": "A maintainer asks for a fix to a real sqlfluff issue (SWE-bench Lite dev). The issue text is the original GitHub issue; repository and commit are fixed by the task.",
+  "request": {"source": "swebench", "instance_id": "sqlfluff__sqlfluff-1625", "issue": "@task",
+              "agent": "pcr", "retrieval_k": 10},
+  "expect": "Retrieval, Planner tool calls and plan, Coder edit, apply result in the trace; ends awaiting_confirmation (patch shown for review) or needs_clarification (with questions)."
+}

@@ -1,0 +1,10 @@
+{
+  "name": "02_changed_request",
+  "kind": "changed request / follow-up",
+  "description": "Same issue, then the maintainer changes the conditions: keep the fix minimal and switch to the single-agent mode. The follow-up text is appended to the issue as maintainer guidance.",
+  "request": {"source": "swebench", "instance_id": "sqlfluff__sqlfluff-1625", "issue": "@task",
+              "agent": "pcr", "retrieval_k": 10},
+  "follow_up": {"guidance": "Keep the change as small as possible: modify one function in one source file, and do not edit any tests.",
+                "agent": "single"},
+  "expect": "Round 2 is linked to round 1, carries the guidance, runs the single agent, and again ends in a confirmation or clarification stop."
+}
