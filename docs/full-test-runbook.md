@@ -1,6 +1,8 @@
 # PatchLoop 完整测试流程（main 分支）
 
-本流程覆盖：从一台全新的 AutoDL 服务器（RTX 4090，24GB）出发 → 离线测试 → 7B 服务 → 单题验证 → Lite smoke 对比 → Lite pilot（RQ3）→ sb-cli 官方评测 → 备份。
+本流程覆盖：从一台全新的 AutoDL 服务器（RTX 4090，24GB）出发 → 离线测试 → 7B 服务 → 单题验证 → Lite smoke 对比 → Lite pilot（RQ3）→ 官方评测 → 备份。
+
+> **官方评测（阶段 8）推荐在阿里云 CPU 评测机上做**（有 Docker，跑本地官方 harness），见 [aliyun-runbook.md](aliyun-runbook.md)。本文阶段 8 的 sb-cli 作为备选。
 
 **每一阶段都有"通过标准"。当前阶段没达标，就不要进入下一阶段。**
 
@@ -227,7 +229,9 @@ python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-single --agen
 
 通过标准：两个目录的 `tasks_finished` 都是 23。
 
-## 阶段 8：sb-cli 官方评测
+## 阶段 8：官方评测
+
+**首选：** 按 [aliyun-runbook.md](aliyun-runbook.md) 阶段 3–4，把批次目录传到阿里云评测机，再用 `experiments.official_eval` 评测。下面的 sb-cli 是备选方案。
 
 ### 8.1 安装和注册（只做一次，装在独立 venv 里）
 

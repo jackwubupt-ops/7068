@@ -78,6 +78,19 @@ class SingleAgentLoopTests(unittest.TestCase):
         self.assertEqual(result.trace[1]["action"], "run_tests")
         self.assertIn("protocol_error", result.trace[1])
 
+    def test_fenced_json_actions_are_accepted_like_planner(self):
+        fence = chr(96) * 3
+        fenced_search = fence + "json\n" + SEARCH + "\n" + fence
+        fenced_read = fence + "\n" + READ + "\n" + fence
+        result, _ = self.run_agent([fenced_search, fenced_read, GOOD])
+        self.assertEqual(result.status, "prediction_ready")
+        self.assertEqual([e["action"] for e in result.trace], ["search_repo", "read_file", "submit"])
+        self.assertNotIn("protocol_error", result.trace[0])
+
+    def test_protocol_error_records_raw_head(self):
+        result, _ = self.run_agent(["<tool_call>oops", READ, GOOD])
+        self.assertEqual(result.trace[0]["raw_head"], "<tool_call>oops")
+
     def test_budget_and_step_exhaustion_end_without_submission(self):
         result, _ = self.run_agent([READ, RuntimeError("QWEN_CALL_BUDGET_EXHAUSTED")])
         self.assertEqual(result.status, "no_submission")

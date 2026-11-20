@@ -1,16 +1,19 @@
 # PatchLoop TODO
 
 > 更新于 2026-11-20。按顺序推进：**前一阶段的"完成标准"没达到，就不要开始下一阶段。**
-> 操作步骤见 [docs/full-test-runbook.md](docs/full-test-runbook.md)，项目背景见 [README](README.md)。
+> 两台机器：**AutoDL（4090）负责推理和 QLoRA 训练**，按 [docs/full-test-runbook.md](docs/full-test-runbook.md) 操作；**阿里云 CPU 机（香港，有 Docker）只跑官方评测**，按 [docs/aliyun-runbook.md](docs/aliyun-runbook.md) 操作。项目背景见 [README](README.md)。
 
-**当前位置：** 阶段 1–2 的代码已全部合入 main（只做过离线测试，111 个通过、1 个跳过）。下一步要在 GPU 服务器上做第一次真实运行。
+**当前位置：** 阶段 1–2 的代码已全部合入 main；本地官方评测（`experiments.official_eval`）和配对统计（`experiments.paired_compare`）也已写好（只做过离线测试，122 个通过、1 个跳过）。下一步是在 AutoDL 上做第一次真实推理，在阿里云上做第一次官方评测。
 
 ---
 
 ## P0 · 拿到第一批真实数据（最紧急）
 
-- [ ] **服务器准备**：在 main 上重建环境、启动 7B、preflight 通过（runbook 阶段 0–4）
+- [ ] **AutoDL 服务器准备**：在 main 上重建环境、启动 7B、preflight 通过（full-test-runbook 阶段 0–4）
   - 完成标准：`live_qwen_api_ok`；记下 vLLM 启动日志里 `enable_prefix_caching` 的值
+- [ ] **租阿里云 CPU 评测机**：香港地域，x86_64，16 vCPU / 64 GiB，数据盘 300GB 挂到 `/data`，安全组只放行 22（aliyun-runbook 阶段 A–1）
+- [ ] **评测器 gold 自检**（aliyun-runbook 阶段 2）
+  - 完成标准：2 道题 gold 补丁都是 resolved、0 个 error，证明本地 Docker 评测链路可用
 - [ ] **镜像仓库，跑单题**（runbook 阶段 5）
   - 完成标准：P-C-R 和单 agent 在 `sqlfluff__sqlfluff-1625` 上都能正常结束
 - [ ] **Lite smoke：6 题 × 3 个配置**（runbook 阶段 6）
@@ -19,9 +22,10 @@
   - [ ] C：`--agent single --edit-format search_replace`
   - 完成标准：三个配置都是 `tasks_finished = 6`，`--workers` 保持一致
   - 需要记录：每题耗时、状态分布、失败集中在哪个阶段
-- [ ] **申请 sb-cli 的 key，提交 smoke 的预测**（runbook 阶段 8）
-  - 完成标准：拿到第一份官方报告，确认"解决率"这条评测链路走得通
-  - 备选方案：sb-cli 不可用时，改用 Modal，或另租一台 Docker 机器跑官方 harness
+- [ ] **把 smoke 结果从 AutoDL 传到阿里云**（aliyun-runbook 阶段 3）
+- [ ] **官方评测 smoke 的三个配置**（aliyun-runbook 阶段 4，`experiments.official_eval`）
+  - 完成标准：三个目录都有 `official_eval.json` 且 `complete: true`，得到第一批真实解决率
+  - 备选方案：阿里云评测不通时用 sb-cli（full-test-runbook 阶段 8）
 - [ ] **备份结果**：打包所有 smoke 目录和日志，下载到本地
 
 ## P1 · Lite dev pilot（RQ3 第一批数据）
@@ -31,7 +35,7 @@
   - [ ] `--agent pcr`
   - [ ] `--agent single`
   - 完成标准：两个配置都是 `tasks_finished = 23`
-- [ ] **两个配置都用 sb-cli 评测**，整理逐题配对表：题号 × 两个配置是否解决
+- [ ] **两个配置都用 `official_eval` 评测**，再用 `paired_compare` 出逐题配对表、McNemar p 值和 bootstrap CI
 - [ ] **检查点**：如果两个配置的解决率都接近 0，先停下来分析失败分布，不要扩大规模
   - 定位失败多（`no_candidate_files`）→ 做 P2-1 的 BM25 检索
   - 补丁打不上多（`patch_failed`）→ 继续改进编辑格式和提示词
@@ -47,23 +51,24 @@
 
 ## P3 · 执行反馈（RQ2）
 
-- [ ] **P3-1 测试环境**：在 AutoDL 上为 dev 涉及的 6 个仓库各建一个 conda 环境，按 SWE-bench 的安装配置来建（这份配置的细节需要先核实）
-  - 完成标准：每个仓库在 base commit 上都能跑通它自带的测试
+- [ ] **P3-1 测试环境**：执行反馈需要在生成过程中跑测试，所以推理机要能用 Docker（AutoDL 不行）。两种做法：在阿里云 CPU 机上跑测试服务、AutoDL 远程调用；或者换一台带 Docker 的 GPU 机。容器直接用 SWE-bench 预构建的实例镜像（仓库已在 base commit 装好依赖）
+  - 只在容器里跑仓库原有的测试和模型写的复现脚本；**不能运行镜像里的官方 eval 脚本**（它会打上 test_patch）
+  - 完成标准：每个 dev 仓库在 base commit 上能在容器里跑通它自带的测试
 - [ ] **P3-2 测试执行模块**：在指定环境里对补丁跑指定测试，有超时和隔离，返回结构化结果
 - [ ] **P3-3 复现脚本**：让模型根据 issue 写一个复现脚本——修复前应该失败，修复后应该通过
 - [ ] **P3-4 Reviewer 接入测试结果**，给 Coder 反馈
 - [ ] **P3-5 最多 3 个候选**，按测试结果挑出最好的一个
-- [ ] **P3-6 在 dev 上对比**："1 个候选、无反馈"和"执行反馈 + 最多 3 个候选"，都用 sb-cli 评测
+- [ ] **P3-6 在 dev 上对比**："1 个候选、无反馈"和"执行反馈 + 最多 3 个候选"，都用 `official_eval` 评测，`paired_compare` 比较
 - 泄漏红线：反馈只能来自仓库原有的测试和模型自己写的复现脚本，**`test_patch` 和 FAIL_TO_PASS 测试一律不能用**
-- 论文里要写明：反馈用的是近似环境，最终打分用官方 harness
+- 论文里要写明：反馈只用仓库原有测试 + 复现脚本，最终打分用官方 harness
 
 ## P4 · Lite test 集正式实验
 
-- [ ] 把测试环境扩展到 Lite test 涉及的 12 个仓库（如果做了 P3）
+- [ ] 估算磁盘：Lite test 300 个评测镜像需要的空间（先用 `docker system df` 查看 dev 的实际占用，再按比例推算）
 - [ ] 镜像 test 集用到的仓库
 - [ ] 在 300 题上跑通过筛选的配置；同一组对比里，`--workers` 和编辑格式保持一致
-- [ ] sb-cli 评测，得到逐题的解决结果
-- [ ] 统计：配对的 McNemar 检验加 bootstrap 置信区间；结论措辞用"效应有多大"，而不只是"是否显著"
+- [ ] `official_eval` 评测（或 sb-cli），得到逐题的解决结果
+- [ ] 统计：`paired_compare`（McNemar + bootstrap 置信区间）；结论措辞用"效应有多大"，而不只是"是否显著"
 - [ ] 先估算时间：用 pilot 的平均每题耗时 × 300 × 配置数
 
 ## P5 · QLoRA（RQ1，时间不够可以缩小范围）
@@ -71,7 +76,8 @@
 - [ ] 核实 SWE-smith 公开了哪些数据，以及许可证
 - [ ] 构造训练样本：issue + 相关文件 → 补丁，先只训练 Coder
 - [ ] 防泄漏过滤：排除 Lite test 涉及的仓库，按 issue 文本相似度去掉近似重复，过滤记录要留存
-- [ ] 在 4090 上做 4-bit QLoRA 训练（先用小样本验证显存够不够、要多久）
+- [ ] 在 AutoDL 4090 上做 4-bit QLoRA 训练（独立 venv，不需要 Docker；训练前停掉 vLLM；先用 200 条样本试训，测显存和速度）
+- [ ] 训练和推理用同一份基座权重，把 safetensors 哈希和 adapter 哈希写进 manifest；adapter 训完立刻下载备份
 - [ ] 用 vLLM 的 `--enable-lora` 部署，和基座模型配对评测
 - 缩小范围的退路：只训练 Coder、只评测一个子集，在论文里写明
 
@@ -84,9 +90,10 @@
 
 ## 规则（始终有效）
 
-- 不升级 NVIDIA 驱动；新环境一律用独立的 venv
+- AutoDL 不升级 NVIDIA 驱动；vLLM、客户端、训练、评测器各用独立的 venv
 - gold patch、test_patch、FAIL_TO_PASS 和 hints 不进任何 prompt；开发阶段只读 dev split
 - `prediction_ready` ≠ 已解决；是否解决只看官方评测
 - 离线测试和 CI 只证明代码接线正确，不代表模型能力
-- vLLM 只监听 127.0.0.1；`.env` 不提交
+- vLLM 只监听 127.0.0.1，安全组不放行 8000；`.env` 不提交
+- 不用时停机或释放实例，释放前先下载结果
 - 改代码要开分支、走 PR，并附测试结果
