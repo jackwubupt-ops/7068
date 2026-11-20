@@ -162,6 +162,46 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn('Repeated action', seen[3][-1]['content'])
         self.assertIn('return the final plan', seen[3][-1]['content'])
 
+    def test_planner_cannot_give_up_after_reading_code(self):
+        search, read, final = self.responses()
+        empty = {'action': 'final', 'plan': {**final['plan'], 'suspected_files': [],
+                                              'limitations': ['Not sure']}}
+        actions = iter([search, read, empty, final])
+        seen = []
+        def completion(messages):
+            seen.append(list(messages))
+            return json.dumps(next(actions))
+        result = plan_repair('divide(3, 2) should return 1.5', self.root, self.commit, completion=completion)
+        self.assertEqual(result['suspected_files'][0]['file_path'], 'calc.py')
+        self.assertIn('name at least one file you read', seen[3][-1]['content'])
+
+    def test_planner_may_return_empty_when_nothing_was_read(self):
+        search, _, final = self.responses()
+        empty = {'action': 'final', 'plan': {**final['plan'], 'suspected_files': [],
+                                              'limitations': ['No relevant file found']}}
+        actions = iter([search, empty])
+        result = plan_repair('bug', self.root, self.commit, completion=lambda _: json.dumps(next(actions)))
+        self.assertEqual(result['suspected_files'], [])
+
+    def test_planner_accepts_common_relevant_lines_spellings(self):
+        search, read, final = self.responses()
+        for span, refs in (([2], 'E2'), ('1-2', ['E2']), (['1', '2'], ['E2']), ([2, 1], ['E2']), (2, ['E2'])):
+            candidate = {**final['plan']['suspected_files'][0], 'relevant_lines': span, 'evidence_ids': refs}
+            plan = {**final['plan'], 'suspected_files': [candidate]}
+            actions = iter([search, read, {'action': 'final', 'plan': plan}])
+            result = plan_repair('bug', self.root, self.commit, completion=lambda _: json.dumps(next(actions)))
+            got = result['suspected_files'][0]
+            self.assertEqual(got['evidence_ids'], ['E2'])
+            self.assertIn(got['relevant_lines'], ([1, 2], [2, 2]))
+
+    def test_planner_still_rejects_lines_outside_read_evidence(self):
+        search, read, final = self.responses()
+        candidate = {**final['plan']['suspected_files'][0], 'relevant_lines': '1-50'}
+        plan = {**final['plan'], 'suspected_files': [candidate]}
+        actions = iter([search, read, {'action': 'final', 'plan': plan}])
+        with self.assertRaises(ValueError):
+            plan_repair('bug', self.root, self.commit, completion=lambda _: json.dumps(next(actions)), max_steps=3)
+
     def test_planner_rejects_unsupported_evidence_and_budget(self):
         final = self.responses()[-1]
         with self.assertRaises(ValueError):

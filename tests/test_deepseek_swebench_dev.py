@@ -373,6 +373,25 @@ class DeepSeekDevControllerTests(unittest.TestCase):
         self.assertEqual(report["status"], "experiment_error")
         self.assertEqual(report["failed_stage"], "real_coder_patch")
 
+    def test_planner_budget_exhaustion_is_no_candidate_files_not_experiment_error(self):
+        with patch("experiments.deepseek_swebench_dev.run_localization",
+                   side_effect=ValueError("Planner exhausted action budget without a validated repair plan")), \
+             patch("experiments.deepseek_swebench_dev._clean_source", return_value=True):
+            report = run_real_dev(self.root / "budget", api=self.api,
+                                  task_loader=lambda **kwargs: self.task,
+                                  checkout_fn=lambda task, path: path)
+        self.assertEqual(report["status"], "no_candidate_files")
+        self.assertEqual(report["planner_stop_reason"], "planner_budget_exhausted")
+        self.assertIsNone(report.get("error"))
+
+    def test_other_planner_value_errors_are_still_experiment_errors(self):
+        with patch("experiments.deepseek_swebench_dev.run_localization",
+                   side_effect=ValueError("Issue must contain 1-20000 characters")):
+            report = run_real_dev(self.root / "other", api=self.api,
+                                  task_loader=lambda **kwargs: self.task,
+                                  checkout_fn=lambda task, path: path)
+        self.assertEqual(report["status"], "experiment_error")
+
     def test_coder_prompt_requires_small_valid_git_diff(self):
         from experiments.deepseek_swebench_dev import _minimal_coder_messages
         original = [{"role": "user", "content": "Real issue and evidence"}]
