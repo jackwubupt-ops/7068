@@ -51,6 +51,7 @@ class Request:
     edit_format: str = "search_replace"
     retrieval_k: int = 10
     skip_clarification: bool = False
+    backend: str = "qwen"            # "qwen" (local vLLM) | "deepseek" (hosted API)
 
 
 @dataclass
@@ -80,7 +81,7 @@ class Session:
                     "status": self.status, "request": self.request.__dict__,
                     "events": self.events[since:], "event_count": len(self.events),
                     "questions": self.questions, "patch": self.patch,
-                    "result": {k: self.result.get(k) for k in (
+                    "result": {k: self.result.get(k) for k in ("model", 
                         "status", "failed_stage", "error", "attempt_count", "suspected_files",
                         "retrieval_candidates", "prompt_tokens", "completion_tokens",
                         "duration_seconds", "patch_status", "stop_reason", "branch",
@@ -301,6 +302,9 @@ class SessionManager:
             raise ValueError("retrieval_k must be in [0, 50]")
         if not request.issue.strip() or len(request.issue) > 20000:
             raise ValueError("Issue must contain 1-20000 characters")
+        if isinstance(self.backend_factory, dict) and request.backend not in self.backend_factory:
+            raise ValueError(f"Model backend {request.backend!r} is not available on this server "
+                             f"(available: {', '.join(sorted(self.backend_factory)) or 'none'})")
         sid = time.strftime("%m%d-%H%M%S-") + uuid.uuid4().hex[:4]
         session = Session(sid, request, parent=parent.id if parent else None,
                           round=parent.round + 1 if parent else 1)
@@ -388,7 +392,13 @@ class SessionManager:
         from experiments.qwen_small_dev import run_qwen_dev
         req = session.request
         out = self.runs_dir / session.id
-        backend = TracingBackend(self.backend_factory(), session)
+        factory = (self.backend_factory[req.backend] if isinstance(self.backend_factory, dict)
+                   else self.backend_factory)
+        inner = factory()
+        backend = TracingBackend(inner, session)
+        session.emit("info", f"Model: {inner.model}"
+                     + (" (hosted DeepSeek API: the issue and code are sent to DeepSeek)"
+                        if getattr(inner, "provider", "") == "deepseek" else " (local, nothing leaves this server)"))
         session.emit("info", f"Starting the {'Planner-Coder-Reviewer' if req.agent == 'pcr' else 'single'} agent")
         result = run_qwen_dev(
             backend, out, agent=req.agent, instance_id=task.instance_id,

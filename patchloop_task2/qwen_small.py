@@ -115,6 +115,9 @@ def clean_json_fence(raw: str) -> str:
 
 
 class QwenSmallBackend:
+    extra_body: dict | None = None  # provider-specific request fields (DeepSeekBackend)
+    provider = "qwen"
+
     def __init__(self, settings: QwenSettings | None = None, *, client=None):
         self.settings = settings or QwenSettings.from_env()
         self.model = self.settings.model
@@ -151,6 +154,7 @@ class QwenSmallBackend:
             messages=transmitted,
             max_tokens=request_limit,
             temperature=0,
+            **({"extra_body": self.extra_body} if self.extra_body else {}),
         )
         duration = round(time.monotonic() - t0, 3)
         if not reply.choices:
