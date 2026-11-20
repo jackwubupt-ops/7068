@@ -8,11 +8,11 @@ the bug with read-only tools, writes a candidate patch, applies it in an isolate
 exports it in official SWE-bench prediction format. Whether an issue is *resolved* is decided only
 by the official SWE-bench harness.
 
-> **New here?** Two machines, two runbooks (Chinese, step by step with pass criteria):
-> - **GPU box (AutoDL, RTX 4090)**: [full test runbook](docs/full-test-runbook.md): offline tests → Qwen2.5-Coder-7B
->   on vLLM → SWE-bench Lite dev smoke and pilot (and later QLoRA training; no Docker needed).
-> - **CPU evaluation box (Alibaba Cloud, Docker)**: [Alibaba Cloud runbook](docs/aliyun-runbook.md): copy the batch
->   directories over → **official evaluation** (`swebench==4.1.0`, prebuilt images) → paired statistics.
+> **New here?** One machine, one runbook (Chinese, step by step with pass criteria):
+> [Alibaba Cloud Hong Kong GPU runbook](docs/aliyun-gpu-runbook.md): an A10 (24 GB) ECS box with Docker and direct
+> GitHub/Hugging Face access runs everything: Qwen2.5-Coder-7B on vLLM → SWE-bench Lite dev smoke and pilot →
+> **official evaluation** (`swebench==4.1.0`, prebuilt images) → paired statistics.
+> The older two-machine setup (AutoDL for inference + a CPU box for evaluation) is kept for reference only.
 
 ---
 
@@ -178,8 +178,9 @@ workers), one sub-directory per task with `run_status.json` (+ `candidate.patch`
 
 ## Documentation
 
-- [Full test runbook](docs/full-test-runbook.md): GPU box (AutoDL): setup, serving, batches (Chinese)
-- [Alibaba Cloud runbook](docs/aliyun-runbook.md): CPU evaluation box with Docker: official evaluation, paired stats (Chinese)
+- [Alibaba Cloud GPU runbook](docs/aliyun-gpu-runbook.md): **main workflow**, one Hong Kong GPU box for serving, batches and official evaluation (Chinese)
+- [Full test runbook](docs/full-test-runbook.md): old AutoDL GPU box workflow, reference only (Chinese)
+- [Alibaba Cloud CPU runbook](docs/aliyun-runbook.md): old CPU-only evaluation box, reference only (Chinese)
 - [Qwen small-model and 7B guide](docs/qwen-small.md): CUDA/driver compatibility, serving, batch options, edit formats, single agent
 - [Qwen + SWE-bench guide](docs/qwen-swebench.md): official evaluation details
 - [Task 1](docs/task1.md) · [Task 2](docs/task2.md) · [Task 3](docs/task3.md): Planner, Coder/apply harness, Docker Reviewer loop
