@@ -228,6 +228,8 @@ def main() -> int:
                         help="Coder output: unified diff (default) or SEARCH/REPLACE blocks")
     parser.add_argument("--workers", type=int, default=1,
                         help=f"Tasks run concurrently against vLLM (1..{MAX_WORKERS}; 4 suits 7B on a 24 GiB GPU)")
+    parser.add_argument("--backend", choices=("qwen", "deepseek"), default="qwen",
+                        help="qwen = local vLLM (default); deepseek = DeepSeek API (DEEPSEEK_API_KEY)")
     parser.add_argument("--retrieval-k", type=int, default=0,
                         help="Give both agents the top-K files from BM25 + issue-hint retrieval "
                              "(utils.retrieval) in their first message; 0 = off (default)")
@@ -250,14 +252,15 @@ def main() -> int:
         parser.error("--retrieval-k must be in [0, 50]")
 
     from experiments.qwen_small_dev import run_qwen_dev
-    from patchloop_task2.qwen_small import STAGE_TOKENS, QwenSettings, QwenSmallBackend
+    from patchloop_task2.backends import load_settings, make_backend
+    from patchloop_task2.qwen_small import STAGE_TOKENS
 
-    settings = QwenSettings.from_env()
-    QwenSmallBackend(settings).verify()  # fail fast before any task if vLLM is down
+    settings = load_settings(args.backend)
+    make_backend(args.backend, settings).verify()  # fail fast before any task if the model is down
     by_id = {task.instance_id: task for task in tasks}
 
     def run_one(task: DevelopmentTask, task_dir: Path) -> dict:
-        backend = QwenSmallBackend(settings)  # fresh per-task call and token budget
+        backend = make_backend(args.backend, settings)  # fresh per-task call and token budget
         return run_qwen_dev(
             backend, task_dir, agent=args.agent,
             instance_id=task.instance_id, expected_repo=task.repo,
@@ -268,6 +271,7 @@ def main() -> int:
         )
 
     manifest = build_manifest(tasks, dataset_id=args.dataset, settings={
+        "backend": args.backend,
         "model": settings.model,
         "endpoint": settings.endpoint,
         "max_calls_per_task": settings.max_calls,

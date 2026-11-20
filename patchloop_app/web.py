@@ -78,6 +78,7 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
                 edit_format=str(body.get("edit_format", "search_replace")),
                 retrieval_k=int(body.get("retrieval_k", 10)),
                 skip_clarification=bool(body.get("skip_clarification", False)),
+                backend=str(body.get("backend", "qwen")),
             )
             session = manager.start(req)
         except (ValueError, TypeError) as exc:
@@ -122,7 +123,7 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     def api_followup(sid):
         body = request.get_json(force=True, silent=True) or {}
         try:
-            changes = {k: body.get(k) for k in ("agent", "edit_format")}
+            changes = {k: body.get(k) for k in ("agent", "edit_format", "backend")}
             if body.get("retrieval_k") is not None:
                 changes["retrieval_k"] = int(body["retrieval_k"])
             session = manager.follow_up(sid, str(body.get("guidance", "")), **changes)
@@ -162,11 +163,20 @@ def main(argv: list[str] | None = None) -> int:
     if args.host not in ("127.0.0.1", "localhost") and not args.token:
         parser.error("Refusing to listen on a public interface without --token")
 
-    from patchloop_task2.qwen_small import QwenSettings, QwenSmallBackend
+    from patchloop_task2.backends import BACKENDS, load_settings, make_backend
     from swebench_dev import load_dev_tasks
 
-    settings = QwenSettings.from_env()
-    QwenSmallBackend(settings).verify()  # fail fast: the agent cannot run without the model server
+    configured, problems = {}, {}
+    for name in BACKENDS:
+        try:
+            settings = load_settings(name)
+            make_backend(name, settings).verify()
+            configured[name] = settings
+        except Exception as exc:  # report and continue with the other backend
+            problems[name] = f"{type(exc).__name__}: {exc}"[:200]
+            print(f"backend {name} unavailable: {problems[name]}")
+    if not configured:
+        parser.error("No model backend is available (start vLLM and/or set DEEPSEEK_API_KEY)")
     try:
         tasks = load_dev_tasks(args.dataset)
     except Exception as exc:  # the app still works on local repositories
@@ -179,11 +189,14 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"Unknown example task {iid}")
         return by_id[iid]
 
-    manager = SessionManager(args.runs_dir, lambda: QwenSmallBackend(settings), task_lookup=lookup)
+    factories = {name: (lambda n=name, st=st: make_backend(n, st)) for name, st in configured.items()}
+    manager = SessionManager(args.runs_dir, factories, task_lookup=lookup)
 
     def health():
-        return {**QwenSmallBackend(settings).verify(), "context_chars": settings.context_chars,
-                "max_calls": settings.max_calls}
+        return {"status": "ok", "backends": {
+            name: {"model": st.model, "context_chars": st.context_chars, "max_calls": st.max_calls,
+                   "data_leaves_server": name == "deepseek"} for name, st in configured.items()},
+            "unavailable": problems}
 
     app = create_app(manager, health=health, tasks=tasks, token=args.token)
     print(f"PatchLoop web app on http://{args.host}:{args.port}  (runs in {args.runs_dir})")

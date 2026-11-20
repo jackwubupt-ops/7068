@@ -94,7 +94,7 @@ def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path, *, agent: str = "p
         "Qwen/Qwen2.5-Coder-0.5B-Instruct": "qwen2.5-coder-0.5b-instruct",
         "Qwen/Qwen3-0.6B": "qwen3-0.6b",
         "Qwen/Qwen2.5-Coder-7B-Instruct": "qwen2.5-coder-7b-instruct",
-    }[backend.model] + ("-single-agent" if agent == "single" else "")
+    }.get(backend.model, backend.model.split("/")[-1].lower()) + ("-single-agent" if agent == "single" else "")
     if result["status"] == "prediction_ready":
         predictions = output_dir / "predictions.jsonl"
         record = json.loads(predictions.read_text(encoding="utf-8"))

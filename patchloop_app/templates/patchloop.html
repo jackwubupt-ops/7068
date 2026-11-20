@@ -78,6 +78,9 @@
     </div>
     <label>Issue (edit freely: this is what the agent works from)</label>
     <textarea id="issue" placeholder="Describe the bug: what happens, what you expected, error messages…"></textarea>
+    <label>Model</label>
+    <select id="backend" onchange="modelNote()"><option value="qwen">Local Qwen2.5-Coder-7B</option></select>
+    <div id="model-note" class="meta"></div>
     <div class="row">
       <div><label>Agent</label>
         <select id="agent"><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select></div>
@@ -121,13 +124,28 @@ async function loadTask() {
   const id = $('task').value; if (!id) return;
   const t = await api('/api/tasks/' + encodeURIComponent(id)); $('issue').value = t.issue;
 }
+let backends = {};
+const LABEL = {qwen: 'Local Qwen2.5-Coder-7B (private)', deepseek: 'DeepSeek API'};
 async function health() {
-  try { const h = await api('/api/health'); $('health').textContent = `model ready: ${h.model}`; $('health').className = 'badge'; }
-  catch (e) { $('health').textContent = 'model server DOWN: ' + e.message.slice(0, 60); $('health').className = 'badge down'; }
+  try {
+    const h = await api('/api/health'); backends = h.backends || {};
+    const names = Object.keys(backends);
+    $('health').textContent = names.length ? 'models: ' + names.map(n => backends[n].model).join(' · ') : 'no model available';
+    $('health').className = names.length ? 'badge' : 'badge down';
+    const cur = $('backend').value;
+    $('backend').innerHTML = names.map(n => `<option value="${n}">${esc(LABEL[n] || n)} — ${esc(backends[n].model)}</option>`).join('');
+    if (names.includes(cur)) $('backend').value = cur;
+    modelNote();
+  } catch (e) { $('health').textContent = 'server error: ' + e.message.slice(0, 60); $('health').className = 'badge down'; }
+}
+function modelNote() {
+  $('model-note').textContent = $('backend').value === 'deepseek'
+    ? 'Hosted API: the issue text and repository code the agent reads are sent to DeepSeek; usage is billed.'
+    : 'Runs on this server\'s GPU; no code leaves the machine.';
 }
 async function startRun(extra={}) {
   $('form-err').textContent = '';
-  const body = {source, issue:$('issue').value, agent:$('agent').value, retrieval_k:+$('retrieval_k').value,
+  const body = {source, issue:$('issue').value, agent:$('agent').value, backend:$('backend').value, retrieval_k:+$('retrieval_k').value,
                 instance_id:$('task').value || null, repo_path:$('repo_path').value, commit:$('commit').value, ...extra};
   try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
   catch (e) { $('form-err').textContent = e.message; }
@@ -165,26 +183,27 @@ function render(s) {
       <textarea id="guidance" style="min-height:70px" placeholder="e.g. The bug is in rules/L031.py, function _lint_aliases_in_join. Only aliases in JOINs should be checked."></textarea>
       <div class="row" style="margin-top:8px">
         <select id="f-agent"><option value="">same agent (${esc(s.request.agent)})</option><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select>
+        <select id="f-backend"><option value="">same model (${esc(s.request.backend)})</option>${Object.keys(backends).map(n => `<option value="${n}">${esc(LABEL[n] || n)}</option>`).join('')}</select>
         <button class="primary" onclick="followUp()">Send follow-up</button></div>
       ${s.status === 'needs_clarification' && !r.status ? `<button style="margin-top:8px" onclick="followUp(true)">Run anyway without more detail</button>` : ''}</div>`;
   $('view').innerHTML = `
     <div class="row" style="align-items:center"><h2 style="margin:0">Session ${esc(s.id)} <span class="status ${s.status}">${s.status.replaceAll('_', ' ')}</span></h2></div>
-    <div class="meta">round ${s.round}${s.parent ? ` · follow-up of ${esc(s.parent)}` : ''} · agent ${esc(s.request.agent)} · retrieval ${s.request.retrieval_k || 'off'}
+    <div class="meta">round ${s.round}${s.parent ? ` · follow-up of ${esc(s.parent)}` : ''} · model ${esc(s.request.backend)} · agent ${esc(s.request.agent)} · retrieval ${s.request.retrieval_k || 'off'}
       ${r.prompt_tokens ? ` · ${r.prompt_tokens} prompt + ${r.completion_tokens} completion tokens` : ''}${r.duration_seconds ? ` · ${r.duration_seconds}s` : ''}</div>
     ${action}<ul class="timeline">${tl}</ul>${follow}`;
 }
 async function act(a) { try { await api(`/api/sessions/${current}/${a}`, {method:'POST'}); poll(); } catch (e) { alert(e.message); } }
 async function followUp(anyway=false) {
   const g = anyway ? '' : ($('guidance')?.value || '');
-  const agent = $('f-agent')?.value || null;
-  try { const s = await api(`/api/sessions/${current}/followup`, {method:'POST', body:JSON.stringify({guidance:g, agent})}); openSession(s.id); }
+  const agent = $('f-agent')?.value || null, backend = $('f-backend')?.value || null;
+  try { const s = await api(`/api/sessions/${current}/followup`, {method:'POST', body:JSON.stringify({guidance:g, agent, backend})}); openSession(s.id); }
   catch (e) { alert(e.message); }
 }
 async function history() {
   const rows = await api('/api/sessions');
   $('history').innerHTML = rows.length ? rows.map(r => `<a onclick="openSession('${r.id}')">${esc(r.id)} · ${esc(r.status)} · r${r.round} · ${esc(r.agent)} · ${esc(r.target || '')}</a>`).join('') : 'none yet';
 }
-loadTasks(); health(); history(); setInterval(health, 30000);
+loadTasks(); health(); history();
 </script>
 </body>
 </html>
