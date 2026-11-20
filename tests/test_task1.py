@@ -150,6 +150,18 @@ class RepositoryTests(unittest.TestCase):
         self.assertIn('a // b', result['evidence'][1]['result']['lines'][1]['text'])
         self.assertEqual((self.root / 'calc.py').read_text(), 'def divide(a, b):\n    return a // b\n')
 
+    def test_planner_repeated_action_is_not_rerun(self):
+        first, read, final = self.responses()
+        actions = iter([first, read, first, final])
+        seen = []
+        def completion(messages):
+            seen.append(list(messages))
+            return json.dumps(next(actions))
+        result = plan_repair('divide(3, 2) should return 1.5', self.root, self.commit, completion=completion)
+        self.assertEqual(len(result['evidence']), 2)
+        self.assertIn('Repeated action', seen[3][-1]['content'])
+        self.assertIn('return the final plan', seen[3][-1]['content'])
+
     def test_planner_rejects_unsupported_evidence_and_budget(self):
         final = self.responses()[-1]
         with self.assertRaises(ValueError):

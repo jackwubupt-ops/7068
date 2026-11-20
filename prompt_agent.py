@@ -40,7 +40,8 @@ def plan_repair(issue, repo_root, base_commit, *, completion=None, max_steps=10,
     The default uses the same client and model as the original demo.
     """
     import json
-    from utils.repo_tools import read_file, search_repo, validate_repository, is_tracked
+    from utils.repo_tools import (read_file, search_repo, validate_repository, is_tracked,
+                                  action_key, repeated_action_message)
 
     if not isinstance(issue, str) or not issue.strip() or len(issue) > 20000:
         raise ValueError('Issue must contain 1-20000 characters')
@@ -69,7 +70,8 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
     evidence = []
     searched = False
     tools = {'search_repo': search_repo, 'read_file': read_file}
-    for _ in range(max_steps):
+    seen_actions = {}
+    for step in range(1, max_steps + 1):
         if completion is None:
             raw = get_client().chat.completions.create(
                 model=OPENAI_MODEL, messages=messages, temperature=0.0,
@@ -102,6 +104,12 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
                 arguments = dict(arguments)
                 arguments['max_results'] = min(arguments.get('max_results', 20), search_result_limit)
                 arguments['context_lines'] = min(arguments.get('context_lines', 3), search_context_limit)
+            key = action_key(name, arguments)
+            if key in seen_actions:
+                messages.append({'role': 'user', 'content': repeated_action_message(
+                    name, seen_actions[key], 'return the final plan')})
+                continue
+            seen_actions[key] = step
             if name == 'read_file' and not is_tracked(root, arguments.get('relative_path', '')):
                 result = {'ok': False, 'error': 'File is not a permitted tracked file at Base Commit', 'truncated': False}
             else:

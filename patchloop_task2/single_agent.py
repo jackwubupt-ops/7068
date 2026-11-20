@@ -19,7 +19,9 @@ import json
 from pathlib import Path
 from typing import Callable
 
-from utils.repo_tools import is_tracked, read_file, search_repo, validate_repository
+from utils.repo_tools import (
+    action_key, is_tracked, read_file, repeated_action_message, search_repo, validate_repository,
+)
 
 from .coder import CoderError, extract_diff
 from .edit_blocks import SEARCH_MARK, EditBlockError, edit_blocks_to_diff, git_show_reader
@@ -91,6 +93,7 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
     result = SingleAgentResult(status="no_submission")
     read_paths: set[str] = set()
     tools = {"search_repo": search_repo, "read_file": read_file}
+    seen_actions: dict[str, int] = {}
 
     for step in range(1, max_steps + 1):
         try:
@@ -152,6 +155,14 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                 event["search_query"] = str(arguments.get("query"))[:80]
             else:
                 event["read_path"] = str(arguments.get("relative_path"))[:160]
+            key = action_key(name, arguments)
+            if key in seen_actions:
+                event["repeat_of_step"] = seen_actions[key]
+                messages.append({"role": "user", "content": repeated_action_message(
+                    name, seen_actions[key], "submit your SEARCH/REPLACE edit"
+                    if edit_format == "search_replace" else "submit your unified diff")})
+                continue
+            seen_actions[key] = step
             if name == "read_file" and not is_tracked(root, arguments.get("relative_path", "")):
                 tool_result = {"ok": False, "error": "File is not a tracked file at the base commit"}
             else:
