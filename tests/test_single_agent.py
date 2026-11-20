@@ -141,7 +141,13 @@ class SingleAgentLoopTests(unittest.TestCase):
 
     def test_other_runtime_errors_propagate(self):
         with self.assertRaises(RuntimeError):
-            self.run_agent([RuntimeError("QWEN_TRUNCATED_OUTPUT:agent")])
+            self.run_agent([RuntimeError("QWEN_EMPTY_CHOICES:agent")])
+
+    def test_truncated_reply_is_a_failed_step_not_a_crash(self):
+        result, model = self.run_agent([READ, RuntimeError("QWEN_TRUNCATED_OUTPUT:agent"), GOOD])
+        self.assertEqual(result.status, "prediction_ready")
+        self.assertEqual(result.trace[1]["action"], "truncated_output")
+        self.assertIn("output token limit", model.seen[2][-1]["content"])
 
     def test_diff_format_submission(self):
         diff = ("diff --git a/pkg/mod.py b/pkg/mod.py\n--- a/pkg/mod.py\n+++ b/pkg/mod.py\n"

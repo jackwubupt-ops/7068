@@ -106,6 +106,13 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
             if "BUDGET_EXHAUSTED" in str(exc):
                 result.stop_reason = str(exc)[:80]
                 break
+            if "QWEN_TRUNCATED_OUTPUT" in str(exc):
+                # Same treatment as a truncated P-C-R Coder: a failed reply, not a crash.
+                result.trace.append({"step": step, "action": "truncated_output"})
+                messages.append({"role": "user", "content": (
+                    "Your previous reply hit the output token limit and was discarded. "
+                    "Reply again, shorter: one JSON action or a compact edit.")})
+                continue
             raise
         if not isinstance(raw, str) or len(raw) > 20000:
             raise ValueError("Agent response is empty or exceeds limit")

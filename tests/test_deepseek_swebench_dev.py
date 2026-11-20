@@ -303,6 +303,76 @@ class DeepSeekDevControllerTests(unittest.TestCase):
         self.assertFalse(output["official_evaluated"])
 
 
+    def _run_with(self, fake_coder, fake_review=None, api=None, out="run"):
+        def fake_apply(root, base, proposal, *, export_path, allowed_paths):
+            Path(export_path).write_text(DIFF, encoding="utf-8")
+            return SimpleNamespace(status="applied", patch_sha256="a" * 64, error_code=None,
+                                   error_message=None, changed_files=["src/feature.py"])
+        reviews = []
+        def default_review(issue, plan, proposal, failure, *, completion):
+            reviews.append(failure)
+            return {"failure_type": "model_output", "diagnosis": "d", "suggested_fix": "f"}
+        with patch("experiments.deepseek_swebench_dev.run_localization",
+                   return_value={"suspected_files": [{"file_path": "src/feature.py"}]}), \
+             patch("experiments.deepseek_swebench_dev._coder", side_effect=fake_coder), \
+             patch("experiments.deepseek_swebench_dev.apply_candidate", side_effect=fake_apply), \
+             patch("experiments.deepseek_swebench_dev.review_failure",
+                   side_effect=fake_review or default_review), \
+             patch("experiments.deepseek_swebench_dev._clean_source", return_value=True):
+            report = run_real_dev(self.root / out, api=api or self.api,
+                                  task_loader=lambda **kwargs: self.task,
+                                  checkout_fn=lambda task, path: path)
+        return report, reviews
+
+    def test_invalid_coder_diff_is_a_failed_attempt_with_reviewer_retry(self):
+        def fake_coder(issue, plan, *, completion, revision=None):
+            completion([{"role": "user", "content": "patch"}])
+            if revision is None:
+                raise ValueError("Invalid unified diff body at line 11")
+            return DIFF
+        report, reviews = self._run_with(fake_coder)
+        self.assertEqual(report["status"], "prediction_ready")
+        first = report["candidate_attempts"][0]
+        self.assertEqual((first["patch_status"], first["error_code"]), ("edit_invalid", "invalid_diff"))
+        self.assertEqual(reviews[0]["error_code"], "invalid_diff")
+
+    def test_truncated_coder_output_ends_as_patch_failed_not_experiment_error(self):
+        class Truncating(FakeDeepSeek):
+            def complete(self, stage, messages):
+                if stage == "coder":
+                    raise RuntimeError("QWEN_TRUNCATED_OUTPUT:coder")
+                return super().complete(stage, messages)
+        def fake_coder(issue, plan, *, completion, revision=None):
+            return completion([{"role": "user", "content": "patch"}])
+        report, reviews = self._run_with(fake_coder, api=Truncating())
+        self.assertEqual(report["status"], "patch_failed")
+        self.assertIsNone(report.get("error"))
+        self.assertEqual([c["error_code"] for c in report["candidate_attempts"]],
+                         ["truncated_output", "truncated_output"])
+        self.assertEqual(len(reviews), 1)
+
+    def test_unusable_reviewer_output_still_retries_the_coder(self):
+        from patchloop_task2.reviewer import ReviewerError
+        def fake_coder(issue, plan, *, completion, revision=None):
+            completion([{"role": "user", "content": "patch"}])
+            if revision is None:
+                raise ValueError("Invalid unified diff body at line 3")
+            self.assertEqual(revision["reviewer"]["failure_type"], "unknown")
+            return DIFF
+        def bad_review(*args, **kwargs):
+            raise ReviewerError("Unsupported failure type")
+        report, _ = self._run_with(fake_coder, fake_review=bad_review)
+        self.assertEqual(report["status"], "prediction_ready")
+        self.assertEqual(report["candidate_attempts"][0]["reviewer_error"], "Unsupported failure type")
+
+    def test_coder_context_error_before_any_model_call_is_still_an_experiment_error(self):
+        from patchloop_task2.coder import CoderError
+        def fake_coder(issue, plan, *, completion, revision=None):
+            raise CoderError("Missing successful cited read_file code for candidates")
+        report, _ = self._run_with(fake_coder)
+        self.assertEqual(report["status"], "experiment_error")
+        self.assertEqual(report["failed_stage"], "real_coder_patch")
+
     def test_coder_prompt_requires_small_valid_git_diff(self):
         from experiments.deepseek_swebench_dev import _minimal_coder_messages
         original = [{"role": "user", "content": "Real issue and evidence"}]
