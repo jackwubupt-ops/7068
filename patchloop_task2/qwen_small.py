@@ -19,7 +19,9 @@ MODELS = {
     "Qwen/Qwen2.5-Coder-7B-Instruct",
 }
 DEFAULT_MODEL = "Qwen/Qwen2.5-Coder-0.5B-Instruct"
-STAGE_TOKENS = {"preflight": 32, "planner": 1500, "coder": 3500, "reviewer": 900}
+# "agent" is the single-agent baseline (RQ3): one conversation that both explores
+# and submits edits, so it gets the Coder's output cap and the Planner's history trim.
+STAGE_TOKENS = {"preflight": 32, "planner": 1500, "coder": 3500, "reviewer": 900, "agent": 3500}
 
 
 @dataclass(frozen=True)
@@ -135,7 +137,7 @@ class QwenSmallBackend:
             raise RuntimeError("QWEN_CALL_BUDGET_EXHAUSTED")
         if self.output_tokens >= 15000:
             raise RuntimeError("QWEN_TOKEN_BUDGET_EXHAUSTED")
-        if stage == "planner":
+        if stage in {"planner", "agent"}:
             transmitted, omitted = trim_planner_history(messages, self.settings.context_chars)
         else:
             transmitted, omitted = messages, 0
