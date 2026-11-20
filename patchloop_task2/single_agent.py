@@ -80,7 +80,8 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                      completion: Callable[[list[dict]], str], edit_format: str = "search_replace",
                      max_steps: int = 16, max_submissions: int = 2,
                      search_result_limit: int = 5, search_context_limit: int = 1,
-                     export_path: str | Path | None = None) -> SingleAgentResult:
+                     export_path: str | Path | None = None,
+                     candidate_files: list[dict] | None = None) -> SingleAgentResult:
     if edit_format not in EDIT_INSTRUCTIONS:
         raise ValueError(f"edit_format must be one of {tuple(EDIT_INSTRUCTIONS)}")
     if not isinstance(issue, str) or not issue.strip() or len(issue) > 20000:
@@ -91,7 +92,7 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
     messages = [
         {"role": "system", "content": SYSTEM.format(
             edit=EDIT_INSTRUCTIONS[edit_format], steps=max_steps, submissions=max_submissions)},
-        {"role": "user", "content": json.dumps({"issue": issue, "base_commit": base})},
+        {"role": "user", "content": json.dumps(_first_message(issue, base, candidate_files))},
     ]
     result = SingleAgentResult(status="no_submission")
     read_paths: set[str] = set()
@@ -197,6 +198,15 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
         result.stop_reason = "step_budget_exhausted"
     result.read_files = sorted(read_paths)
     return result
+
+
+def _first_message(issue: str, base: str, candidate_files: list[dict] | None) -> dict:
+    first = {"issue": issue, "base_commit": base}
+    if candidate_files:
+        # Same retrieval list and wording as the P-C-R Planner (utils.retrieval).
+        from utils.retrieval import candidate_message_fields
+        first.update(candidate_message_fields(candidate_files))
+    return first
 
 
 def _edit_request(edit_format: str, read_paths: set[str]) -> str:
