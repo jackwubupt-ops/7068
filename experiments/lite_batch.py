@@ -38,8 +38,8 @@ from swebench_dev import DEVELOPMENT_SPLIT, LITE_DATASET_ID, DevelopmentTask, lo
 EXPERIMENT = "patchloop-lite-dev-batch-v1"
 MAX_WORKERS = 16
 SUMMARY_FIELDS = (
-    "instance_id", "repo", "status", "patch_status", "suspected_files",
-    "planner_calls", "coder_calls", "reviewer_calls", "attempt_count",
+    "instance_id", "repo", "agent", "status", "patch_status", "suspected_files",
+    "planner_calls", "coder_calls", "reviewer_calls", "agent_calls", "attempt_count",
     "prompt_tokens", "completion_tokens", "duration_seconds",
     "prediction_available", "failed_stage", "error",
 )
@@ -217,6 +217,8 @@ def main() -> int:
     parser.add_argument("--instances", help="Comma-separated instance IDs (default: dataset order)")
     parser.add_argument("--limit", type=int, help="Run only the first N selected tasks")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--agent", choices=("pcr", "single"), default="pcr",
+                        help="pcr = Planner-Coder-Reviewer (default); single = single-agent baseline (RQ3)")
     parser.add_argument("--edit-format", choices=("diff", "search_replace"), default="diff",
                         help="Coder output: unified diff (default) or SEARCH/REPLACE blocks")
     parser.add_argument("--workers", type=int, default=1,
@@ -247,7 +249,7 @@ def main() -> int:
     def run_one(task: DevelopmentTask, task_dir: Path) -> dict:
         backend = QwenSmallBackend(settings)  # fresh per-task call and token budget
         return run_qwen_dev(
-            backend, task_dir,
+            backend, task_dir, agent=args.agent,
             instance_id=task.instance_id, expected_repo=task.repo,
             expected_base=task.base_commit, dataset_id=args.dataset,
             task_loader=lambda instance_id: by_id[instance_id],
@@ -262,6 +264,7 @@ def main() -> int:
         "timeout_seconds": settings.timeout_seconds,
         "stage_max_tokens": STAGE_TOKENS,
         "temperature": 0,
+        "agent": args.agent,
         "max_candidates": 2,
         "docker_tests": False,
         "edit_format": args.edit_format,

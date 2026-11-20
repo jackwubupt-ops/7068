@@ -228,6 +228,35 @@ failure. The prompt evidence is the same bounded, cited read_file lines; only th
 output instructions differ. The format is recorded in `manifest.json` and
 `run_status.json`; compare formats on the same tasks with everything else fixed.
 
+### Single-agent baseline (RQ3): `--agent single`
+
+`--agent single` (in `lite_batch` and `qwen_small_dev --mode dev`) replaces
+Planner -> Coder -> Reviewer with ONE conversation that searches/reads the repository
+with the same read-only tools and bounds as the Planner and then submits an edit.
+There is no separate plan, Coder prompt or Reviewer: a rejected submission's raw
+validator/Git error goes back into the same conversation.
+
+Matched to P-C-R so the comparison isolates the multi-agent structure:
+
+| | P-C-R (`--agent pcr`) | single (`--agent single`) |
+|---|---|---|
+| Model calls / output tokens per task | backend caps (`QWEN_MAX_CALLS`, 15000) | same caps |
+| Exploration | Planner, up to 14 turns | shared 16 replies in total |
+| Edit attempts | 2 Coder attempts | 2 submissions |
+| Files it may edit | Planner-read suspected files | files it has read |
+| Edit format | `--edit-format` | same `--edit-format` |
+
+Run both on the same tasks with everything else fixed, e.g.
+
+~~~bash
+python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-pcr    --agent pcr    --edit-format search_replace --workers 4
+python -m experiments.lite_batch --out /root/autodl-tmp/lite-pilot-single --agent single --edit-format search_replace --workers 4
+~~~
+
+Single-agent predictions use the label `<model>-single-agent`. In its `run_status.json`,
+`suspected_files` means the files the agent actually edited and `read_files` lists
+everything it read.
+
 Each output directory contains `manifest.json` (task IDs, model, PatchLoop commit, budgets),
 one sub-directory per task, `results.jsonl`, `all_preds.jsonl` (input for the official
 harness) and `summary.json`. `prediction_ready` counts Git-applicable candidates, not
