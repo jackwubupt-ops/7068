@@ -87,7 +87,8 @@ class ConversionTests(unittest.TestCase):
                      "        return 1\n    return -1\n\n\ndef g():")
         repo, diff, meta = self.convert(text, {"pkg/mod.py": ORIGINAL})
         self.assertTrue(diff.startswith("diff --git a/pkg/mod.py b/pkg/mod.py\n"))
-        self.assertEqual(meta, {"edit_blocks": 1, "edited_files": ["pkg/mod.py"]})
+        self.assertEqual(meta, {"edit_blocks": 1, "edited_files": ["pkg/mod.py"],
+                                "search_match_modes": ["exact"]})
         self.assert_applies_to(repo, diff, {"pkg/mod.py": ORIGINAL.replace(
             "    return 0\n\n\ndef g", "    return -1\n\n\ndef g")})
 
@@ -96,11 +97,46 @@ class ConversionTests(unittest.TestCase):
             self.convert(block("    return 0", "    return 5"), {"pkg/mod.py": ORIGINAL})
         self.assertEqual(ctx.exception.code, "search_ambiguous")
 
-    def test_whitespace_mismatch_is_not_fixed_but_hinted(self):
+    def test_trailing_whitespace_in_search_still_matches_and_replace_is_verbatim(self):
+        text = block("def g():   \n    return 0  ", "def g():\n    return 7")
+        repo, diff, meta = self.convert(text, {"pkg/mod.py": ORIGINAL})
+        self.assertEqual(meta["search_match_modes"], ["trailing_whitespace"])
+        self.assert_applies_to(repo, diff, {"pkg/mod.py": ORIGINAL.replace(
+            "def g():\n    return 0\n", "def g():\n    return 7\n")})
+
+    def test_one_constant_indent_shift_is_applied_to_search_and_replace(self):
+        # The model dropped 2 of the 4 leading spaces on every SEARCH line.
+        text = block("  if x:\n      return 1", "  if x is not None:\n      return 1")
+        repo, diff, meta = self.convert(text, {"pkg/mod.py": ORIGINAL})
+        self.assertEqual(meta["search_match_modes"], ["indent_shift"])
+        self.assert_applies_to(repo, diff, {"pkg/mod.py": ORIGINAL.replace(
+            "    if x:\n", "    if x is not None:\n")})
+        # Extra indentation on every line is removed the same way.
+        text = block("        def g():\n            return 0", "        def g():\n            return 9")
+        repo2 = self.root / "second"
+        repo2.mkdir()
+        repo3, sha = make_repo(repo2, {"pkg/mod.py": ORIGINAL})
+        diff, meta = edit_blocks_to_diff(text, ALLOWED, git_show_reader(repo3, sha))
+        self.assertEqual(meta["search_match_modes"], ["indent_shift"])
+        self.assertIn("+    return 9", diff)
+
+    def test_inconsistent_indentation_is_not_fixed_but_hinted(self):
         with self.assertRaises(EditBlockError) as ctx:
-            self.convert(block("  if x:", "  if not x:"), {"pkg/mod.py": ORIGINAL})
+            # Shifted by 4 on the first line but by 2 on the second: not one constant shift.
+            self.convert(block("if x:\n      return 1", "if not x:\n      return 1"), {"pkg/mod.py": ORIGINAL})
         self.assertEqual(ctx.exception.code, "search_not_found")
         self.assertIn("whitespace", str(ctx.exception))
+
+    def test_replace_without_the_shifted_prefix_is_not_guessed(self):
+        # SEARCH has 2 extra spaces everywhere, but a REPLACE line lacks them.
+        with self.assertRaises(EditBlockError) as ctx:
+            self.convert(block("      if x:", "    if not x:"), {"pkg/mod.py": ORIGINAL})
+        self.assertEqual(ctx.exception.code, "search_not_found")
+
+    def test_indent_shift_that_matches_two_places_is_ambiguous(self):
+        with self.assertRaises(EditBlockError) as ctx:
+            self.convert(block("  return 0", "  return 5"), {"pkg/mod.py": ORIGINAL})
+        self.assertEqual(ctx.exception.code, "search_ambiguous")
 
     def test_sequential_blocks_multiple_files_and_deletion(self):
         text = (block("def f(x):", "def f(x, y=None):")

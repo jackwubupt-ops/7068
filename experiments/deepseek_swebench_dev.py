@@ -113,8 +113,9 @@ def _planner_request_messages(messages: list[dict], round_number: int) -> list[d
             "the successfully read source lines. Here are the only available "
             "read_file evidence IDs and their exactly observed line ranges: "
             + (coverage or "(none)") + ". "
-            "Do not cite lines outside these ranges. If none is appropriate, "
-            "return suspected_files=[] and explain in limitations. No more "
+            "Do not cite lines outside these ranges. Name at least one candidate "
+            "you read (your best hypothesis; state uncertainty in limitations); "
+            "suspected_files=[] only if no read_file evidence exists. No more "
             "search_repo/read_file actions. Do not invent evidence or fixes."
         ),
     }]
@@ -253,11 +254,20 @@ def run_real_dev(
                 report["planner_action_trace"].append(event)
                 return raw
 
-            plan = run_localization(
-                task.problem_statement, str(checkout), task.base_commit,
-                completion=planner_completion, max_steps=MAX_PLANNER_STEPS,
-                search_result_limit=5, search_context_limit=1,
-            )
+            try:
+                plan = run_localization(
+                    task.problem_statement, str(checkout), task.base_commit,
+                    completion=planner_completion, max_steps=MAX_PLANNER_STEPS,
+                    search_result_limit=5, search_context_limit=1,
+                )
+            except ValueError as exc:
+                if "exhausted action budget" not in str(exc):
+                    raise
+                # The MODEL never produced a valid plan within its budget: a
+                # localization failure (like the single agent's no_submission),
+                # not a harness error.
+                report["planner_stop_reason"] = "planner_budget_exhausted"
+                plan = {"suspected_files": []}
             files = plan.get("suspected_files", [])
             report["suspected_file_count"] = len(files)
             # This list is only the actual model's localization, not a gold hint.

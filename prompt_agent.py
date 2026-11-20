@@ -62,8 +62,10 @@ Return exactly one JSON object per turn, no markdown. Available actions:
 {"action":"final","plan":{"issue_summary":"...","suspected_files":[{"file_path":"...","relevant_lines":[start,end],"reason":"...","evidence_ids":["E2"]}],"root_cause_hypothesis":"...","planned_changes":["..."],"limitations":["..."]}}
 Search first, then read relevant code. Every candidate must reference successful
 read_file evidence covering its inclusive line range. State root causes as
-hypotheses, never verified facts. No execution tests have been run. If evidence
-is insufficient, return empty suspected_files and explain in limitations.
+hypotheses, never verified facts. No execution tests have been run. Once you
+have read code, suspected_files must name at least one file you read (your best
+hypothesis; explain uncertainty in limitations). Return empty suspected_files
+only if no read_file call succeeded.
 Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
     messages = [{'role': 'system', 'content': instructions},
                 {'role': 'user', 'content': json.dumps({'issue': issue, 'base_commit': repository['base_commit']})}]
@@ -126,6 +128,33 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
     raise ValueError('Planner exhausted action budget without a validated repair plan')
 
 
+def _line_number(value):
+    if type(value) is int:
+        return value
+    if isinstance(value, str) and value.strip().isdigit():
+        return int(value.strip())
+    return None
+
+
+def _normalize_candidate_format(item):
+    """Accept common small-model spellings of the SAME information, in place:
+    relevant_lines 42 / [42] / "40-50" / ["40", "50"] / [50, 40] -> [start, end],
+    evidence_ids "E2" -> ["E2"]. Nothing is invented: unparseable values are left
+    as they are and still rejected, and the span must still be covered by reads."""
+    span = item.get('relevant_lines')
+    if isinstance(span, str) and '-' in span:
+        span = span.split('-', 1)
+    if not isinstance(span, list):
+        span = [span]
+    numbers = [_line_number(n) for n in span]
+    if len(numbers) == 1:
+        numbers = numbers * 2
+    if len(numbers) == 2 and None not in numbers:
+        item['relevant_lines'] = sorted(numbers)
+    if isinstance(item.get('evidence_ids'), str):
+        item['evidence_ids'] = [item['evidence_ids']]
+
+
 def _validate_repair_plan(plan, evidence, searched):
     if not searched:
         raise ValueError('Search evidence is required before finalizing')
@@ -140,12 +169,18 @@ def _validate_repair_plan(plan, evidence, searched):
     suspects = plan.get('suspected_files')
     if not isinstance(suspects, list) or len(suspects) > 20:
         raise ValueError('suspected_files must be a list with at most 20 entries')
+    reads = {e['id']: e['result'] for e in evidence if e['tool'] == 'read_file' and e['result']['ok']}
+    if not suspects and reads:
+        # Parity with the single agent, which must edit what it read: no free
+        # "give up" exit once code has been read. A candidate is a hypothesis.
+        raise ValueError('You have read code: name at least one file you read as your best '
+                         'candidate (a hypothesis; state uncertainty in limitations)')
     if not suspects and not plan['limitations']:
         raise ValueError('Explain missing evidence in limitations')
-    reads = {e['id']: e['result'] for e in evidence if e['tool'] == 'read_file' and e['result']['ok']}
     for item in suspects:
         if not isinstance(item, dict) or not isinstance(item.get('reason'), str) or not item['reason'].strip():
             raise ValueError('Each candidate needs a reason')
+        _normalize_candidate_format(item)
         span = item.get('relevant_lines')
         if not isinstance(span, list) or len(span) != 2 or any(type(n) is not int for n in span) or not 1 <= span[0] <= span[1]:
             raise ValueError('relevant_lines must be an inclusive [start, end] range')
