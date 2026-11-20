@@ -33,7 +33,7 @@ def correct_and_refine_prompt(raw_input: str, language='en') -> str:
 
 
 def plan_repair(issue, repo_root, base_commit, *, completion=None, max_steps=10,
-                search_result_limit=20, search_context_limit=3):
+                search_result_limit=20, search_context_limit=3, candidate_files=None):
     """Localize an issue using bounded read-only tools; never apply a patch.
 
     completion(messages) is an injectable text completion for offline tests.
@@ -67,8 +67,13 @@ have read code, suspected_files must name at least one file you read (your best
 hypothesis; explain uncertainty in limitations). Return empty suspected_files
 only if no read_file call succeeded.
 Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
+    first = {'issue': issue, 'base_commit': repository['base_commit']}
+    if candidate_files:
+        # Same retrieval list and wording as the single agent (utils.retrieval).
+        from utils.retrieval import candidate_message_fields
+        first.update(candidate_message_fields(candidate_files))
     messages = [{'role': 'system', 'content': instructions},
-                {'role': 'user', 'content': json.dumps({'issue': issue, 'base_commit': repository['base_commit']})}]
+                {'role': 'user', 'content': json.dumps(first)}]
     evidence = []
     searched = False
     tools = {'search_repo': search_repo, 'read_file': read_file}

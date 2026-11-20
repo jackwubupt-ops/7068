@@ -228,6 +228,9 @@ def main() -> int:
                         help="Coder output: unified diff (default) or SEARCH/REPLACE blocks")
     parser.add_argument("--workers", type=int, default=1,
                         help=f"Tasks run concurrently against vLLM (1..{MAX_WORKERS}; 4 suits 7B on a 24 GiB GPU)")
+    parser.add_argument("--retrieval-k", type=int, default=0,
+                        help="Give both agents the top-K files from BM25 + issue-hint retrieval "
+                             "(utils.retrieval) in their first message; 0 = off (default)")
     parser.add_argument("--list-repos", action="store_true",
                         help="Print the GitHub repos of the selected tasks and exit (for mirroring)")
     args = parser.parse_args()
@@ -243,6 +246,8 @@ def main() -> int:
         return 0
     if not args.out:
         parser.error("--out is required")
+    if not 0 <= args.retrieval_k <= 50:
+        parser.error("--retrieval-k must be in [0, 50]")
 
     from experiments.qwen_small_dev import run_qwen_dev
     from patchloop_task2.qwen_small import STAGE_TOKENS, QwenSettings, QwenSmallBackend
@@ -259,6 +264,7 @@ def main() -> int:
             expected_base=task.base_commit, dataset_id=args.dataset,
             task_loader=lambda instance_id: by_id[instance_id],
             edit_format=args.edit_format,
+            **({"retrieval_k": args.retrieval_k} if args.retrieval_k else {}),
         )
 
     manifest = build_manifest(tasks, dataset_id=args.dataset, settings={
@@ -273,6 +279,7 @@ def main() -> int:
         "max_candidates": 2,
         "docker_tests": False,
         "edit_format": args.edit_format,
+        "retrieval_k": args.retrieval_k,
         # Greedy decoding can still differ slightly between batch sizes in vLLM.
         "workers": args.workers,
     })

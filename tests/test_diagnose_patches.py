@@ -84,15 +84,19 @@ class BatchTests(unittest.TestCase):
                 diagnose_batch(batch, {"o__r-1": GOLD})
 
 
+ANALYSIS_ONLY = {"experiments/diagnose_patches.py", "experiments/retrieval_recall.py"}
+
+
 class LeakageGuardTests(unittest.TestCase):
     def test_no_inference_module_imports_the_gold_scoring_script(self):
         root = Path(__file__).resolve().parents[1]
         offenders = []
         for path in root.rglob("*.py"):
             rel = path.relative_to(root).as_posix()
-            if rel.startswith(("tests/", ".venv")) or "/." in rel or rel == "experiments/diagnose_patches.py":
+            if rel.startswith(("tests/", ".venv")) or "/." in rel or rel in ANALYSIS_ONLY:
                 continue
-            if "diagnose_patches" in path.read_text(encoding="utf-8", errors="replace"):
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if any(name in text for name in ("diagnose_patches", "retrieval_recall")):
                 offenders.append(rel)
         self.assertEqual(offenders, [])
 

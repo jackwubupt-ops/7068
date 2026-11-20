@@ -149,6 +149,7 @@ def run_real_dev(
     dataset_id: str = DATASET_ID,
     split: str = DEVELOPMENT_SPLIT,
     edit_format: str = "diff",
+    retrieval_k: int = 0,
 ) -> dict:
     """Use real model API by default; injectable dependencies are for offline unit tests.
 
@@ -209,6 +210,12 @@ def run_real_dev(
         stage = "checkout_real_base_commit"
         with tempfile.TemporaryDirectory(prefix="patchloop-deepseek-swebench-dev-") as temp:
             checkout = checkout_fn(task, Path(temp) / "checkout")
+            candidates = None
+            if retrieval_k:
+                stage = "retrieval"
+                from utils.retrieval import rank_files
+                candidates = rank_files(checkout, task.problem_statement, retrieval_k)
+                report["retrieval_candidates"] = [c["file_path"] for c in candidates]
             stage = "live_api_preflight"
             live.complete(
                 "preflight", [{"role": "user", "content": "Reply with the word API_OK."}],
@@ -259,6 +266,7 @@ def run_real_dev(
                     task.problem_statement, str(checkout), task.base_commit,
                     completion=planner_completion, max_steps=MAX_PLANNER_STEPS,
                     search_result_limit=5, search_context_limit=1,
+                    **({"candidate_files": candidates} if candidates else {}),
                 )
             except ValueError as exc:
                 if "exhausted action budget" not in str(exc):
