@@ -1,212 +1,215 @@
-# PatchLoop
+# PatchLoop: an issue-to-patch repair agent with the maintainer in the loop
 
-**Agentic repository-level bug repair with a small open model, evaluated on SWE-bench Lite.**
-HKU COMP7608B project, built on top of the Group 8 CodeNexus demo.
+**COMP7608B final project** · Group **[GROUP NUMBER]** · Members: **[MEMBER NAMES]**
+<!-- Names/IDs are filled in only in the submission ZIP copy; this repository is public. -->
 
-PatchLoop takes a real GitHub issue and the repository at its historical base commit, localizes
-the bug with read-only tools, writes a candidate patch, applies it in an isolated Git worktree and
-exports it in official SWE-bench prediction format. Whether an issue is *resolved* is decided only
-by the official SWE-bench harness.
+**Submitted version:** git tag `[v1.0-final]` (see section 9).
 
-> **New here?** Two machines, two runbooks (Chinese, step by step with pass criteria):
-> - **GPU box (AutoDL, RTX 4090)**: [full test runbook](docs/full-test-runbook.md): offline tests → Qwen2.5-Coder-7B
->   on vLLM → SWE-bench Lite dev smoke and pilot (and later QLoRA training; no Docker needed).
-> - **CPU evaluation box (Alibaba Cloud, Docker)**: [Alibaba Cloud runbook](docs/aliyun-runbook.md): copy the batch
->   directories over → **official evaluation** (`swebench==4.1.0`, prebuilt images) → paired statistics.
+PatchLoop helps a **repository maintainer** turn a bug report into a **reviewable, Git-applicable
+patch**. The maintainer gives an issue and a repository at a commit. The agent finds the relevant
+code with retrieval and read-only tools, decides which files to change, writes an edit, checks
+that it applies, recovers from failed attempts, and then **stops for the maintainer's decision**:
+accept (export the patch or commit it on a new branch), reject, or send a follow-up. When the
+request is too vague, or the agent cannot locate or edit the code, it stops and asks instead of
+guessing.
+
+| | |
+|---|---|
+| Users | maintainers/contributors of Python repositories triaging bug reports |
+| Need | a first candidate fix, localized and applicable, with a visible trace of how it was found |
+| Entry point | web app: `python -m patchloop_app.web` |
+| Models | local **Qwen2.5-Coder-7B-Instruct** on vLLM (private; the proposal's model) or the **DeepSeek API** (`deepseek-flash` / `deepseek-v4-pro`; stronger; data leaves the machine) |
+| Evaluation | SWE-bench Lite **dev**, scored only by the official harness (`swebench==4.1.0`, local Docker) |
 
 ---
 
-## Research questions (proposal)
-
-| | Question | Comparison | Status |
-|---|---|---|---|
-| **RQ1** | Does QLoRA fine-tuning help a 7B code model repair repositories? | Qwen2.5-Coder-7B base vs. QLoRA (SWE-smith data, leakage-filtered) | not started |
-| **RQ2** | Does execution feedback help? | 1 candidate vs. execution feedback with up to 3 candidates | apply-failure feedback only; test feedback not built yet |
-| **RQ3** | Does a multi-agent structure help at a matched budget? | single agent vs. Planner–Coder–Reviewer | both pipelines implemented; no live results yet |
-
-Data: SWE-bench Lite **dev** (23 tasks) for development, Lite **test** (300) held out for final
-results. Primary metric: official resolution rate, with McNemar tests and bootstrap CIs on paired tasks.
-
-## How it works
+## 1. How it works
 
 ```
-issue + repo @ base commit
-        │
-        ▼
- ┌──────────────┐  search_repo / read_file (read-only, bounded)
- │   Planner    │──────────────────────────────────────────────► suspected files + cited evidence
- └──────────────┘
-        │
-        ▼
- ┌──────────────┐  unified diff  or  SEARCH/REPLACE blocks (--edit-format)
- │    Coder     │──────────────────────────────────────────────► candidate patch
- └──────────────┘
-        │  validate → git apply --check in a detached worktree at the base commit
-        ▼
- ┌──────────────┐  on failure: diagnosis → Coder retries (2 attempts in SWE-bench runs)
- │   Reviewer   │
- └──────────────┘
-        │
-        ▼
- candidate.patch + predictions.jsonl  ──►  official SWE-bench harness / sb-cli  ──►  resolved?
+issue + repo@commit
+   │
+   ├─ clarification check ── too short / matches no code ──► STOP: ask the maintainer (no model call)
+   │
+   ├─ retrieval (BM25 + paths/tracebacks/definitions named in the issue) → top-K candidate files
+   │
+   ├─ agent (choose one; same tools, budgets and model for both)
+   │    P-C-R:  Planner ──search_repo/read_file──► plan (files + line spans + hypothesis)
+   │            Coder  ──► SEARCH/REPLACE edit ──► harness: parse → match → git apply (isolated worktree)
+   │            Reviewer (on a failed attempt) ──► diagnosis ──► Coder retry (2 attempts)
+   │    single: one conversation: search/read ──► {"action":"edit"} ──► edit ──► apply (2 submissions)
+   │
+   └─ outcome
+        applicable patch ──► STOP: maintainer accepts (export / commit on new branch) or rejects
+        no file / no edit / all attempts failed ──► STOP: questions to the maintainer
+        follow-up (extra guidance, other agent or model) ──► new linked round (max 5)
 ```
 
-`--agent single` replaces the three roles with **one** conversation using the same tools,
-budgets and edit format (the RQ3 baseline).
+Autonomous decisions: which keywords to search, which files and line ranges to read, which files
+to edit (Planner), when to stop investigating (single agent `edit` action), and how to repair
+after a failed apply (Reviewer → Coder). The harness, not the model, applies patches, so a model
+can never run shell commands. Guards: per-task call and token budgets, a repeated-action guard,
+strict reply protocols with bounded retries, and history trimming.
 
-## Status (2026-11-20)
+## 2. Requirements
 
-| Area | State |
-|---|---|
-| Local serving | Qwen2.5-Coder-7B-Instruct on vLLM 0.19.1 / torch 2.10.0 (CUDA 12), verified live on an RTX 4090 |
-| P-C-R pipeline on real SWE-bench tasks | verified live on one full-dev task (`sqlfluff__sqlfluff-4764`): 7B produced an applicable patch; judged likely unresolved, not officially evaluated |
-| Lite dev batch runner (`--workers`, `--resume`) | implemented, offline-tested; live smoke pending |
-| SEARCH/REPLACE edit format | implemented, offline-tested; live effect not measured |
-| Single-agent baseline (RQ3) | implemented, offline-tested; live run pending |
-| Execution feedback in the loop (RQ2) | not built (needs Docker during generation; planned: SWE-bench instance images) |
-| QLoRA (RQ1) | not started |
-| Batch official evaluation + paired stats | `experiments.official_eval` (local Docker harness) and `experiments.paired_compare` (McNemar, bootstrap); offline-tested |
-| Official resolution rate on Lite | no data yet |
-
-Offline test suite: 122 tests pass, 1 skipped. These use scripted model replies and prove
-wiring only, **not** model quality.
-
-## Quick start
-
-### 1. Offline checks (any machine, Python 3.11, Git)
-
-```bash
-python3.11 -m venv .venv && source .venv/bin/activate
-python -m pip install -r requirements-lock.txt "datasets>=3,<5"
-python -m unittest discover -s tests
-```
-
-### 2. GPU server: serve Qwen2.5-Coder-7B locally
-
-```bash
-PYTHON=python3.11 bash scripts/setup_qwen_small.sh          # new venv: vllm 0.19.1 + torch 2.10.0 (CUDA 12)
-source .venv-qwen-vllm-cu12/bin/activate
-QWEN_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct \
-QWEN_MODEL_PATH=/root/autodl-tmp/qwen-models/Qwen2.5-Coder-7B-Instruct \
-  bash scripts/start_qwen_small.sh                          # binds 127.0.0.1:8000 only
-```
-
-The setup script refuses CUDA 13 wheels. `nvidia-smi`'s "CUDA Version" is the driver's ceiling,
-not the runtime PyTorch uses; `scripts/check_cuda_compat.py` checks the real pairing.
-
-### 3. Client: preflight and a batch run
-
-```bash
-cp .env.qwen-small.example .env      # set QWEN_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct, QWEN_TIMEOUT=300
-python -m experiments.qwen_small_dev --mode preflight
-python -m experiments.lite_batch --list-repos | bash scripts/mirror_repos.sh
-python -m experiments.lite_batch --out runs/lite-pilot-pcr    --agent pcr    --edit-format search_replace --workers 4
-python -m experiments.lite_batch --out runs/lite-pilot-single --agent single --edit-format search_replace --workers 4
-```
-
-Then score each batch with the official harness (separate venv with `requirements-swebench-eval.txt`, Docker required)
-and compare configurations on the same tasks:
-
-```bash
-# on the Docker machine, after copying the batch directories there
-python -m experiments.official_eval --batch runs/lite-pilot-pcr --harness-python /data/venvs/swebench/bin/python
-python -m experiments.official_eval --batch runs/lite-pilot-single --harness-python /data/venvs/swebench/bin/python
-python -m experiments.paired_compare runs/lite-pilot-pcr runs/lite-pilot-single
-```
-
-Without Docker, use sb-cli instead (full test runbook, stage 8).
-
-## Batch runner options (`python -m experiments.lite_batch`)
-
-| Option | Default | Meaning |
+| Component | Needed for | Version / size |
 |---|---|---|
-| `--out DIR` | required | new output directory (or an existing one with `--resume`) |
-| `--dataset` | `princeton-nlp/SWE-bench_Lite` | only the `dev` split is ever loaded |
-| `--instances a,b,c` / `--limit N` | all 23 | task subset, deterministic order |
-| `--agent pcr\|single` | `pcr` | Planner–Coder–Reviewer or single-agent baseline |
-| `--edit-format diff\|search_replace` | `diff` | Coder output format |
-| `--workers N` | 1 | tasks run concurrently against vLLM (4 suits 7B on 24 GiB) |
-| `--resume` | off | continue an interrupted batch with identical arguments |
-| `--list-repos` | — | print repositories to mirror, then exit |
+| Linux x86_64, Python 3.11, Git ≥ 2.30 | everything | tested on Ubuntu 22.04 |
+| NVIDIA GPU with ≥ 22 GB (A10 / RTX 4090), driver ≥ 525 | local Qwen backend only | vLLM 0.19.1 + torch 2.10.0 (CUDA 12, pinned in `requirements-qwen-server.txt`) |
+| DeepSeek API key (paid) | DeepSeek backend only | `deepseek-flash` or `deepseek-v4-pro`, non-thinking mode |
+| Docker | official evaluation only | `swebench==4.1.0`, prebuilt `swebench/sweb.eval.x86_64.*` images |
+| Disk | | weights 15 GB, venvs ~15 GB, Lite dev eval images ~29 GB |
 
-Output directory: `manifest.json` (tasks, model, budgets, git commit, agent, edit format,
-workers), one sub-directory per task with `run_status.json` (+ `candidate.patch`,
-`predictions.jsonl`), `results.jsonl`, `all_preds.jsonl` and `summary.json`.
+At least one backend must be available. With only a DeepSeek key, no GPU is needed.
+Client dependencies are pinned in `requirements-lock.txt`.
 
-### Task status meanings
+## 3. Setup
 
-| Status | Meaning |
+Step-by-step server guide with checks: [docs/aliyun-gpu-runbook.md](docs/aliyun-gpu-runbook.md).
+Short version:
+
+```bash
+git clone https://github.com/jackwubupt-ops/7068.git && cd 7068
+python3.11 -m venv .venv-patchloop-client
+.venv-patchloop-client/bin/pip install -r requirements-lock.txt "datasets>=3,<5"
+cp .env.qwen-small.example .env          # then edit .env (see below); .env is git-ignored
+.venv-patchloop-client/bin/python -m unittest discover -s tests   # offline tests, no GPU/API
+```
+
+Local Qwen backend (GPU server):
+
+```bash
+PYTHON=python3.11 bash scripts/setup_qwen_small.sh               # isolated vLLM venv (CUDA 12 pins)
+.venv-qwen-vllm-cu12/bin/hf download Qwen/Qwen2.5-Coder-7B-Instruct --local-dir /data/qwen-models/Qwen2.5-Coder-7B-Instruct
+source .venv-qwen-vllm-cu12/bin/activate
+QWEN_MODEL=Qwen/Qwen2.5-Coder-7B-Instruct QWEN_MODEL_PATH=/data/qwen-models/Qwen2.5-Coder-7B-Instruct \
+  QWEN_MAX_MODEL_LEN=32768 bash scripts/start_qwen_small.sh       # serves on 127.0.0.1:8000 only
+```
+
+Never `pip install` anything else into `.venv-qwen-vllm-cu12`: its versions are pinned as a set
+(an upgraded `huggingface-hub` once broke vLLM start-up).
+
+### Configuration (`.env`)
+
+| Variable | Value used | Meaning |
+|---|---|---|
+| `QWEN_MODEL` | `Qwen/Qwen2.5-Coder-7B-Instruct` | model id served by vLLM |
+| `QWEN_BASE_URL` | `http://127.0.0.1:8000/v1` | local endpoint only (a remote endpoint must be HTTPS) |
+| `QWEN_CONTEXT_CHARS` | `48000` | history budget per Planner/agent call (vLLM `max_model_len` 32768) |
+| `QWEN_MAX_CALLS` / `QWEN_TIMEOUT` | `20` / `300` | per-task call budget / request timeout (s) |
+| `DEEPSEEK_API_KEY` | *(secret)* | enables the DeepSeek backend; **never commit it** |
+| `DEEPSEEK_MODEL` | `deepseek-flash` | or `deepseek-v4-pro` |
+
+Fixed in code for both backends: temperature 0; output caps per call: Planner 1500, Coder 3500,
+Reviewer 900, single agent 3500 tokens; 15 000 output tokens per task; Planner ≤ 14 turns,
+single agent ≤ 16 replies, 2 edit attempts. DeepSeek budgets default to the Qwen values.
+
+## 4. Run the agent (web app)
+
+```bash
+source .venv-patchloop-client/bin/activate
+python -m patchloop_app.web --port 7860 --runs-dir /data/app-runs
+# on your laptop: ssh -L 7860:127.0.0.1:7860 user@server   then open http://127.0.0.1:7860
+```
+
+The server binds to 127.0.0.1 and starts with whichever backends respond. To listen on another
+interface an access token is mandatory: `--host 0.0.0.0 --token <random>` (open
+`/?token=<random>`; restrict the port to your IP).
+
+In the page, choose an **example task** (SWE-bench Lite dev issue; the text is editable) or a
+**local Git repository** on the server, then the model and the agent, and press *Run agent*. The
+timeline shows every decision, tool result, edit, apply result and recovery step. A patch is shown
+as a diff and waits for **Accept / Reject**. Accept saves the patch and, for a local repository,
+commits it on a new branch `patchloop/<session>` through a temporary worktree (the current branch
+and working tree are untouched). *Follow-up* appends guidance and may switch agent or model.
+*Cancel* stops after the current model call.
+
+### Sample inputs and traces
+
+| Sample | Kind | Expected behaviour |
+|---|---|---|
+| [`samples/01_ordinary.json`](samples/01_ordinary.json) | ordinary task | full trace; ends with a patch awaiting confirmation (or questions) |
+| [`samples/02_changed_request.json`](samples/02_changed_request.json) | changed request | round 2 carries the follow-up guidance and switches to the single agent |
+| [`samples/03_failure_vague.json`](samples/03_failure_vague.json) | failure: vague request | stops with questions, zero model calls |
+| [`samples/04_failure_bad_repo.json`](samples/04_failure_bad_repo.json) | failure: invalid repository | fails with a clear message, nothing exported |
+
+```bash
+python -m patchloop_app.samples --backend deepseek --out results/samples   # writes <name>.json + <name>.md
+```
+
+## 5. Evaluation
+
+| Step | Command |
 |---|---|
-| `prediction_ready` | an applicable patch was exported; **not** a resolution |
-| `no_candidate_files` | the Planner localized no file |
-| `no_submission` | the single agent never submitted an edit within its budget |
-| `patch_failed` | every edit attempt failed validation or `git apply` |
-| `experiment_error` / `batch_error` | model, protocol or harness error (see `failed_stage`, `error`) |
-| `workspace_error` / `source_isolation_violation` | Git worktree problem / source checkout changed (prediction discarded) |
+| Batch generation | `python -m experiments.lite_batch --backend qwen\|deepseek --out DIR --agent pcr\|single --edit-format search_replace --retrieval-k 10 --workers 4` |
+| Official evaluation | `python -m experiments.official_eval --batch DIR --harness-python /data/venvs/swebench/bin/python --max-workers 4` |
+| Paired comparison | `python -m experiments.paired_compare DIR_A DIR_B` (exact McNemar + bootstrap CI) |
+| Failure diagnosis | `python -m experiments.diagnose_patches DIR... --out PREFIX` (gold used for scoring only) |
+| Retrieval recall | `python -m experiments.retrieval_recall --out PREFIX` (no model) |
+| Environment check | gold self-test (`python -m swebench.harness.run_evaluation ... --predictions_path gold`); repair with `bash scripts/fix_eval_images.sh` |
 
-## Integrity rules
+Only tasks whose **gold** patch resolves in our environment count. Before the image repair this
+was 15 of 23 Lite dev tasks (pvlib ×5, pydicom-1139/1413 and pyvista-4315 failed on dependency
+drift). Every batch directory records its settings in `manifest.json` (model, backend, budgets,
+retrieval, agent, edit format, workers, git commit).
 
-- Benchmark gold patches, `test_patch`, `FAIL_TO_PASS`/`PASS_TO_PASS` and hints never enter a prompt;
-  the task loader strips them and only the `dev` split is loaded during development.
-- The harness never edits model-written code. It may only recount `@@` hunk-header numbers;
-  SEARCH blocks must match the original file exactly and exactly once.
-- Patches are applied only in temporary detached worktrees; the source checkout must stay clean.
-- No model-generated shell commands run. No silent fallback to another model provider.
-- The vLLM endpoint binds to 127.0.0.1; use SSH port forwarding from other machines.
-- `.env` is never committed.
-- Scripted-reply tests and CI prove wiring, never model quality.
+### Results so far (SWE-bench Lite dev, 23 tasks, Qwen2.5-Coder-7B, search_replace)
 
-## Repository map
+| Version | Change | P-C-R applicable | single applicable | resolved (P-C-R / single) |
+|---|---|---|---|---|
+| pilot v1 | baseline after harness fixes (#18–#20) | 3 | 2 | 0 / 0 |
+| pilot v2 | Planner give-up rule + whitespace-tolerant matching (#21) | 7 | 7 | 0 / 0 |
+| pilot v3 | + retrieval top-10 (#23; recall@10 = 0.83) | 14 | 11 | 0 / 0 |
+
+Diagnosis of v3: the gold file is now read in 83% (P-C-R) / 74% (single) of tasks (v2: 44% / 56%);
+the remaining failures are mostly wrong edits at or near the right place. DeepSeek results and the
+re-evaluation on the repaired images are reported in the final report.
+
+## 6. Integrity, privacy and safety
+
+- Gold patches, `test_patch`, `FAIL_TO_PASS`/`PASS_TO_PASS` and hints never enter a prompt: the
+  task loader keeps only issue, repository and commit. Gold is read only by the post-hoc analysis
+  scripts, which no inference module imports (enforced by a test).
+- Patches are applied only in temporary isolated checkouts; model output is never executed.
+- The harness never rewrites model code, except hunk-header recounts, trailing-whitespace tolerant
+  matching and one constant indentation shift (recorded per block in `search_match_modes`).
+- Local backend: code stays on the server. DeepSeek backend: the issue and the code the agent reads
+  are sent to DeepSeek and billed; the UI states this before every run.
+- `.env` (API keys) is git-ignored; vLLM and the web app bind to 127.0.0.1 by default.
+- Offline tests use **scripted model replies** (labelled in each test file): they prove wiring and
+  safety rules, not model quality. Nothing in the delivered app is mocked.
+
+## 7. Delivered vs. proposal
+
+| Proposal item | Status |
+|---|---|
+| Harness: schemas, model adapter, tracing, repository tools, clean workspaces | done (own JSON protocol and dataclasses instead of LangGraph/Pydantic) |
+| Single-agent end-to-end MVP; Planner–Coder–Reviewer with feedback | done; feedback covers apply/format failures |
+| RQ3: single agent vs. P-C-R under matched budgets | done on Lite dev |
+| RQ2: execution feedback (tests in the loop) | **partial**: apply/format feedback only, no test execution in the loop |
+| RQ1: QLoRA fine-tuning | **not done** (reason in the report) |
+| Official evaluation and ablations | done on Lite dev; Lite test not run |
+| Added after measurements | retrieval, tolerant matching, diagnosis tools, eval-image repair, DeepSeek backend, interactive web app |
+
+## 8. Repository map
 
 | Path | Purpose |
 |---|---|
-| `experiments/lite_batch.py` | SWE-bench Lite dev batch runner |
-| `experiments/deepseek_swebench_dev.py` | single-task P-C-R pipeline on a real SWE-bench instance (`run_real_dev`) |
-| `experiments/single_agent_dev.py` | single-task single-agent pipeline |
-| `experiments/official_eval.py`, `paired_compare.py` | batch official evaluation (local harness) and McNemar/bootstrap comparison |
-| `experiments/qwen_small_dev.py` | Qwen preflight / Docker smoke / single dev task CLI |
-| `patchloop_task2/qwen_small.py` | local vLLM client with per-task call and token budgets |
-| `patchloop_task2/coder.py`, `edit_blocks.py` | diff Coder; SEARCH/REPLACE parsing and conversion |
-| `patchloop_task2/single_agent.py` | single-agent loop |
-| `patchloop_task2/reviewer.py`, `loop.py`, `execution.py` | Reviewer, Task 3 Docker loop |
-| `patchloop_task2/validator.py`, `normalizer.py`, `workspace.py` | patch validation, hunk recount, isolated apply |
-| `prompt_agent.py`, `utils/repo_tools.py` | Planner (Task 1) and its read-only tools |
-| `swebench_dev.py` | leak-safe SWE-bench dev loader and checkout |
-| `scripts/` | GPU setup/start, CUDA compatibility check, repo mirroring, saved-prediction evaluation |
+| `patchloop_app/` | **web app** (`web.py`), session logic and stop rules (`session.py`), sample runner (`samples.py`) |
+| `samples/` | sample requests (ordinary, changed request, failures) |
+| `patchloop_task2/` | backends (`backends.py`, `qwen_small.py`), single agent, Coder, edit blocks, Reviewer, apply/validate |
+| `prompt_agent.py`, `utils/repo_tools.py`, `utils/retrieval.py` | Planner, read-only tools, retrieval |
+| `experiments/` | batch runner, P-C-R and single pipelines, official eval, paired stats, diagnosis, recall |
+| `scripts/` | vLLM setup/start, repository mirroring, eval-image repair |
 | `tests/` | offline unit and integration tests |
-| `app.py`, `templates/`, `static/` | original CodeNexus Flask demo |
+| `docs/` | runbooks and design notes; `docs/aliyun-gpu-runbook.md` is the main server guide |
+| `app.py`, `templates/`, `static/`, `localize.py`, `repair*.py` | earlier course demo and Tasks 1–3 (kept; not part of the final app) |
 
-## Documentation
+## 9. Submitted version, AI use, attribution
 
-- [Full test runbook](docs/full-test-runbook.md): GPU box (AutoDL): setup, serving, batches (Chinese)
-- [Alibaba Cloud runbook](docs/aliyun-runbook.md): CPU evaluation box with Docker: official evaluation, paired stats (Chinese)
-- [Qwen small-model and 7B guide](docs/qwen-small.md): CUDA/driver compatibility, serving, batch options, edit formats, single agent
-- [Qwen + SWE-bench guide](docs/qwen-swebench.md): official evaluation details
-- [Task 1](docs/task1.md) · [Task 2](docs/task2.md) · [Task 3](docs/task3.md): Planner, Coder/apply harness, Docker Reviewer loop
-- [DeepSeek live experiment](docs/experiments/deepseek-live.md)
-- [Code review notes](docs/code-review.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
-
-## Original CodeNexus demo and Tasks 1–3
-
-The original demo and the course Tasks 1–3 remain available unchanged.
-
-```bash
-cp .env.example .env                              # OPENAI_API_KEY / OPENAI_MODEL / optional OPENAI_BASE_URL
-python -m flask --app app run --debug             # http://127.0.0.1:5000 and /localize
-python localize.py --repo PATH --base-commit SHA --issue-file issue.txt                 # Task 1
-python repair.py --repo PATH --base-commit SHA --issue-file issue.txt --out r.json      # Task 2
-python repair_loop.py --repo PATH --base-commit SHA --issue-file issue.txt \
-  --image python:3.11-slim --test-runner unittest --max-candidates 3 --out r.json        # Task 3 (Docker)
-python demo_localization.py --offline             # scripted demo with real repository tools
-```
-
-Set `PATCHLOOP_MODEL_BACKEND=qwen` to route the demo and Tasks 1–3 through the local vLLM server.
-Generation scripts (`pipeline_agent.py`, `manual_generate.py`) call the configured API and may
-incur charges; `Visualization1.py` and `Visualization2.py` plot the included CSV.
-
-## Roadmap
-
-1. Lite dev smoke and 23-task pilot with live 7B (P-C-R diff vs. search_replace, P-C-R vs. single agent), scored with the local official harness.
-2. Execution feedback (RQ2): run existing tests and model-written reproduction scripts inside the SWE-bench instance images (never the eval script / test_patch), up to 3 candidates.
-3. Lite test (300) paired runs with McNemar tests and bootstrap CIs.
-4. QLoRA on SWE-smith with repository and near-duplicate leakage filtering (RQ1).
+- Submitted version: tag `[v1.0-final]`, commit `[SHA]`.
+- AI assistance: see `AI_DECLARATION.md` (tools used, what they helped with, project prompts).
+- Reused software and data: SWE-bench / SWE-bench Lite (dataset and evaluation harness),
+  Qwen2.5-Coder-7B-Instruct, vLLM, PyTorch, Hugging Face `datasets` / `huggingface_hub`, the OpenAI
+  Python SDK (as an OpenAI-compatible client), Flask, and the DeepSeek API; used under their
+  published licenses and terms.
