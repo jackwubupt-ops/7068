@@ -20,12 +20,15 @@ DEEPSEEK_MODELS = {"deepseek-flash", "deepseek-v4-pro"}
 # RQ1: reasoning effort. "none" = thinking disabled (the default and the RQ3 setting);
 # low/high/max enable DeepSeek's thinking mode. Per effort: (extra max_tokens per call
 # for reasoning, reasoning-token budget per task, default request timeout in seconds).
+# The per-call room equals DeepSeek's own default max_tokens in thinking mode (64K, and
+# 128K for max), so the effort level -- not our cap -- decides how long the model thinks.
+# (A first run with 8K/24K/48K cut off the reasoning of some Coder calls.)
 REASONING_EFFORTS = ("none", "low", "high", "max")
 REASONING_DEFAULTS = {
     "none": (0, 0, 120),
-    "low": (8192, 120_000, 300),
-    "high": (24576, 300_000, 600),
-    "max": (49152, 600_000, 900),
+    "low": (65536, 400_000, 600),
+    "high": (65536, 600_000, 600),
+    "max": (131072, 1_200_000, 900),
 }
 DEEPSEEK_ENDPOINT = "https://api.deepseek.com"
 BACKENDS = ("qwen", "deepseek")

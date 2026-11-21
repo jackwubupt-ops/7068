@@ -489,7 +489,7 @@ cd /data/7068 && source .venv-patchloop-client/bin/activate && python -m patchlo
 | `final-ds-pcr-high` | P-C-R | high | RQ1 |
 | `final-ds-pcr-max`（可选） | P-C-R | max | RQ1，设置 `RQ1_EFFORTS="low high max"` 才会跑 |
 
-所有批次的编辑格式（search_replace）、检索（top-10）、调用预算、**回答**的输出上限都相同。开启思考时，每次调用会额外多给一份思考 token 的额度（low 8192、high 24576、max 49152），每个任务的思考 token 另外设上限（12 万、30 万、60 万），这些数字会写进 `manifest.json`。思考模式下 DeepSeek 不使用 temperature，所以 low/high/max 的结果带有随机性，报告里要写明这一点。
+所有批次的编辑格式（search_replace）、检索（top-10）、调用预算、**回答**的输出上限都相同。开启思考时，每次调用会额外多给一份思考 token 的额度，等于 DeepSeek 官方在思考模式下的默认上限（low/high 65536，max 131072）；每个任务的思考 token 另外设上限（40 万、60 万、120 万），这些数字会写进 `manifest.json`。第一次试跑时额度只给了 8K/24K/48K，有些 Coder 调用还没想完就被截断（`QWEN_EMPTY_CONTENT`），所以改成了官方默认值。思考模式下 DeepSeek 不使用 temperature，所以 low/high/max 的结果带有随机性，报告里要写明这一点。
 
 前提：`.env` 里已经有 `DEEPSEEK_API_KEY`，并且阶段 14 的 gold 自检已经做完（脚本会用 `/data/eval-selftest/gold.gold-all-dev-fixed.json` 筛选 gold 能通过的题目）。
 

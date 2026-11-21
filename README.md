@@ -106,8 +106,10 @@ Fixed in code for both backends: temperature 0; output caps per call: Planner 15
 Reviewer 900, single agent 3500 tokens; 15 000 output tokens per task; Planner ≤ 14 turns,
 single agent ≤ 16 replies, 2 edit attempts. DeepSeek budgets default to the Qwen values.
 With thinking on (effort low/high/max) the **answer** caps and the 15 000 answer-token budget are
-unchanged; each call gets extra room for hidden reasoning (8 192 / 24 576 / 49 152 tokens) and
-reasoning tokens are counted and capped per task separately (120k / 300k / 600k). DeepSeek
+unchanged; each call gets extra room for hidden reasoning equal to DeepSeek's default thinking-mode
+`max_tokens` (65 536 for low/high, 131 072 for max) and reasoning tokens are counted and capped
+per task separately (400k / 600k / 1.2M). A call that runs out of room while reasoning fails
+with `REASONING_EXHAUSTED_CALL`. DeepSeek
 ignores temperature in thinking mode, so those runs are sampled, not greedy.
 
 ## 4. Run the agent (web app)

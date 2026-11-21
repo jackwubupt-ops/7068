@@ -48,7 +48,7 @@ class ReasoningEffortTests(unittest.TestCase):
         backend.complete("coder", MSGS)
         sent = client.requests[0]
         self.assertEqual(sent["extra_body"], {"thinking": {"type": "enabled"}, "reasoning_effort": "high"})
-        self.assertEqual(sent["max_tokens"], 3500 + 24576)
+        self.assertEqual(sent["max_tokens"], 3500 + 65536)
         self.assertEqual(backend.output_tokens, 300)     # answer tokens only
         self.assertEqual(backend.reasoning_tokens, 1200)
         self.assertEqual(backend.calls[0]["reasoning_tokens"], 1200)
@@ -58,6 +58,13 @@ class ReasoningEffortTests(unittest.TestCase):
         backend = DeepSeekBackend(settings(reasoning_effort="low"), client=client)
         with self.assertRaisesRegex(RuntimeError, "QWEN_TRUNCATED_OUTPUT:planner"):
             backend.complete("planner", MSGS)
+
+    def test_call_that_runs_out_while_reasoning_is_labelled(self):
+        client = ThinkingClient(completion=69036, reasoning=69036, finish="length", text="")
+        backend = DeepSeekBackend(settings(reasoning_effort="high"), client=client)
+        with self.assertRaisesRegex(RuntimeError, "REASONING_EXHAUSTED_CALL:coder"):
+            backend.complete("coder", MSGS)
+        self.assertEqual(backend.reasoning_tokens, 69036)
 
     def test_reasoning_budget_stops_the_task(self):
         client = ThinkingClient(completion=3000, reasoning=2900)
@@ -73,11 +80,11 @@ class ReasoningEffortTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "need"):
             settings(reasoning_tokens_per_call=4096)
         mx = settings(reasoning_effort="max")
-        self.assertEqual((mx.reasoning_tokens_per_call, mx.reasoning_budget), (49152, 600_000))
+        self.assertEqual((mx.reasoning_tokens_per_call, mx.reasoning_budget), (131072, 1_200_000))
         env = {"DEEPSEEK_API_KEY": "sk-test-not-real", "DEEPSEEK_REASONING_EFFORT": "low"}
         with patch.dict("os.environ", env, clear=False), patch("patchloop_task2.backends._load_dotenv"):
             from_env = DeepSeekSettings.from_env()
-            self.assertEqual((from_env.reasoning_effort, from_env.timeout_seconds), ("low", 300))
+            self.assertEqual((from_env.reasoning_effort, from_env.timeout_seconds), ("low", 600))
             self.assertEqual(load_settings("deepseek", reasoning_effort="high").reasoning_effort, "high")
             with self.assertRaisesRegex(ValueError, "deepseek backend only"):
                 load_settings("qwen", reasoning_effort="high")

@@ -193,6 +193,9 @@ class QwenSmallBackend:
             "output_sha256": sha256(value.encode("utf-8")).hexdigest()
             if isinstance(value, str) else None,
         })
+        if self.reasoning_allowance and getattr(choice, "finish_reason", None) == "length":
+            # Thinking mode: the call ran out of room (usually while still reasoning).
+            raise RuntimeError(f"REASONING_EXHAUSTED_CALL:{stage}")
         if not isinstance(value, str) or not value.strip():
             raise RuntimeError(f"QWEN_EMPTY_CONTENT:{stage}")
         if getattr(choice, "finish_reason", None) == "length":

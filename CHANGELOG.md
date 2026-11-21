@@ -14,11 +14,12 @@ These are development milestones, not published GitHub releases.
 
 ### Changed
 - `lite_batch` manifests record `reasoning_effort`, `reasoning_tokens_per_call` and `reasoning_budget_per_task`; summaries add `reasoning_tokens`.
-- DeepSeek request timeout may be up to 900 s (default 120 s for none, 300/600/900 s for low/high/max).
+- DeepSeek request timeout may be up to 900 s (default 120 s for none, 600/600/900 s for low/high/max).
+- Per-call reasoning room raised from 8K/24K/48K to DeepSeek's default thinking-mode `max_tokens` (64K for low/high, 128K for max); per-task reasoning budgets 400k/600k/1.2M. The first live run with the smaller room cut off the reasoning of some Coder calls (empty answers), which biased RQ1 against higher effort. Such calls are now reported as `REASONING_EXHAUSTED_CALL`.
 - DeepSeek batch runs are labelled `deepseek-...` instead of `qwen-...` in `run_status.json`.
 
 ### Verified and not verified
-- Offline tests only (scripted fake clients) plus a dry run of the script with simulated batches. Nothing has been run against the live DeepSeek API from this change; in particular, whether DeepSeek's `max_tokens` covers reasoning and whether `completion_tokens` includes `reasoning_tokens` is not stated in the docs and should be checked from the first live batch (`model_calls` in `run_status.json`).
+- Offline tests only (scripted fake clients) plus a dry run of the script with simulated batches. A live single-task check (high effort) confirmed that `completion_tokens` includes `reasoning_tokens` and that `max_tokens` covers both.
 
 ## Alibaba Cloud server and local official evaluation (2026-11-20)
 
