@@ -6,8 +6,11 @@ These are development milestones, not published GitHub releases.
 
 ## Final experiment results recorded (2026-11-21)
 
+### Added
+- `experiments/repeat_report.py`: combines repeated runs of the final experiment (one tag per run): per-config resolved per run, mean and range; task-level paired comparisons (sign test over tasks, task bootstrap CI) so repeated runs of a task are not counted as independent.
+
 ### Changed
-- README section 5 now holds the final results (official harness, 23 Lite dev tasks): `ds-pcr` 10, `ds-single` 9, `ds-pcr-low` 11, `ds-pcr-high` 6, `ds-pcr-max` 9 resolved, with the paired comparisons and run-error breakdown. Higher reasoning effort did not improve resolution; RQ3 shows no significant difference.
+- README section 5 now holds the final results over 3 runs (official harness, 23 Lite dev tasks): mean resolution none 46.4%, single 42.0%, low 44.9%, high 34.8%, max 40.6%. Higher reasoning effort did not improve resolution; RQ3 shows no significant difference. Run 1 alone (high 6/23) overstated the high-effort drop.
 
 ## Final experiment on DeepSeek Flash; RQ1 becomes reasoning effort (2026-11-21)
 

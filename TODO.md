@@ -16,9 +16,9 @@
 方向调整：最终对比实验全部用 `deepseek-flash`；7B 的 pilot v1–v3 只作为"7B 撑不起这个系统"的证据（[docs/qwen7b-limits.md](docs/qwen7b-limits.md)）。RQ1 从 QLoRA 改为推理强度对比。下面的 P2–P5 不再推进。
 
 - [ ] **和老师确认 RQ1 的变更**（QLoRA → 推理强度），按课程流程登记
-- [x] **跑最终实验**（2026-11-21，新的 16 核 / 32 GiB 实例，`RQ1_EFFORTS="low high max"`）：5 个 DeepSeek 批次都 `tasks_finished = 23`，gold 自检 23/23；结果见 README 第 5 节 "Final results"
+- [x] **跑最终实验**（2026-11-21，新的 16 核 / 32 GiB 实例，`RQ1_EFFORTS="low high max"`）：5 个 DeepSeek 批次都 `tasks_finished = 23`，gold 自检 23/23；结果见 README 第 5 节 "Final results"；之后又各重复了 2 次（`final-ds-r2`、`final-ds-r3`），README 里是 3 次的汇总（`experiments.repeat_report`）
   - 旧服务器上的 7B pilot 批次没有迁移过来；模型对比用第一轮（旧服务器上在修复后的镜像上重评测）的 7B 结果 0/23
-- [ ] 把 README 的 "Final results" 两张表放进报告；写明 23 题的统计局限、每个配置只跑一次、思考模式的随机性、第一次额度过小那一轮作废的原因
+- [ ] 把 README 的 "Final results" 两张表放进报告；写明 23 题的统计局限、每个配置跑了 3 次且波动较大（high：6/8/10）、思考模式的随机性、第一次额度过小那一轮作废的原因
 - [ ] 打包下载 `/data/runs` 和 `/data/analysis`，然后停机（按量计费）
 
 ---
