@@ -125,6 +125,15 @@ def describe_feedback(content: str) -> tuple[str, str, str] | None:
                 lines = result.get("lines") or []
                 span = f"{lines[0]['line_number']}-{lines[-1]['line_number']}" if lines else "empty"
                 return "tool", f"read_file {result.get('file_path')} lines {span}", ""
+            if name == "find_definition":
+                defs = result.get("definitions", [])
+                return ("tool", f"find_definition -> {len(defs)} definitions",
+                        ", ".join(f"{d.get('qualified_name')} ({d.get('file_path')}:{d.get('start_line')})"
+                                  for d in defs[:8]))
+            if name == "list_directory":
+                entries = result.get("entries", [])
+                return ("tool", f"list_directory {result.get('directory')} -> {len(entries)} entries",
+                        ", ".join(e.get("name", "") for e in entries[:20]))
             return "tool", f"{name} result", _short(result)
     for prefix, kind in (("Protocol validation error:", "warning"), ("Protocol error:", "warning"),
                          ("Repeated action:", "warning"), ("Submission rejected", "warning"),
@@ -148,6 +157,10 @@ def describe_output(stage: str, raw: str) -> tuple[str, str, str]:
             if action == "read_file":
                 span = f" lines {args.get('start_line', 1)}-{args.get('end_line', 'end')}"
                 return "decision", f"{stage}: read {args.get('relative_path')}{span}", ""
+            if action == "find_definition":
+                return "decision", f"{stage}: find where “{args.get('name')}” is defined", ""
+            if action == "list_directory":
+                return "decision", f"{stage}: list the directory {args.get('relative_path', '.')}", ""
             if action == "final":
                 plan = data.get("plan") or {}
                 files = [f.get("file_path") for f in plan.get("suspected_files", []) if isinstance(f, dict)]

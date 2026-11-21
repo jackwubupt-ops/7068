@@ -34,10 +34,10 @@ issue + repo@commit
    ├─ retrieval (BM25 + paths/tracebacks/definitions named in the issue) → top-K candidate files
    │
    ├─ agent (choose one; same tools, budgets and model for both)
-   │    P-C-R:  Planner ──search_repo/read_file──► plan (files + line spans + hypothesis)
+   │    P-C-R:  Planner ──search_repo/find_definition/list_directory/read_file──► plan (files + line spans + hypothesis)
    │            Coder  ──► SEARCH/REPLACE edit ──► harness: parse → match → git apply (isolated worktree)
    │            Reviewer (on a failed attempt) ──► diagnosis ──► Coder retry (2 attempts)
-   │    single: one conversation: search/read ──► {"action":"edit"} ──► edit ──► apply (2 submissions)
+   │    single: one conversation: same 4 tools ──► {"action":"edit"} ──► edit ──► apply (2 submissions)
    │
    └─ outcome
         applicable patch ──► STOP: maintainer accepts (export / commit on new branch) or rejects
@@ -45,7 +45,16 @@ issue + repo@commit
         follow-up (extra guidance, other agent or model) ──► new linked round (max 5)
 ```
 
-Autonomous decisions: which keywords to search, which files and line ranges to read, which files
+Agent tools (all read-only, tracked files at the base commit only; nothing is imported or executed):
+
+| Tool | What the agent gets |
+|---|---|
+| `search_repo(query)` | matching lines with context (ripgrep, or a Python fallback) |
+| `find_definition(name)` | where a class, function or method is defined: file, qualified name, line span, signature (Python `ast`) |
+| `list_directory(relative_path)` | the tracked sub-directories (with file counts) and files under a directory |
+| `read_file(relative_path, start_line, end_line)` | up to 200 numbered lines |
+
+Autonomous decisions: which tool to use and with which arguments, which files and line ranges to read, which files
 to edit (Planner), when to stop investigating (single agent `edit` action), and how to repair
 after a failed apply (Reviewer → Coder). The harness, not the model, applies patches, so a model
 can never run shell commands. Guards: per-task call and token budgets, a repeated-action guard,

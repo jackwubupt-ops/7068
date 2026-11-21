@@ -40,7 +40,7 @@ def plan_repair(issue, repo_root, base_commit, *, completion=None, max_steps=10,
     The default uses the same client and model as the original demo.
     """
     import json
-    from utils.repo_tools import (read_file, search_repo, validate_repository, is_tracked,
+    from utils.repo_tools import (AGENT_TOOLS, TOOL_ARGUMENTS, validate_repository, is_tracked,
                                   action_key, repeated_action_message)
 
     if not isinstance(issue, str) or not issue.strip() or len(issue) > 20000:
@@ -59,8 +59,12 @@ Write all natural-language plan fields in English.
 Return exactly one JSON object per turn, no markdown. Available actions:
 {"action":"search_repo","arguments":{"query":"literal keyword","max_results":20,"context_lines":3}}
 {"action":"read_file","arguments":{"relative_path":"src/file.py","start_line":1,"end_line":100}}
+{"action":"find_definition","arguments":{"name":"ClassOrFunctionName"}}
+{"action":"list_directory","arguments":{"relative_path":"src/package"}}
 {"action":"final","plan":{"issue_summary":"...","suspected_files":[{"file_path":"...","relevant_lines":[start,end],"reason":"...","evidence_ids":["E2"]}],"root_cause_hypothesis":"...","planned_changes":["..."],"limitations":["..."]}}
-Search first, then read relevant code. Every candidate must reference successful
+Use find_definition when the issue names a class, function or method, search_repo
+for other text, and list_directory to see the layout of a package. Locate code
+with search_repo or find_definition first, then read relevant code. Every candidate must reference successful
 read_file evidence covering its inclusive line range. State root causes as
 hypotheses, never verified facts. No execution tests have been run. Once you
 have read code, suspected_files must name at least one file you read (your best
@@ -76,7 +80,7 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
                 {'role': 'user', 'content': json.dumps(first)}]
     evidence = []
     searched = False
-    tools = {'search_repo': search_repo, 'read_file': read_file}
+    tools = AGENT_TOOLS
     seen_actions = {}
     for step in range(1, max_steps + 1):
         if completion is None:
@@ -102,7 +106,7 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
             if name not in tools:
                 raise ValueError('Unknown action')
             arguments = action.get('arguments')
-            allowed = {'query', 'max_results', 'context_lines'} if name == 'search_repo' else {'relative_path', 'start_line', 'end_line'}
+            allowed = TOOL_ARGUMENTS[name]
             if not isinstance(arguments, dict) or not set(arguments) <= allowed:
                 raise ValueError('Invalid tool arguments')
             if name == 'search_repo':
@@ -123,7 +127,7 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
                 result = tools[name](root, **arguments)
             if name == 'search_repo' and result['ok']:
                 result['matches'] = [match for match in result['matches'] if is_tracked(root, match['file_path'])]
-            searched = searched or (name == 'search_repo' and result['ok'])
+            searched = searched or (name in ('search_repo', 'find_definition') and result['ok'])
             entry = {'id': f'E{len(evidence) + 1}', 'tool': name,
                      'arguments': arguments, 'result': result}
             evidence.append(entry)

@@ -34,7 +34,9 @@ from experiments.paired_compare import compare, load_verdicts
 MATCHED_SETTINGS = ("edit_format", "retrieval_k", "max_calls_per_task", "context_chars",
                     "stage_max_tokens", "max_candidates", "temperature", "dataset", "split")
 # The variables a pair may study; exactly one of them should differ inside a pair.
-VARIABLES = ("model", "agent", "reasoning_effort")
+VARIABLES = ("model", "agent", "reasoning_effort", "agent_tools")
+# Batches from before the find_definition/list_directory tools had only these two.
+LEGACY_TOOLS = ["read_file", "search_repo"]
 DEFAULT_PAIRS = (("ds-pcr", "ds-single", "RQ3: P-C-R vs single agent (DeepSeek)"),
                  ("ds-pcr-low", "ds-pcr", "RQ1: reasoning low vs none (DeepSeek P-C-R)"),
                  ("ds-pcr-high", "ds-pcr", "RQ1: reasoning high vs none (DeepSeek P-C-R)"),
@@ -80,6 +82,7 @@ def load_batch(label: str, directory: Path, *, tasks: set[str] | None = None,
         "model": manifest.get("model"),
         "agent": manifest.get("agent"),
         "reasoning_effort": manifest.get("reasoning_effort") or "none",
+        "agent_tools": manifest.get("agent_tools") or LEGACY_TOOLS,
         "settings": {key: manifest.get(key) for key in MATCHED_SETTINGS},
         "patchloop_commit": manifest.get("patchloop_commit"),
         "eval_run_id": evaluation.get("run_id"),

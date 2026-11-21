@@ -116,7 +116,7 @@ def _planner_request_messages(messages: list[dict], round_number: int) -> list[d
             "Do not cite lines outside these ranges. Name at least one candidate "
             "you read (your best hypothesis; state uncertainty in limitations); "
             "suspected_files=[] only if no read_file evidence exists. No more "
-            "search_repo/read_file actions. Do not invent evidence or fixes."
+            "tool actions (search_repo, read_file, find_definition, list_directory). Do not invent evidence or fixes."
         ),
     }]
 

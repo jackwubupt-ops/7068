@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Callable
 
 from utils.repo_tools import (
-    action_key, is_tracked, read_file, repeated_action_message, search_repo, validate_repository,
+    AGENT_TOOLS, TOOL_ARGUMENTS, action_key, is_tracked, repeated_action_message, validate_repository,
 )
 
 from .coder import CoderError, extract_diff
@@ -49,6 +49,10 @@ base commit and fix it with a minimal edit to existing files.
 To use a tool, reply with exactly one JSON object, no markdown:
 {{"action":"search_repo","arguments":{{"query":"literal keyword"}}}}
 {{"action":"read_file","arguments":{{"relative_path":"src/file.py","start_line":1,"end_line":120}}}}
+{{"action":"find_definition","arguments":{{"name":"ClassOrFunctionName"}}}}
+{{"action":"list_directory","arguments":{{"relative_path":"src/package"}}}}
+Use find_definition when the issue names a class, function or method, search_repo
+for other text, and list_directory to see the layout of a package.
 When you have read the code you will change, stop investigating and reply
 {{"action":"edit"}}
 You will then be asked for the edit itself.
@@ -96,7 +100,7 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
     ]
     result = SingleAgentResult(status="no_submission")
     read_paths: set[str] = set()
-    tools = {"search_repo": search_repo, "read_file": read_file}
+    tools = AGENT_TOOLS
     seen_actions: dict[str, int] = {}
 
     for step in range(1, max_steps + 1):
@@ -158,10 +162,10 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                 messages.append({"role": "user", "content": _edit_request(edit_format, read_paths)})
                 continue
             if name not in tools:
-                raise ValueError("Unknown action; use search_repo, read_file, or submit an edit")
+                raise ValueError("Unknown action; use search_repo, read_file, find_definition, "
+                                 "list_directory, or submit an edit")
             arguments = action.get("arguments")
-            allowed = ({"query", "max_results", "context_lines"} if name == "search_repo"
-                       else {"relative_path", "start_line", "end_line"})
+            allowed = TOOL_ARGUMENTS[name]
             if not isinstance(arguments, dict) or not set(arguments) <= allowed:
                 raise ValueError("Invalid tool arguments")
             arguments = dict(arguments)
@@ -169,6 +173,10 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                 arguments["max_results"] = min(arguments.get("max_results", 20), search_result_limit)
                 arguments["context_lines"] = min(arguments.get("context_lines", 3), search_context_limit)
                 event["search_query"] = str(arguments.get("query"))[:80]
+            elif name == "find_definition":
+                event["definition_name"] = str(arguments.get("name"))[:80]
+            elif name == "list_directory":
+                event["list_path"] = str(arguments.get("relative_path", "."))[:160]
             else:
                 event["read_path"] = str(arguments.get("relative_path"))[:160]
             key = action_key(name, arguments)

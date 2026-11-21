@@ -34,6 +34,7 @@ import time
 from typing import Callable, Iterable
 
 from swebench_dev import DEVELOPMENT_SPLIT, LITE_DATASET_ID, DevelopmentTask, load_dev_tasks
+from utils.repo_tools import AGENT_TOOLS
 
 EXPERIMENT = "patchloop-lite-dev-batch-v1"
 MAX_WORKERS = 16
@@ -86,6 +87,7 @@ def build_manifest(tasks: list[DevelopmentTask], *, dataset_id: str,
         "instance_ids": [task.instance_id for task in tasks],
         "task_count": len(tasks),
         "patchloop_commit": _patchloop_commit(),
+        "agent_tools": sorted(AGENT_TOOLS),
         "python": platform.python_version(),
         "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         **settings,

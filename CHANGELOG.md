@@ -4,6 +4,15 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Two more agent tools: find_definition and list_directory (2026-11-22)
+
+### Added
+- `find_definition(name)`: locates Python classes, functions and methods by name (qualified name, kind, line span, signature) with `ast` over tracked files; nothing is imported or executed. `list_directory(relative_path)`: tracked sub-directories (with file counts) and files under a directory.
+- Both are offered to the Planner and the single agent alike (RQ3 parity), validated like the existing tools (`TOOL_ARGUMENTS`), shown in the web timeline, and recorded in every batch manifest (`agent_tools`). `final_report` treats `agent_tools` as a studied variable; batches without the field are the earlier 2-tool agent.
+
+### Changed
+- `find_definition` counts as localization evidence for the Planner like `search_repo`. Final experiments are rerun with the 4-tool agent; the earlier 2-tool runs are kept as a tool ablation.
+
 ## Final experiment results recorded (2026-11-21)
 
 ### Added
