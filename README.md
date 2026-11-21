@@ -20,7 +20,7 @@ guessing.
 | Entry point | web app: `python -m patchloop_app.web` |
 | Models | the **DeepSeek API** (`deepseek-flash`; used for the final experiments; no GPU needed; data leaves the machine) or local **Qwen2.5-Coder-7B-Instruct** on vLLM (private; the proposal's model, kept as the capability baseline) |
 | Evaluation | SWE-bench Lite **dev**, scored only by the official harness (`swebench==4.1.0`, local Docker) |
-| Final experiments | RQ1: reasoning effort none / low / high on `deepseek-flash`; RQ3: P-C-R vs single agent; Qwen-7B pilots as the model baseline |
+| Final experiments | RQ1: reasoning effort none / low / high / max on `deepseek-flash`; RQ3: P-C-R vs single agent; Qwen-7B pilots as the model baseline |
 
 ---
 
@@ -169,10 +169,46 @@ retrieval, agent, edit format, workers, git commit).
 |---|---|---|---|
 | `ds-pcr` | P-C-R | none | RQ3 and the RQ1 baseline |
 | `ds-single` | single | none | RQ3 |
-| `ds-pcr-low`, `ds-pcr-high` (`ds-pcr-max` optional) | P-C-R | low / high (/ max) | RQ1 |
+| `ds-pcr-low`, `ds-pcr-high`, `ds-pcr-max` | P-C-R | low / high / max | RQ1 |
 
 Everything else is identical across batches (edit format, retrieval top-10, call budget, answer
 caps). Results go to `final-comparison.md`; they are reported in the final report.
+
+### Final results (2026-11-21; official harness, all 23 Lite dev tasks gold-resolvable after the image repair)
+
+| Config | Reasoning | Applicable | Resolved | Rate | Completion tok (reasoning) | s/task | Run errors |
+|---|---|---|---|---|---|---|---|
+| `ds-pcr` | none | 23 | 10 | 43.5% | 25,624 (0) | 12.7 | 0 |
+| `ds-single` | none | 18 | 9 | 39.1% | 7,786 (0) | 7.4 | 0 (5 no submission) |
+| `ds-pcr-low` | low | 20 | 11 | 47.8% | 132,705 (37,558) | 33.7 | 2 (1 network, 1 Planner reasoning ran out) |
+| `ds-pcr-high` | high | 18 | 6 | 26.1% | 275,205 (143,787) | 62.7 | 3 (Planner: reasoning ran out / empty / over cap) |
+| `ds-pcr-max` | max | 22 | 9 | 39.1% | 597,881 (429,215) | 126.8 | 1 (Planner reasoning ran out) |
+
+Paired comparisons (exact McNemar, bootstrap 95% CI of the rate difference):
+
+| Question | Pair | Difference | McNemar p | 95% CI |
+|---|---|---|---|---|
+| RQ3 | P-C-R vs single | +4.3 pt (10 vs 9) | 1.00 | [-8.7, +17.4] |
+| RQ1 | low vs none | +4.3 pt | 1.00 | [-8.7, +17.4] |
+| RQ1 | high vs none | -17.4 pt | 0.125 | [-34.8, -4.3] |
+| RQ1 | max vs none | -4.3 pt | 1.00 | [-17.4, +8.7] |
+| RQ1 | high vs low | -21.7 pt | 0.0625 | [-39.1, -4.3] |
+| Model | DeepSeek P-C-R vs Qwen-7B P-C-R (0/23) | +43.5 pt | 0.002 | |
+| Model | DeepSeek single vs Qwen-7B single (0/23) | +39.1 pt | 0.004 | |
+
+- **RQ3:** no significant difference in resolution. P-C-R produces more applicable patches
+  (23 vs 18) at about 3x the output tokens and 1.7x the time per task.
+- **RQ1:** more inference-time compute did **not** improve repair: resolution is not monotonic in
+  effort (low 47.8% >= none 43.5% > max 39.1% > high 26.1%), while reasoning tokens and time grow
+  about 10x from none to max. No difference is significant at 23 tasks. The high-effort drop is
+  not explained by its run errors alone: even if its 3 errored tasks had all been resolved it
+  would reach 9, below none's 10. Higher effort adds a new failure mode, Planner reasoning that
+  exhausts DeepSeek's default thinking room (64K/128K tokens) before answering.
+- **Model:** the Qwen-7B numbers come from the pilot v3 batches re-evaluated on the same repaired
+  images (round 1 of this experiment, earlier server); 7B resolves none of the tasks DeepSeek resolves.
+- **Caveats:** one run per configuration; thinking mode ignores temperature, so low/high/max are
+  stochastic. A first attempt with smaller reasoning room (8K/24K/48K per call) truncated Coder
+  calls and was discarded (CHANGELOG); the numbers above are from the corrected rerun.
 
 ### Qwen2.5-Coder-7B pilots: why the final experiments use DeepSeek (Lite dev, 23 tasks, search_replace)
 
@@ -209,9 +245,9 @@ repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md]
 |---|---|
 | Harness: schemas, model adapter, tracing, repository tools, clean workspaces | done (own JSON protocol and dataclasses instead of LangGraph/Pydantic) |
 | Single-agent end-to-end MVP; Planner–Coder–Reviewer with feedback | done; feedback covers apply/format failures |
-| RQ3: single agent vs. P-C-R under matched budgets | done on Lite dev (final run on `deepseek-flash`; Qwen-7B pilots as baseline) |
+| RQ3: single agent vs. P-C-R under matched budgets | done on Lite dev (final run on `deepseek-flash`: 10 vs 9 resolved, not significant; Qwen-7B pilots as baseline) |
 | RQ2: execution feedback (tests in the loop) | **partial**: apply/format feedback only, no test execution in the loop |
-| RQ1: QLoRA fine-tuning | **changed** to reasoning effort (none / low / high) on `deepseek-flash`: same question (does more compute improve repair?), inference-time instead of training-time compute; why: [docs/qwen7b-limits.md](docs/qwen7b-limits.md) |
+| RQ1: QLoRA fine-tuning | **changed** to reasoning effort (none / low / high / max) on `deepseek-flash`; done (more effort did not help): same question (does more compute improve repair?), inference-time instead of training-time compute; why: [docs/qwen7b-limits.md](docs/qwen7b-limits.md) |
 | Official evaluation and ablations | done on Lite dev; Lite test not run |
 | Added after measurements | retrieval, tolerant matching, diagnosis tools, eval-image repair, DeepSeek backend, interactive web app |
 

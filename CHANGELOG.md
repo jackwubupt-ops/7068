@@ -4,6 +4,11 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Final experiment results recorded (2026-11-21)
+
+### Changed
+- README section 5 now holds the final results (official harness, 23 Lite dev tasks): `ds-pcr` 10, `ds-single` 9, `ds-pcr-low` 11, `ds-pcr-high` 6, `ds-pcr-max` 9 resolved, with the paired comparisons and run-error breakdown. Higher reasoning effort did not improve resolution; RQ3 shows no significant difference.
+
 ## Final experiment on DeepSeek Flash; RQ1 becomes reasoning effort (2026-11-21)
 
 ### Added
