@@ -150,6 +150,8 @@ def run_real_dev(
     split: str = DEVELOPMENT_SPLIT,
     edit_format: str = "diff",
     retrieval_k: int = 0,
+    exec_feedback: bool = False,
+    test_env_fn=None,
 ) -> dict:
     """Use real model API by default; injectable dependencies are for offline unit tests.
 
@@ -173,6 +175,7 @@ def run_real_dev(
         "base_commit": expected_base,
         "status": "not_started",
         "edit_format": edit_format,
+        "exec_feedback": exec_feedback,
         "live_api_preflight": False,
         "planner_calls": 0,
         "coder_calls": 0,
@@ -216,6 +219,13 @@ def run_real_dev(
                 from utils.retrieval import rank_files
                 candidates = rank_files(checkout, task.problem_statement, retrieval_k)
                 report["retrieval_candidates"] = [c["file_path"] for c in candidates]
+            test_tool = None
+            if exec_feedback:
+                stage = "test_environment"
+                from patchloop_task2.test_exec import TestTool, env_for_swebench
+                env = (test_env_fn or env_for_swebench)(task.instance_id)
+                test_tool = TestTool(env, checkout, task.base_commit)
+                report["test_env_available"] = test_tool.available
             stage = "live_api_preflight"
             live.complete(
                 "preflight", [{"role": "user", "content": "Reply with the word API_OK."}],
@@ -267,6 +277,7 @@ def run_real_dev(
                     completion=planner_completion, max_steps=MAX_PLANNER_STEPS,
                     search_result_limit=5, search_context_limit=1,
                     **({"candidate_files": candidates} if candidates else {}),
+                    **({"test_tool": test_tool} if test_tool is not None else {}),
                 )
             except ValueError as exc:
                 if "exhausted action budget" not in str(exc):
@@ -291,6 +302,7 @@ def run_real_dev(
                 allowed = permitted_paths(plan)
                 patch_path = target / "candidate.patch"
                 revision = None
+                fallback_patch = None  # applicable attempt-1 patch that failed existing tests
                 for attempt in (1, 2):
                     stage = "real_coder_patch"
                     edit_meta = {}
@@ -369,7 +381,16 @@ def run_real_dev(
                         **edit_meta,
                     }
                     report["candidate_attempts"].append(candidate)
-                    if applied.status == "applied":
+                    check = None
+                    if applied.status == "applied" and test_tool is not None:
+                        stage = "execution_feedback"
+                        check = test_tool.check_patch(patch_path.read_text(encoding="utf-8"),
+                                                      list(applied.changed_files))
+                        candidate["test_check"] = {k: v for k, v in check.items() if k != "log_tail"}
+                    if applied.status == "applied" and check is not None \
+                            and check["status"] == "regressions" and attempt == 1:
+                        fallback_patch = patch_path.read_text(encoding="utf-8")
+                    elif applied.status == "applied":
                         stage = "write_official_prediction"
                         patch = patch_path.read_text(encoding="utf-8")
                         prediction = make_prediction(
@@ -386,23 +407,44 @@ def run_real_dev(
                         report["prediction_available"] = True
                         report["status"] = "prediction_ready"
                         break
-                    report["patch_error_code"] = applied.error_code
-                    report["patch_error_message"] = str(
-                        applied.error_message or ""
-                    )[:500]
+                    if check is not None and check["status"] == "regressions":
+                        from patchloop_task2.test_exec import regression_message
+                        failure = {"stage": "tests", "status": "tests_failed",
+                                   "error_code": "existing_tests_regressed",
+                                   "log_tail": regression_message(check)[:6000]}
+                    else:
+                        report["patch_error_code"] = applied.error_code
+                        report["patch_error_message"] = str(
+                            applied.error_message or ""
+                        )[:500]
+                        failure = {
+                            "stage": "edit_blocks" if applied.status == "edit_invalid" else "apply",
+                            "status": applied.status,
+                            "error_code": applied.error_code,
+                            "log_tail": str(applied.error_message or "")[:1200],
+                        }
                     if applied.status == "workspace_failed":
                         report["status"] = "workspace_error"
                         break
                     if attempt == 2:
-                        report["status"] = "patch_failed"
+                        if fallback_patch is not None:
+                            # Attempt 2 did not apply: keep attempt 1 (applicable, but it
+                            # failed existing tests); the official harness still decides.
+                            patch_path.write_text(fallback_patch, encoding="utf-8")
+                            (target / "predictions.jsonl").write_text(json.dumps(
+                                make_prediction(task.instance_id, fallback_patch, model=live.model),
+                                ensure_ascii=False) + "\n", encoding="utf-8")
+                            report["patch_sha256"] = hashlib.sha256(
+                                fallback_patch.encode("utf-8")).hexdigest()
+                            report["patch_size_bytes"] = patch_path.stat().st_size
+                            report["prediction_available"] = True
+                            report["patch_status"] = "applied"
+                            report["kept_attempt"] = 1
+                            report["status"] = "prediction_ready"
+                        else:
+                            report["status"] = "patch_failed"
                         break
                     stage = "real_reviewer_apply_diagnosis"
-                    failure = {
-                        "stage": "edit_blocks" if applied.status == "edit_invalid" else "apply",
-                        "status": applied.status,
-                        "error_code": applied.error_code,
-                        "log_tail": str(applied.error_message or "")[:1200],
-                    }
                     # In search_replace mode the model wrote blocks, so show those back.
                     shown = raw if edit_format == "search_replace" else proposal
                     try:
@@ -424,6 +466,8 @@ def run_real_dev(
                         "failure": failure,
                         "reviewer": feedback,
                     }
+            if test_tool is not None:
+                report["test_runs"] = test_tool.records
             report["source_checkout_clean"] = _clean_source(
                 checkout, task.base_commit,
             )

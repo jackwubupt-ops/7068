@@ -239,6 +239,9 @@ def main() -> int:
     parser.add_argument("--retrieval-k", type=int, default=0,
                         help="Give both agents the top-K files from BM25 + issue-hint retrieval "
                              "(utils.retrieval) in their first message; 0 = off (default)")
+    parser.add_argument("--exec-feedback", action="store_true",
+                        help="RQ2: offer the run_tests tool and re-run existing repository tests after "
+                             "a candidate applies (Docker + the task's SWE-bench eval image)")
     parser.add_argument("--list-repos", action="store_true",
                         help="Print the GitHub repos of the selected tasks and exit (for mirroring)")
     args = parser.parse_args()
@@ -276,6 +279,7 @@ def main() -> int:
             task_loader=lambda instance_id: by_id[instance_id],
             edit_format=args.edit_format,
             **({"retrieval_k": args.retrieval_k} if args.retrieval_k else {}),
+            **({"exec_feedback": True} if args.exec_feedback else {}),
         )
 
     manifest = build_manifest(tasks, dataset_id=args.dataset, settings={
@@ -293,7 +297,8 @@ def main() -> int:
         "reasoning_budget_per_task": getattr(settings, "reasoning_budget", 0),
         "agent": args.agent,
         "max_candidates": 2,
-        "docker_tests": False,
+        "docker_tests": bool(args.exec_feedback),
+        "exec_feedback": bool(args.exec_feedback),
         "edit_format": args.edit_format,
         "retrieval_k": args.retrieval_k,
         # Greedy decoding can still differ slightly between batch sizes in vLLM.

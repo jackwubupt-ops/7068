@@ -26,7 +26,7 @@ from pathlib import Path
 from experiments.final_report import DEFAULT_PAIRS, comparability, load_batch
 from experiments.paired_compare import mcnemar_exact
 
-CONFIGS = ("pcr", "single", "pcr-low", "pcr-high", "pcr-max")
+CONFIGS = ("pcr", "single", "pcr-low", "pcr-high", "pcr-max", "pcr-exec", "single-exec")
 
 
 def load_runs(runs_dir: Path, tags: list[str], *, tasks: set[str] | None = None) -> dict:

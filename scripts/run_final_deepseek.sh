@@ -22,6 +22,7 @@ set -euo pipefail
 RUNS=${RUNS:-/data/runs}
 TAG=${TAG:-final-ds}                       # batch dirs: $RUNS/$TAG-pcr, $TAG-single, $TAG-pcr-<effort>
 RQ1_EFFORTS=${RQ1_EFFORTS:-low high}       # P-C-R reasoning efforts besides none ("" = skip RQ1)
+EXEC_AGENTS=${EXEC_AGENTS:-}               # RQ2: agents also run with execution feedback, e.g. "pcr single"
 PY=${PY:-python}                           # client venv python (has the repo deps)
 HARNESS_PY=${HARNESS_PY:-/data/venvs/swebench/bin/python}
 WORKERS=${WORKERS:-4}                      # same for every batch of the comparison
@@ -42,6 +43,7 @@ log() { printf '\n=== %s ===\n' "$*"; }
 # config = agent:effort ; batch dir suffix and report label follow from it
 configs=("pcr:none" "single:none")
 for effort in $RQ1_EFFORTS; do configs+=("pcr:$effort"); done
+for agent in $EXEC_AGENTS; do configs+=("$agent:exec"); done   # effort none + --exec-feedback
 suffix() { [ "$2" = none ] && echo "$1" || echo "$1-$2"; }
 
 log "0. DeepSeek preflight (efforts: none $RQ1_EFFORTS)"
@@ -60,10 +62,11 @@ log "1. generation (Lite dev, $EDIT_FORMAT, retrieval top-$RETRIEVAL_K, workers 
 for config in "${configs[@]}"; do
   agent=${config%%:*} effort=${config#*:}
   dir="$RUNS/$TAG-$(suffix "$agent" "$effort")"
-  resume=()
+  resume=() extra=()
   [ -f "$dir/manifest.json" ] && resume=(--resume)
+  if [ "$effort" = exec ]; then effort=none extra=(--exec-feedback); fi
   "$PY" -m experiments.lite_batch --backend deepseek --agent "$agent" --reasoning-effort "$effort" \
-    --out "$dir" ${resume[@]+"${resume[@]}"} \
+    --out "$dir" ${resume[@]+"${resume[@]}"} ${extra[@]+"${extra[@]}"} \
     --edit-format "$EDIT_FORMAT" --retrieval-k "$RETRIEVAL_K" --workers "$WORKERS" \
     2>&1 | tee -a "$dir.log"
   "$PY" -c "import json,sys; s=json.load(open(sys.argv[1])); assert s['tasks_finished']==s['tasks_total'], s; print('finished', s['tasks_finished'], 'ready', s['prediction_ready'])" "$dir/summary.json"

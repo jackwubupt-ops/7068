@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hmac
 import os
+import shutil
 from pathlib import Path
 
 from flask import Flask, Response, jsonify, make_response, render_template, request
@@ -87,6 +88,7 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
                 edit_format=str(body.get("edit_format", "search_replace")),
                 retrieval_k=int(body.get("retrieval_k", 10)),
                 skip_clarification=bool(body.get("skip_clarification", False)),
+                exec_feedback=bool(body.get("exec_feedback", False)),
                 backend=str(body.get("backend") or default_backend()),
             )
             session = manager.start(req)
@@ -132,7 +134,7 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     def api_followup(sid):
         body = request.get_json(force=True, silent=True) or {}
         try:
-            changes = {k: body.get(k) for k in ("agent", "edit_format", "backend")}
+            changes = {k: body.get(k) for k in ("agent", "edit_format", "backend", "exec_feedback")}
             if body.get("retrieval_k") is not None:
                 changes["retrieval_k"] = int(body["retrieval_k"])
             session = manager.follow_up(sid, str(body.get("guidance", "")), **changes)
@@ -205,7 +207,9 @@ def main(argv: list[str] | None = None) -> int:
         return {"status": "ok", "backends": {
             name: {"model": st.model, "context_chars": st.context_chars, "max_calls": st.max_calls,
                    "data_leaves_server": name == "deepseek"} for name, st in configured.items()},
-            "unavailable": problems}
+            "unavailable": problems,
+            "tests": {"docker": bool(shutil.which("docker")),
+                      "local_image": os.environ.get("PATCHLOOP_TEST_IMAGE") or None}}
 
     app = create_app(manager, health=health, tasks=tasks, token=args.token)
     print(f"PatchLoop web app on http://{args.host}:{args.port}  (runs in {args.runs_dir})")

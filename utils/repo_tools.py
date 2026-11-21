@@ -196,6 +196,7 @@ TOOL_ARGUMENTS = {
     'read_file': {'relative_path', 'start_line', 'end_line'},
     'list_directory': {'relative_path'},
     'find_definition': {'name', 'max_results'},
+    'run_tests': {'test_path'},           # only with execution feedback (patchloop_task2.test_exec)
 }
 MAX_LISTING = 100
 MAX_DEFINITION_FILES = 5000

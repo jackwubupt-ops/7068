@@ -34,7 +34,7 @@ from experiments.paired_compare import compare, load_verdicts
 MATCHED_SETTINGS = ("edit_format", "retrieval_k", "max_calls_per_task", "context_chars",
                     "stage_max_tokens", "max_candidates", "temperature", "dataset", "split")
 # The variables a pair may study; exactly one of them should differ inside a pair.
-VARIABLES = ("model", "agent", "reasoning_effort", "agent_tools")
+VARIABLES = ("model", "agent", "reasoning_effort", "agent_tools", "exec_feedback")
 # Batches from before the find_definition/list_directory tools had only these two.
 LEGACY_TOOLS = ["read_file", "search_repo"]
 DEFAULT_PAIRS = (("ds-pcr", "ds-single", "RQ3: P-C-R vs single agent (DeepSeek)"),
@@ -42,6 +42,8 @@ DEFAULT_PAIRS = (("ds-pcr", "ds-single", "RQ3: P-C-R vs single agent (DeepSeek)"
                  ("ds-pcr-high", "ds-pcr", "RQ1: reasoning high vs none (DeepSeek P-C-R)"),
                  ("ds-pcr-max", "ds-pcr", "RQ1: reasoning max vs none (DeepSeek P-C-R)"),
                  ("ds-pcr-high", "ds-pcr-low", "RQ1: reasoning high vs low (DeepSeek P-C-R)"),
+                 ("ds-pcr-exec", "ds-pcr", "RQ2: execution feedback vs none (DeepSeek P-C-R)"),
+                 ("ds-single-exec", "ds-single", "RQ2: execution feedback vs none (DeepSeek single agent)"),
                  ("ds-pcr", "qwen-pcr", "Model: DeepSeek vs Qwen-7B (P-C-R)"),
                  ("ds-single", "qwen-single", "Model: DeepSeek vs Qwen-7B (single agent)"))
 
@@ -83,6 +85,7 @@ def load_batch(label: str, directory: Path, *, tasks: set[str] | None = None,
         "agent": manifest.get("agent"),
         "reasoning_effort": manifest.get("reasoning_effort") or "none",
         "agent_tools": manifest.get("agent_tools") or LEGACY_TOOLS,
+        "exec_feedback": bool(manifest.get("exec_feedback")),
         "settings": {key: manifest.get(key) for key in MATCHED_SETTINGS},
         "patchloop_commit": manifest.get("patchloop_commit"),
         "eval_run_id": evaluation.get("run_id"),

@@ -32,8 +32,17 @@ def correct_and_refine_prompt(raw_input: str, language='en') -> str:
     return response.choices[0].message.content.strip()
 
 
+RUN_TESTS_HELP = """
+{"action":"run_tests","arguments":{"test_path":"tests/test_module.py"}}
+run_tests runs one EXISTING tracked test file (or file::Class::test) at the base
+commit in a sandbox, before any edit, and returns pass/fail counts and failing
+tests (at most 3 runs). After the fix is written, the harness re-runs the tests you
+ran plus the tests of the changed modules and reports regressions."""
+
+
 def plan_repair(issue, repo_root, base_commit, *, completion=None, max_steps=10,
-                search_result_limit=20, search_context_limit=3, candidate_files=None):
+                search_result_limit=20, search_context_limit=3, candidate_files=None,
+                test_tool=None):
     """Localize an issue using bounded read-only tools; never apply a patch.
 
     completion(messages) is an injectable text completion for offline tests.
@@ -71,6 +80,8 @@ have read code, suspected_files must name at least one file you read (your best
 hypothesis; explain uncertainty in limitations). Return empty suspected_files
 only if no read_file call succeeded.
 Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
+    if test_tool is not None and test_tool.available:
+        instructions += RUN_TESTS_HELP
     first = {'issue': issue, 'base_commit': repository['base_commit']}
     if candidate_files:
         # Same retrieval list and wording as the single agent (utils.retrieval).
@@ -80,7 +91,9 @@ Do not invent evidence, tools, files or line numbers. Do not produce a patch.'''
                 {'role': 'user', 'content': json.dumps(first)}]
     evidence = []
     searched = False
-    tools = AGENT_TOOLS
+    tools = dict(AGENT_TOOLS)
+    if test_tool is not None:
+        tools['run_tests'] = test_tool.run_tool
     seen_actions = {}
     for step in range(1, max_steps + 1):
         if completion is None:

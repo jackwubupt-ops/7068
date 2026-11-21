@@ -52,6 +52,7 @@ class Request:
     retrieval_k: int = 10
     skip_clarification: bool = False
     backend: str = "qwen"            # "qwen" (local vLLM) | "deepseek" (hosted API)
+    exec_feedback: bool = False      # run existing repository tests in Docker (RQ2)
 
 
 @dataclass
@@ -125,6 +126,11 @@ def describe_feedback(content: str) -> tuple[str, str, str] | None:
                 lines = result.get("lines") or []
                 span = f"{lines[0]['line_number']}-{lines[-1]['line_number']}" if lines else "empty"
                 return "tool", f"read_file {result.get('file_path')} lines {span}", ""
+            if name == "run_tests":
+                counts = result.get("counts") or {}
+                return ("tool", f"run_tests {result.get('test_path')} -> "
+                        + (", ".join(f"{v} {k.lower()}" for k, v in sorted(counts.items())) or "no results"),
+                        ", ".join(result.get("failing", [])[:8]))
             if name == "find_definition":
                 defs = result.get("definitions", [])
                 return ("tool", f"find_definition -> {len(defs)} definitions",
@@ -159,6 +165,8 @@ def describe_output(stage: str, raw: str) -> tuple[str, str, str]:
                 return "decision", f"{stage}: read {args.get('relative_path')}{span}", ""
             if action == "find_definition":
                 return "decision", f"{stage}: find where “{args.get('name')}” is defined", ""
+            if action == "run_tests":
+                return "decision", f"{stage}: run the existing tests in {args.get('test_path')}", ""
             if action == "list_directory":
                 return "decision", f"{stage}: list the directory {args.get('relative_path', '.')}", ""
             if action == "final":
@@ -401,6 +409,11 @@ class SessionManager:
             session.result.setdefault("error", f"{type(exc).__name__}: {exc}"[:500])
             session.emit("error", "Run failed", f"{type(exc).__name__}: {exc}"[:1000])
 
+    @staticmethod
+    def _test_env(req: Request):
+        from patchloop_task2.test_exec import env_for_local, env_for_swebench
+        return env_for_swebench if req.source == "swebench" else (lambda _iid: env_for_local())
+
     def _run_agent(self, session: Session, task, checkout_fn) -> None:
         from experiments.qwen_small_dev import run_qwen_dev
         req = session.request
@@ -419,8 +432,13 @@ class SessionManager:
             task_loader=lambda instance_id: task, checkout_fn=checkout_fn,
             edit_format=req.edit_format,
             **({"retrieval_k": req.retrieval_k} if req.retrieval_k else {}),
+            **({"exec_feedback": True, "test_env_fn": self._test_env(req)} if req.exec_feedback else {}),
         )
         session.result = result
+        if req.exec_feedback and not result.get("test_env_available", False):
+            session.emit("warning", "Test execution unavailable",
+                         "No Docker test image for this repository (SWE-bench eval image, or "
+                         "PATCHLOOP_TEST_IMAGE for local repositories); the run continued without tests.")
         if "USER_CANCELLED" in str(result.get("error", "")):
             raise Cancelled("USER_CANCELLED")
         for attempt in result.get("candidate_attempts", []):
@@ -428,13 +446,23 @@ class SessionManager:
                          f"attempt {attempt.get('attempt', '')}: {attempt.get('patch_status')}",
                          _short({k: attempt.get(k) for k in ("error_code", "changed_files",
                                                              "search_match_modes")}, 600))
+            check = attempt.get("test_check")
+            if check:
+                ok = check.get("status") in ("passed", "no_tests", "no_baseline", "infra_error", "unavailable")
+                session.emit("tool" if ok else "warning",
+                             f"existing tests after the edit: {check.get('status')}",
+                             _short({k: check.get(k) for k in ("targets", "regressions", "newly_passing")
+                                     if check.get(k)}, 800))
         status = result.get("status")
         if status == "prediction_ready":
             pred = json.loads((out / "predictions.jsonl").read_text(encoding="utf-8").splitlines()[0])
             session.patch = pred["model_patch"]
             session.status = "awaiting_confirmation"
+            tested = any(a.get("test_check", {}).get("status") == "passed"
+                         for a in result.get("candidate_attempts", []))
             session.emit("stop", "A Git-applicable patch is ready. Review it, then accept or reject.",
-                         "It was applied in an isolated checkout only; no tests were run.")
+                         "It was applied in an isolated checkout; the existing tests it touches still pass."
+                         if tested else "It was applied in an isolated checkout only; no tests confirmed it.")
         elif status == "experiment_error":
             session.status = "failed"
             session.emit("error", f"Agent error at {result.get('failed_stage')}", str(result.get("error")))
