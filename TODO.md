@@ -11,6 +11,20 @@
 
 ---
 
+## ★ 最终实验（2026-11-21 起，截止 11-25 23:59）：DeepSeek Flash
+
+方向调整：最终对比实验全部用 `deepseek-flash`；7B 的 pilot v1–v3 只作为"7B 撑不起这个系统"的证据（[docs/qwen7b-limits.md](docs/qwen7b-limits.md)）。RQ1 从 QLoRA 改为推理强度对比。下面的 P2–P5 不再推进。
+
+- [ ] **和老师确认 RQ1 的变更**（QLoRA → 推理强度），按课程流程登记
+- [ ] **先备份服务器上的现有结果**（runbook 阶段 12），尤其是 pilot v1–v3 和 `/data/analysis/`
+- [ ] **跑最终实验**：`bash scripts/run_final_deepseek.sh`（runbook 阶段 17）
+  - 完成标准：5 个批次（含 2 个 7B 重评测）都 `tasks_finished = 23`，`official_eval.json` 都是 `complete: true`
+- [ ] 看 `summary.json` 里的 `reasoning_tokens`，决定要不要追加 `RQ1_EFFORTS="max"`
+- [ ] 把 `/data/analysis/final-comparison.md` 的表格放进报告；写明设置差异（Comparability warnings）、23 题的统计局限、思考模式的随机性
+- [ ] 再次打包下载结果，然后停机（按量计费）
+
+---
+
 ## P0 · 拿到第一批真实数据（最紧急）
 
 所有步骤见 [docs/aliyun-gpu-runbook.md](docs/aliyun-gpu-runbook.md)，括号里是阶段号。

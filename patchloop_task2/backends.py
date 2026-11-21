@@ -17,6 +17,16 @@ from urllib.parse import urlparse
 from .qwen_small import QwenSettings, QwenSmallBackend
 
 DEEPSEEK_MODELS = {"deepseek-flash", "deepseek-v4-pro"}
+# RQ1: reasoning effort. "none" = thinking disabled (the default and the RQ3 setting);
+# low/high/max enable DeepSeek's thinking mode. Per effort: (extra max_tokens per call
+# for reasoning, reasoning-token budget per task, default request timeout in seconds).
+REASONING_EFFORTS = ("none", "low", "high", "max")
+REASONING_DEFAULTS = {
+    "none": (0, 0, 120),
+    "low": (8192, 120_000, 300),
+    "high": (24576, 300_000, 600),
+    "max": (49152, 600_000, 900),
+}
 DEEPSEEK_ENDPOINT = "https://api.deepseek.com"
 BACKENDS = ("qwen", "deepseek")
 _PLACEHOLDERS = {"", "EMPTY", "DUMMY", "YOUR_API_KEY", "sk-..."}
@@ -38,8 +48,23 @@ class DeepSeekSettings:
     max_calls: int = 20
     context_chars: int = 48000
     timeout_seconds: int = 120
+    reasoning_effort: str = "none"
+    reasoning_tokens_per_call: int | None = None   # None = default for the effort
+    reasoning_budget: int | None = None            # None = default for the effort
 
     def __post_init__(self):
+        if self.reasoning_effort not in REASONING_EFFORTS:
+            raise ValueError(f"DEEPSEEK_REASONING_EFFORT must be one of {list(REASONING_EFFORTS)}")
+        allowance, budget, _ = REASONING_DEFAULTS[self.reasoning_effort]
+        if self.reasoning_tokens_per_call is None:
+            object.__setattr__(self, "reasoning_tokens_per_call", allowance)
+        if self.reasoning_budget is None:
+            object.__setattr__(self, "reasoning_budget", budget)
+        if self.reasoning_effort == "none" and (self.reasoning_tokens_per_call or self.reasoning_budget):
+            raise ValueError("reasoning token settings need DEEPSEEK_REASONING_EFFORT low/high/max")
+        if self.reasoning_effort != "none" and not (
+                1024 <= self.reasoning_tokens_per_call <= 131072 and self.reasoning_budget >= 1024):
+            raise ValueError("reasoning_tokens_per_call must be 1024..131072 and reasoning_budget >= 1024")
         if self.model not in DEEPSEEK_MODELS:
             raise ValueError(f"DEEPSEEK_MODEL must be one of {sorted(DEEPSEEK_MODELS)}")
         if self.api_key.strip() in _PLACEHOLDERS:
@@ -50,47 +75,68 @@ class DeepSeekSettings:
             raise ValueError("max_calls must be an integer from 2 to 40")
         if type(self.context_chars) is not int or not 5000 <= self.context_chars <= 50000:
             raise ValueError("context_chars must be 5000..50000")
-        if type(self.timeout_seconds) is not int or not 5 <= self.timeout_seconds <= 300:
-            raise ValueError("timeout_seconds must be 5..300")
+        if type(self.timeout_seconds) is not int or not 5 <= self.timeout_seconds <= 900:
+            raise ValueError("timeout_seconds must be 5..900")
 
     @classmethod
-    def from_env(cls) -> "DeepSeekSettings":
+    def from_env(cls, reasoning_effort: str | None = None) -> "DeepSeekSettings":
         _load_dotenv()
+        effort = reasoning_effort or os.getenv("DEEPSEEK_REASONING_EFFORT", "none")
+        default_timeout = REASONING_DEFAULTS.get(effort, (0, 0, 120))[2]
+        optional = lambda name: int(os.environ[name]) if os.getenv(name) else None
         # Budgets default to the Qwen ones so the two backends stay matched.
         return cls(
+            reasoning_effort=effort,
+            reasoning_tokens_per_call=optional("DEEPSEEK_REASONING_TOKENS_PER_CALL"),
+            reasoning_budget=optional("DEEPSEEK_REASONING_BUDGET"),
             model=os.getenv("DEEPSEEK_MODEL", "deepseek-flash"),
             endpoint=os.getenv("DEEPSEEK_BASE_URL", DEEPSEEK_ENDPOINT),
             api_key=os.getenv("DEEPSEEK_API_KEY", ""),
             max_calls=int(os.getenv("DEEPSEEK_MAX_CALLS", os.getenv("QWEN_MAX_CALLS", "20"))),
             context_chars=int(os.getenv("DEEPSEEK_CONTEXT_CHARS", os.getenv("QWEN_CONTEXT_CHARS", "48000"))),
-            timeout_seconds=int(os.getenv("DEEPSEEK_TIMEOUT", "120")),
+            timeout_seconds=int(os.getenv("DEEPSEEK_TIMEOUT", str(default_timeout))),
         )
 
 
 class DeepSeekBackend(QwenSmallBackend):
-    """Same budgets/trimming/errors as the Qwen backend; non-thinking mode."""
+    """Same budgets/trimming/errors as the Qwen backend; reasoning effort is configurable.
 
-    # DeepSeek's thinking mode is on by default; the agents expect direct JSON /
-    # edit replies within the per-stage output caps, so it is switched off.
-    extra_body = {"thinking": {"type": "disabled"}}
+    effort "none": thinking explicitly disabled (DeepSeek enables it by default), so
+    replies are direct JSON/edits within the per-stage caps. low/high/max: thinking
+    enabled at that effort; the hidden reasoning gets its own per-call room and
+    per-task budget, the visible answer keeps the same caps (RQ1).
+    """
+
     provider = "deepseek"
 
     def __init__(self, settings: DeepSeekSettings | None = None, *, client=None):
         super().__init__(settings or DeepSeekSettings.from_env(), client=client)
+        effort = self.settings.reasoning_effort
+        self.reasoning_effort = effort
+        if effort == "none":
+            self.extra_body = {"thinking": {"type": "disabled"}}
+        else:
+            # Passed in extra_body: the OpenAI SDK does not know every DeepSeek value ("max").
+            self.extra_body = {"thinking": {"type": "enabled"}, "reasoning_effort": effort}
+            self.reasoning_allowance = self.settings.reasoning_tokens_per_call
+            self.reasoning_budget = self.settings.reasoning_budget
 
     def verify(self) -> dict:
         # GET /models is not documented for DeepSeek: verify with a tiny real call.
         answer = self.complete("preflight", [{"role": "user", "content": "Reply with READY and nothing else."}])
         return {"status": "live_deepseek_api_ok", "model": self.model,
+                "reasoning_effort": self.reasoning_effort,
                 "endpoint": self.settings.endpoint, "sample_response": answer[:80],
                 "data_leaves_server": True}
 
 
-def load_settings(name: str):
+def load_settings(name: str, *, reasoning_effort: str | None = None):
     if name == "qwen":
+        if reasoning_effort not in (None, "none"):
+            raise ValueError("reasoning effort applies to the deepseek backend only")
         return QwenSettings.from_env()
     if name == "deepseek":
-        return DeepSeekSettings.from_env()
+        return DeepSeekSettings.from_env(reasoning_effort)
     raise ValueError(f"backend must be one of {BACKENDS}")
 
 

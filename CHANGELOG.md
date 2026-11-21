@@ -4,6 +4,22 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Final experiment on DeepSeek Flash; RQ1 becomes reasoning effort (2026-11-21)
+
+### Added
+- DeepSeek reasoning effort (`DEEPSEEK_REASONING_EFFORT` / `lite_batch --reasoning-effort`: none, low, high, max). `none` keeps thinking disabled (previous behavior, still the default). With thinking on, answer caps and the answer-token budget are unchanged; each call gets extra `max_tokens` room for hidden reasoning, and reasoning tokens are recorded per call/task (`reasoning_tokens`) and capped per task (`REASONING_TOKEN_BUDGET_EXHAUSTED`). An answer longer than the stage cap counts as truncated, exactly as without thinking.
+- `experiments/final_report.py`: per-configuration table and paired comparisons (RQ1 effort pairs, RQ3 P-C-R vs single, DeepSeek vs Qwen-7B), optional restriction to gold-resolvable tasks, comparability warnings for settings that differ inside a pair.
+- `scripts/run_final_deepseek.sh`: end-to-end, resumable final experiment (preflight, generation, official evaluation, re-evaluation of the Qwen-7B batches on the repaired images with the old verdicts kept, report).
+- `docs/qwen7b-limits.md`: the evidence that the 7B model cannot carry the system, and how RQ1 continues the proposal.
+
+### Changed
+- `lite_batch` manifests record `reasoning_effort`, `reasoning_tokens_per_call` and `reasoning_budget_per_task`; summaries add `reasoning_tokens`.
+- DeepSeek request timeout may be up to 900 s (default 120 s for none, 300/600/900 s for low/high/max).
+- DeepSeek batch runs are labelled `deepseek-...` instead of `qwen-...` in `run_status.json`.
+
+### Verified and not verified
+- Offline tests only (scripted fake clients) plus a dry run of the script with simulated batches. Nothing has been run against the live DeepSeek API from this change; in particular, whether DeepSeek's `max_tokens` covers reasoning and whether `completion_tokens` includes `reasoning_tokens` is not stated in the docs and should be checked from the first live batch (`model_calls` in `run_status.json`).
+
 ## Alibaba Cloud server and local official evaluation (2026-11-20)
 
 ### Added

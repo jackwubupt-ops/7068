@@ -117,6 +117,12 @@ def clean_json_fence(raw: str) -> str:
 class QwenSmallBackend:
     extra_body: dict | None = None  # provider-specific request fields (DeepSeekBackend)
     provider = "qwen"
+    # Hidden reasoning (DeepSeek thinking mode, RQ1). max_tokens covers reasoning + answer,
+    # so each call gets this many extra tokens for reasoning ON TOP of the stage's answer
+    # cap. Answer caps and the 15 000 answer-token budget stay identical across effort
+    # levels; reasoning tokens are counted (and capped per task) separately.
+    reasoning_allowance = 0
+    reasoning_budget = 0  # per-task reasoning tokens; 0 = reasoning not expected
 
     def __init__(self, settings: QwenSettings | None = None, *, client=None):
         self.settings = settings or QwenSettings.from_env()
@@ -131,7 +137,8 @@ class QwenSmallBackend:
             )
         self.client = client
         self.calls: list[dict] = []
-        self.output_tokens = 0
+        self.output_tokens = 0     # answer tokens (excludes hidden reasoning)
+        self.reasoning_tokens = 0
 
     def complete(self, stage: str, messages: list[dict]) -> str:
         if stage not in STAGE_TOKENS:
@@ -140,6 +147,8 @@ class QwenSmallBackend:
             raise RuntimeError("QWEN_CALL_BUDGET_EXHAUSTED")
         if self.output_tokens >= 15000:
             raise RuntimeError("QWEN_TOKEN_BUDGET_EXHAUSTED")
+        if self.reasoning_budget and self.reasoning_tokens >= self.reasoning_budget:
+            raise RuntimeError("REASONING_TOKEN_BUDGET_EXHAUSTED")
         if stage in {"planner", "agent"}:
             transmitted, omitted = trim_planner_history(messages, self.settings.context_chars)
         else:
@@ -152,8 +161,8 @@ class QwenSmallBackend:
         reply = self.client.chat.completions.create(
             model=self.model,
             messages=transmitted,
-            max_tokens=request_limit,
-            temperature=0,
+            max_tokens=request_limit + self.reasoning_allowance,
+            temperature=0,  # ignored by DeepSeek in thinking mode (sampling then varies)
             **({"extra_body": self.extra_body} if self.extra_body else {}),
         )
         duration = round(time.monotonic() - t0, 3)
@@ -163,15 +172,22 @@ class QwenSmallBackend:
         value = getattr(choice.message, "content", None)
         usage = getattr(reply, "usage", None)
         output_count = getattr(usage, "completion_tokens", None)
-        self.output_tokens += (
-            output_count if isinstance(output_count, int) else request_limit
-        )
+        details = getattr(usage, "completion_tokens_details", None)
+        reasoning = getattr(details, "reasoning_tokens", None)
+        reasoning = reasoning if isinstance(reasoning, int) and reasoning > 0 else 0
+        if isinstance(output_count, int):
+            answer_tokens = max(0, output_count - reasoning)
+        else:
+            answer_tokens = request_limit
+        self.output_tokens += answer_tokens
+        self.reasoning_tokens += reasoning
         self.calls.append({
             "stage": stage,
             "response_model": str(getattr(reply, "model", ""))[:120],
             "finish_reason": str(getattr(choice, "finish_reason", "")),
             "prompt_tokens": getattr(usage, "prompt_tokens", None),
             "completion_tokens": output_count,
+            "reasoning_tokens": reasoning,
             "latency_seconds": duration,
             "dropped_history_messages": omitted,
             "output_sha256": sha256(value.encode("utf-8")).hexdigest()
@@ -180,6 +196,10 @@ class QwenSmallBackend:
         if not isinstance(value, str) or not value.strip():
             raise RuntimeError(f"QWEN_EMPTY_CONTENT:{stage}")
         if getattr(choice, "finish_reason", None) == "length":
+            raise RuntimeError(f"QWEN_TRUNCATED_OUTPUT:{stage}")
+        if self.reasoning_allowance and answer_tokens > request_limit:
+            # Same rule as without reasoning: an answer longer than the stage cap would
+            # have been cut off, so the extra reasoning room must not lengthen answers.
             raise RuntimeError(f"QWEN_TRUNCATED_OUTPUT:{stage}")
         return clean_json_fence(value) if stage in {"planner", "reviewer"} else value
 

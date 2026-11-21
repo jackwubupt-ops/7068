@@ -457,6 +457,9 @@ def run_real_dev(
             report["completion_tokens"] = sum(
                 int(call.get("completion_tokens") or 0) for call in live.calls
             )
+            report["reasoning_tokens"] = sum(
+                int(call.get("reasoning_tokens") or 0) for call in live.calls
+            )
         report["duration_seconds"] = round(time.monotonic() - began, 2)
         (target / "run_status.json").write_text(
             json.dumps(report, indent=2, ensure_ascii=False) + "\n",

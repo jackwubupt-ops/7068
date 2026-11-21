@@ -113,6 +113,7 @@ def run_single_dev(output_dir: str | Path, *, api, instance_id: str,
         report["agent_calls"] = sum(call.get("stage") == "agent" for call in calls)
         report["prompt_tokens"] = sum(int(call.get("prompt_tokens") or 0) for call in calls)
         report["completion_tokens"] = sum(int(call.get("completion_tokens") or 0) for call in calls)
+        report["reasoning_tokens"] = sum(int(call.get("reasoning_tokens") or 0) for call in calls)
         report["duration_seconds"] = round(time.monotonic() - began, 2)
         (target / "run_status.json").write_text(
             json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

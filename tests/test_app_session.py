@@ -200,6 +200,20 @@ class WebRouteTests(unittest.TestCase):
         self.assertEqual(client.get("/api/sessions/nope").status_code, 404)
         self.assertEqual(len(client.get("/api/sessions").get_json()), 1)
 
+    def test_deepseek_only_deployment_defaults_to_deepseek(self):
+        mgr = SessionManager(self.root / "runs", {"deepseek": lambda: ScriptedBackend([READ, GOOD])})
+        client = create_app(mgr).test_client()
+        r = client.post("/api/sessions", json={"issue": ISSUE, "source": "local", "repo_path": str(self.repo),
+                                               "agent": "single", "retrieval_k": 0})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        self.assertEqual(r.get_json()["request"]["backend"], "deepseek")
+        import time
+        for _ in range(200):  # let the background run finish before the temp dir goes away
+            if client.get(f"/api/sessions/{r.get_json()['id']}").get_json()["status"] not in (
+                    "queued", "checking", "running"):
+                break
+            time.sleep(0.05)
+
 
 if __name__ == "__main__":
     unittest.main()
