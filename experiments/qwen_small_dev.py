@@ -106,8 +106,13 @@ def run_qwen_dev(backend: QwenSmallBackend, output_dir: Path, *, agent: str = "p
             encoding="utf-8",
         )
     result["prediction_model_label"] = label
+    # The same pipeline serves both backends; name the run after the real provider.
+    provider = getattr(backend, "provider", "qwen")
     result["experiment"] = ("qwen-small-real-swebench-full-dev-v1" if agent == "pcr"
                             else "qwen-single-agent-swebench-dev-v1")
+    if provider != "qwen":
+        result["experiment"] = result["experiment"].replace("qwen-small", provider).replace("qwen", provider)
+    result["provider"] = provider
     result["agent"] = agent
     result["official_evaluated"] = False
     result["official_resolved"] = None

@@ -477,10 +477,46 @@ cd /data/7068 && source .venv-patchloop-client/bin/activate && python -m patchlo
 
 每个示例会生成一个 `.json`（完整的事件记录）和一个 `.md`（可读的 trace）。这些文件要放进提交的 ZIP 包里。
 
+## 阶段 17：最终对比实验（DeepSeek Flash，RQ1 + RQ3）
+
+最终的对比实验全部用 DeepSeek API 的 `deepseek-flash` 跑，**不需要 GPU，也不需要 vLLM**；官方评测仍然要用本机的 Docker。之前用 7B 跑出来的 pilot v1–v3 不再作为最终结果，只作为"7B 撑不起这个系统"的证据（见 [docs/qwen7b-limits.md](qwen7b-limits.md)）。
+
+| 批次目录 | agent | 推理强度 | 用途 |
+|---|---|---|---|
+| `final-ds-pcr` | P-C-R | none（关闭思考） | RQ3 和 RQ1 共用的基线 |
+| `final-ds-single` | 单 agent | none | RQ3 |
+| `final-ds-pcr-low` | P-C-R | low | RQ1 |
+| `final-ds-pcr-high` | P-C-R | high | RQ1 |
+| `final-ds-pcr-max`（可选） | P-C-R | max | RQ1，设置 `RQ1_EFFORTS="low high max"` 才会跑 |
+
+所有批次的编辑格式（search_replace）、检索（top-10）、调用预算、**回答**的输出上限都相同。开启思考时，每次调用会额外多给一份思考 token 的额度，等于 DeepSeek 官方在思考模式下的默认上限（low/high 65536，max 131072）；每个任务的思考 token 另外设上限（40 万、60 万、120 万），这些数字会写进 `manifest.json`。第一次试跑时额度只给了 8K/24K/48K，有些 Coder 调用还没想完就被截断（`QWEN_EMPTY_CONTENT`），所以改成了官方默认值。思考模式下 DeepSeek 不使用 temperature，所以 low/high/max 的结果带有随机性，报告里要写明这一点。
+
+前提：`.env` 里已经有 `DEEPSEEK_API_KEY`，并且阶段 14 的 gold 自检已经做完（脚本会用 `/data/eval-selftest/gold.gold-all-dev-fixed.json` 筛选 gold 能通过的题目）。
+
+```bash
+screen -S final
+```
+
+在 screen 里执行（`QWEN_PCR` / `QWEN_SINGLE` 换成服务器上 pilot v3 的实际目录）：
+
+```bash
+cd /data/7068 && source .venv-patchloop-client/bin/activate && QWEN_PCR=/data/runs/<pilot-v3-pcr目录> QWEN_SINGLE=/data/runs/<pilot-v3-single目录> bash scripts/run_final_deepseek.sh 2>&1 | tee /data/runs/final-ds.log
+```
+
+脚本按顺序做：preflight（每个推理强度各调用一次）→ 生成所有批次 → 官方评测 → 在**修复后的同一批镜像**上重新评测 7B 的两个批次（旧结果另存为 `official_eval.pre-repair.json`）→ 生成 `/data/analysis/final-comparison.md` / `.json`（只统计 gold 能通过的题）和 `final-comparison.all-tasks.md`（全部 23 题）。
+
+- 中途断了就再运行一遍同一条命令：已经完成的批次和评测会跳过，没跑完的批次会从断点继续。
+- 评测不完整（脚本退出码 2）时，查明原因后加 `EVAL_SUFFIX=-r2` 重跑（run id 只能用一次）。
+- 只想先生成、晚点再评测：加 `SKIP_EVAL=1`。
+
+**通过标准：** 所有批次 `tasks_finished = 23`；所有 `official_eval.json` 都是 `complete: true`；`final-comparison.md` 的 "Comparability warnings" 里没有意外的项目（7B 和 DeepSeek 的设置不同时会列在这里）。
+
+**费用：** 按 [DeepSeek 价格页](https://api-docs.deepseek.com/quick_start/pricing) 的 deepseek-flash 价格，不开思考的两个批次应该只要几美元；high/max 会产生大量思考 token，按输出价格计费，先跑 low/high，看 `summary.json` 里的 `reasoning_tokens` 再决定要不要跑 max。
+
 ## 以后的阶段在这台机器上怎么做
 
 - **RQ2 执行反馈：** 测试直接在本机的 Docker 里跑，用 SWE-bench 预构建的实例镜像，不再需要远程调用。泄漏红线不变：只能运行仓库原有的测试和模型自己写的复现脚本，`test_patch` 和 FAIL_TO_PASS 测试一律不能用。
-- **RQ1 QLoRA：** A10 24 GB 可以训练 7B 的 4-bit QLoRA。训练前先停掉 vLLM（`screen -r vllm` 后按 `Ctrl+C`），训练环境单独建一个 venv。如果想省钱，训练也可以继续放在 AutoDL 上：训练不需要 Docker，也基本不用访问 GitHub。
+- **RQ1：** 已经从 QLoRA 微调改为推理强度对比（阶段 17），不再需要训练环境。
 
 ## 常见问题
 
@@ -505,4 +541,5 @@ cd /data/7068 && source .venv-patchloop-client/bin/activate && python -m patchlo
 2. 阶段 8 gold 自检的报告；
 3. 阶段 9 三次单题的检查输出；
 4. 阶段 10 三个配置的汇总；
-5. 阶段 11 `paired_compare` 的输出。
+5. 阶段 11 `paired_compare` 的输出；
+6. 阶段 17 的 `/data/analysis/final-comparison.md`。

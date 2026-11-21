@@ -3,8 +3,9 @@
     python -m patchloop_app.web --port 7860 --runs-dir /data/app-runs
 
 Open http://127.0.0.1:7860 (through an SSH tunnel, or see --host/--token).
-Requires the local vLLM server (scripts/start_qwen_small.sh) and the client
-venv; settings come from .env exactly as for the batch experiments.
+Needs at least one backend: DEEPSEEK_API_KEY in .env (no GPU) and/or the local
+vLLM server (scripts/start_qwen_small.sh). Settings come from .env exactly as for
+the batch experiments.
 """
 from __future__ import annotations
 
@@ -24,6 +25,14 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     app = Flask(__name__, template_folder=str(Path(__file__).with_name("templates")))
     tasks = tasks or []
     by_id = {t.instance_id: t for t in tasks}
+
+    def default_backend() -> str:
+        # A request without "backend" uses qwen if configured, else the only one there is
+        # (e.g. a DeepSeek-only deployment without a GPU).
+        factories = manager.backend_factory
+        if isinstance(factories, dict) and factories and "qwen" not in factories:
+            return next(iter(factories))
+        return "qwen"
 
     @app.before_request
     def check_token():
@@ -78,7 +87,7 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
                 edit_format=str(body.get("edit_format", "search_replace")),
                 retrieval_k=int(body.get("retrieval_k", 10)),
                 skip_clarification=bool(body.get("skip_clarification", False)),
-                backend=str(body.get("backend", "qwen")),
+                backend=str(body.get("backend") or default_backend()),
             )
             session = manager.start(req)
         except (ValueError, TypeError) as exc:

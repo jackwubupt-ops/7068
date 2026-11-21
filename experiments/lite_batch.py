@@ -40,7 +40,7 @@ MAX_WORKERS = 16
 SUMMARY_FIELDS = (
     "instance_id", "repo", "agent", "status", "patch_status", "suspected_files",
     "planner_calls", "coder_calls", "reviewer_calls", "agent_calls", "attempt_count",
-    "prompt_tokens", "completion_tokens", "duration_seconds",
+    "prompt_tokens", "completion_tokens", "reasoning_tokens", "duration_seconds",
     "prediction_available", "failed_stage", "error",
 )
 
@@ -205,6 +205,7 @@ def write_summary(out_dir: Path, tasks: list[DevelopmentTask], *, elapsed: float
         "localized_any_file": sum(1 for line in lines.values() if line.get("suspected_files")),
         "prompt_tokens": sum(int(line.get("prompt_tokens") or 0) for line in lines.values()),
         "completion_tokens": sum(int(line.get("completion_tokens") or 0) for line in lines.values()),
+        "reasoning_tokens": sum(int(line.get("reasoning_tokens") or 0) for line in lines.values()),
         "model_seconds_total": round(sum(float(line.get("duration_seconds") or 0) for line in lines.values()), 1),
         "this_session_seconds": round(elapsed, 1),
         "official_evaluated": False,
@@ -230,6 +231,9 @@ def main() -> int:
                         help=f"Tasks run concurrently against vLLM (1..{MAX_WORKERS}; 4 suits 7B on a 24 GiB GPU)")
     parser.add_argument("--backend", choices=("qwen", "deepseek"), default="qwen",
                         help="qwen = local vLLM (default); deepseek = DeepSeek API (DEEPSEEK_API_KEY)")
+    parser.add_argument("--reasoning-effort", choices=("none", "low", "high", "max"),
+                        help="deepseek only (RQ1): thinking effort; default DEEPSEEK_REASONING_EFFORT "
+                             "or none (= thinking disabled)")
     parser.add_argument("--retrieval-k", type=int, default=0,
                         help="Give both agents the top-K files from BM25 + issue-hint retrieval "
                              "(utils.retrieval) in their first message; 0 = off (default)")
@@ -255,7 +259,9 @@ def main() -> int:
     from patchloop_task2.backends import load_settings, make_backend
     from patchloop_task2.qwen_small import STAGE_TOKENS
 
-    settings = load_settings(args.backend)
+    if args.reasoning_effort not in (None, "none") and args.backend != "deepseek":
+        parser.error("--reasoning-effort low/high/max needs --backend deepseek")
+    settings = load_settings(args.backend, reasoning_effort=args.reasoning_effort)
     make_backend(args.backend, settings).verify()  # fail fast before any task if the model is down
     by_id = {task.instance_id: task for task in tasks}
 
@@ -278,7 +284,11 @@ def main() -> int:
         "context_chars": settings.context_chars,
         "timeout_seconds": settings.timeout_seconds,
         "stage_max_tokens": STAGE_TOKENS,
+        # Ignored by DeepSeek in thinking mode (low/high/max): those runs are sampled.
         "temperature": 0,
+        "reasoning_effort": getattr(settings, "reasoning_effort", "none"),
+        "reasoning_tokens_per_call": getattr(settings, "reasoning_tokens_per_call", 0),
+        "reasoning_budget_per_task": getattr(settings, "reasoning_budget", 0),
         "agent": args.agent,
         "max_candidates": 2,
         "docker_tests": False,
