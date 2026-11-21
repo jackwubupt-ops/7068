@@ -53,6 +53,14 @@ Agent tools (all read-only, tracked files at the base commit only; nothing is im
 | `find_definition(name)` | where a class, function or method is defined: file, qualified name, line span, signature (Python `ast`) |
 | `list_directory(relative_path)` | the tracked sub-directories (with file counts) and files under a directory |
 | `read_file(relative_path, start_line, end_line)` | up to 200 numbered lines |
+| `run_tests(test_path)` (with execution feedback) | runs one EXISTING tracked test file or node id at the base commit in a Docker sandbox: pass/fail counts, failing tests, output tail (max 3 per task) |
+
+With execution feedback on (`--exec-feedback`, or "Run existing tests" in the app), the harness also
+re-runs the tests the agent ran plus the test files of the changed modules after every applied
+candidate; tests that passed before and fail with the patch are regressions and go back to the
+agent (P-C-R: Reviewer -> Coder retry). Sandbox: no network, no capabilities, resource limits,
+timeout; SWE-bench tasks use their evaluation image, local repositories `PATCHLOOP_TEST_IMAGE`.
+Hidden benchmark tests (`test_patch`, FAIL_TO_PASS) are never run.
 
 Autonomous decisions: which tool to use and with which arguments, which files and line ranges to read, which files
 to edit (Planner), when to stop investigating (single agent `edit` action), and how to repair
@@ -263,7 +271,7 @@ repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md]
 | Harness: schemas, model adapter, tracing, repository tools, clean workspaces | done (own JSON protocol and dataclasses instead of LangGraph/Pydantic) |
 | Single-agent end-to-end MVP; Planner–Coder–Reviewer with feedback | done; feedback covers apply/format failures |
 | RQ3: single agent vs. P-C-R under matched budgets | done on Lite dev (final runs on `deepseek-flash`, 3 runs: 46.4% vs 42.0%, no significant difference; Qwen-7B pilots as baseline) |
-| RQ2: execution feedback (tests in the loop) | **partial**: apply/format feedback only, no test execution in the loop |
+| RQ2: execution feedback (tests in the loop) | implemented: `run_tests` tool + post-apply regression check on existing tests (Docker sandbox); evaluated as `ds-pcr-exec` / `ds-single-exec` |
 | RQ1: QLoRA fine-tuning | **changed** to reasoning effort (none / low / high / max) on `deepseek-flash`; done (more effort did not help): same question (does more compute improve repair?), inference-time instead of training-time compute; why: [docs/qwen7b-limits.md](docs/qwen7b-limits.md) |
 | Official evaluation and ablations | done on Lite dev; Lite test not run |
 | Added after measurements | retrieval, tolerant matching, diagnosis tools, eval-image repair, DeepSeek backend, interactive web app |
