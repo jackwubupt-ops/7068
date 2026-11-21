@@ -4,6 +4,14 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Execution feedback (RQ2) and a redesigned web app (2026-11-22)
+
+### Added
+- `patchloop_task2/test_exec.py`: the repository's EXISTING tests run in a Docker sandbox (no network, all capabilities dropped, no new privileges, memory/CPU/pid limits, timeout that kills the container). SWE-bench tasks use their prebuilt evaluation image (patch applied inside a throw-away container); local repositories use `PATCHLOOP_TEST_IMAGE` with the worktree mounted read-only. Hidden `test_patch` / FAIL_TO_PASS tests are never used.
+- `run_tests(test_path)` agent tool (Planner and single agent; tracked test files only, at most 3 runs per task, at the base commit) and a harness regression check after every applied candidate: tests that passed before and fail with the patch go back to the agent (P-C-R: Reviewer -> Coder retry; single agent: replacement submission). If the replacement does not apply, the earlier applicable candidate is kept.
+- `lite_batch --exec-feedback`, `EXEC_AGENTS="pcr single"` in `run_final_deepseek.sh` (batches `*-pcr-exec`, `*-single-exec`), RQ2 pairs in `final_report`, manifests record `exec_feedback`.
+- Web app: "Run existing tests" switch (states when Docker or a test image is unavailable), test results in the timeline, and a redesigned page (progress steps, run statistics, readable diff, light and dark themes).
+
 ## Two more agent tools: find_definition and list_directory (2026-11-22)
 
 ### Added

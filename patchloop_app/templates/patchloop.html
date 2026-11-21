@@ -5,64 +5,134 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PatchLoop</title>
 <style>
-  :root { --bg:#f6f7f9; --card:#fff; --ink:#1d2433; --muted:#667085; --line:#e4e7ec;
-          --accent:#2457d6; --ok:#13804b; --warn:#b54708; --bad:#c0282d; --code:#0f172a; }
+  :root {
+    --bg:#f4f5f8; --surface:#ffffff; --surface-2:#f8f9fb; --ink:#141824; --muted:#6b7280; --line:#e6e8ee;
+    --accent:#4f46e5; --accent-soft:#eef0ff; --ok:#0f8a5f; --ok-soft:#e6f6ef; --warn:#b45309; --warn-soft:#fff6e6;
+    --bad:#c62828; --bad-soft:#fdecec; --tool:#0e7490; --tool-soft:#e6f6f9; --review:#7c3aed; --review-soft:#f3edff;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 4px 16px rgba(16,24,40,.06);
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#0d1017; --surface:#151a23; --surface-2:#1b212c; --ink:#e7e9ee; --muted:#9aa3b2; --line:#262d3a;
+      --accent:#8b8cf8; --accent-soft:#23254a; --ok:#34c28a; --ok-soft:#12291f; --warn:#f0a43a; --warn-soft:#2d2210;
+      --bad:#f07474; --bad-soft:#331717; --tool:#4cc3d9; --tool-soft:#10282d; --review:#b494fb; --review-soft:#251c3a;
+      --shadow:none;
+    }
+  }
   * { box-sizing:border-box; }
-  body { margin:0; font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--ink); }
-  header { display:flex; align-items:center; gap:12px; padding:12px 20px; background:var(--card); border-bottom:1px solid var(--line); }
-  header h1 { font-size:18px; margin:0; }
-  header .sub { color:var(--muted); }
-  .badge { margin-left:auto; padding:3px 10px; border-radius:999px; font-size:12px; background:#eef2ff; color:var(--accent); }
-  .badge.down { background:#fdecec; color:var(--bad); }
-  main { display:grid; grid-template-columns: 380px 1fr; gap:16px; padding:16px 20px; }
-  @media (max-width: 900px) { main { grid-template-columns:1fr; } }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; }
-  h2 { font-size:15px; margin:0 0 10px; }
-  label { display:block; font-size:12px; color:var(--muted); margin:10px 0 4px; }
-  input, select, textarea { width:100%; padding:7px 9px; border:1px solid var(--line); border-radius:7px; font:inherit; background:#fff; }
-  textarea { min-height:170px; resize:vertical; font-family:ui-monospace,Menlo,monospace; font-size:12.5px; }
-  .tabs { display:flex; gap:6px; } .tabs button { flex:1; }
-  button { padding:7px 12px; border-radius:7px; border:1px solid var(--line); background:#fff; font:inherit; cursor:pointer; }
+  body { margin:0; font:14px/1.55 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--ink); }
+  header { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:14px; padding:12px 24px;
+           background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+  .logo { width:30px; height:30px; border-radius:9px; display:grid; place-items:center; color:#fff; font-weight:700;
+          background:linear-gradient(135deg,#6366f1,#06b6d4); }
+  header h1 { font-size:17px; margin:0; letter-spacing:-.01em; }
+  header .sub { color:var(--muted); font-size:13px; }
+  .badge { margin-left:auto; display:flex; align-items:center; gap:8px; padding:5px 12px; border-radius:999px; font-size:12px;
+           background:var(--surface-2); border:1px solid var(--line); color:var(--muted); }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 3px var(--ok-soft); }
+  .badge.down .dot { background:var(--bad); box-shadow:0 0 0 3px var(--bad-soft); }
+  main { display:grid; grid-template-columns:400px minmax(0,1fr); gap:20px; padding:20px 24px; max-width:1500px; margin:0 auto; }
+  @media (max-width: 960px) { main { grid-template-columns:1fr; padding:16px; } }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; box-shadow:var(--shadow); min-width:0; }
+  .side { position:sticky; top:76px; align-self:start; max-height:calc(100vh - 96px); overflow:auto; }
+  @media (max-width: 960px) { .side { position:static; max-height:none; } }
+  h2 { font-size:15px; margin:0 0 12px; letter-spacing:-.01em; }
+  h3 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:18px 0 8px; }
+  label { display:block; font-size:12px; font-weight:500; color:var(--muted); margin:12px 0 5px; }
+  input, select, textarea { width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:9px; font:inherit;
+                            background:var(--surface-2); color:var(--ink); transition:border-color .15s, box-shadow .15s; }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  textarea { min-height:180px; resize:vertical; font:12.5px/1.5 var(--mono); }
+  .seg { display:grid; grid-template-columns:1fr 1fr; padding:3px; gap:3px; border-radius:10px; background:var(--surface-2); border:1px solid var(--line); }
+  .seg button { border:0; background:transparent; padding:7px; border-radius:8px; color:var(--muted); font-weight:500; }
+  .seg button.on { background:var(--surface); color:var(--ink); box-shadow:var(--shadow); }
+  button { padding:8px 14px; border-radius:9px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
+           font:inherit; font-weight:500; cursor:pointer; transition:transform .05s, background .15s; }
+  button:active { transform:translateY(1px); }
   button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.primary:hover { filter:brightness(1.08); }
   button.ok { background:var(--ok); border-color:var(--ok); color:#fff; }
-  button.bad { color:var(--bad); }
-  button.on { border-color:var(--accent); color:var(--accent); font-weight:600; }
+  button.bad { color:var(--bad); border-color:color-mix(in srgb, var(--bad) 35%, var(--line)); }
+  button.ghost { background:transparent; }
   button:disabled { opacity:.5; cursor:default; }
-  .row { display:flex; gap:8px; } .row > * { flex:1; }
-  .status { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; background:#eef2ff; color:var(--accent); }
-  .status.awaiting_confirmation, .status.accepted { background:#e7f6ee; color:var(--ok); }
-  .status.needs_clarification, .status.rejected, .status.cancelled { background:#fff4e5; color:var(--warn); }
-  .status.failed { background:#fdecec; color:var(--bad); }
+  .row { display:flex; gap:10px; } .row > * { flex:1; min-width:0; }
+  .toggle { display:flex; align-items:flex-start; gap:10px; margin-top:12px; padding:10px 12px; border-radius:10px;
+            border:1px solid var(--line); background:var(--surface-2); cursor:pointer; }
+  .toggle input { width:auto; margin-top:3px; accent-color:var(--accent); }
+  .toggle b { display:block; font-size:13px; } .toggle span { font-size:12px; color:var(--muted); }
   .meta { color:var(--muted); font-size:12px; }
-  .timeline { list-style:none; margin:10px 0 0; padding:0; max-height:46vh; overflow:auto; border-top:1px solid var(--line); }
-  .timeline li { padding:6px 4px; border-bottom:1px solid var(--line); display:grid; grid-template-columns:44px 22px 1fr; gap:6px; }
-  .timeline .t { color:var(--muted); font-size:12px; text-align:right; }
-  .timeline details summary { cursor:pointer; }
-  .timeline pre, .diff { white-space:pre-wrap; word-break:break-word; font:12px/1.45 ui-monospace,Menlo,monospace; background:#f8fafc; border:1px solid var(--line); border-radius:6px; padding:8px; margin:6px 0 0; }
-  .k-decision .ic { color:var(--accent); } .k-tool .ic { color:#0e7490; } .k-warning .ic { color:var(--warn); }
-  .k-error .ic { color:var(--bad); } .k-stop .ic { color:var(--ok); } .k-apply .ic { color:var(--ok); } .k-review .ic { color:#7c3aed; }
-  .k-thinking { color:var(--muted); }
-  .diff { max-height:42vh; overflow:auto; background:#fff; }
-  .diff .add { color:var(--ok); background:#ecfdf3; display:block; } .diff .del { color:var(--bad); background:#fef3f2; display:block; }
-  .diff .hunk { color:#7c3aed; display:block; }
-  .panel { margin-top:12px; padding:12px; border-radius:8px; border:1px solid var(--line); background:#fcfcfd; }
-  .panel.ask { border-color:#fedf89; background:#fffcf5; }
-  .panel ul { margin:6px 0; padding-left:18px; }
-  .history { margin-top:12px; } .history a { display:block; color:var(--accent); text-decoration:none; font-size:12.5px; padding:2px 0; cursor:pointer; }
-  .empty { color:var(--muted); padding:30px; text-align:center; }
+  .note { margin-top:6px; font-size:12px; color:var(--muted); }
+  .run { width:100%; margin-top:16px; padding:11px; font-size:15px; }
   .err { color:var(--bad); font-size:12.5px; margin-top:8px; }
+  .history a { display:flex; justify-content:space-between; gap:8px; padding:7px 9px; border-radius:8px; color:var(--ink);
+               text-decoration:none; font-size:12.5px; cursor:pointer; }
+  .history a:hover { background:var(--surface-2); }
+  .history a .meta { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600;
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap; }
+  .pill.awaiting_confirmation, .pill.accepted { background:var(--ok-soft); color:var(--ok); }
+  .pill.needs_clarification, .pill.rejected, .pill.cancelled { background:var(--warn-soft); color:var(--warn); }
+  .pill.failed { background:var(--bad-soft); color:var(--bad); }
+  .pill.running::before, .pill.checking::before, .pill.queued::before { content:""; width:7px; height:7px; border-radius:50%;
+          background:currentColor; animation:pulse 1.2s infinite; }
+  @keyframes pulse { 50% { opacity:.25; } }
+  .head { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .head h2 { margin:0; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin:14px 0 4px; }
+  .stat { padding:10px 12px; border-radius:10px; background:var(--surface-2); border:1px solid var(--line); }
+  .stat .v { font-size:16px; font-weight:600; } .stat .l { font-size:11.5px; color:var(--muted); }
+  .steps { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 2px; }
+  .step { font-size:12px; padding:3px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .step.done { color:var(--ok); border-color:color-mix(in srgb, var(--ok) 40%, var(--line)); background:var(--ok-soft); }
+  .step.live { color:var(--accent); border-color:var(--accent); background:var(--accent-soft); }
+  .timeline { list-style:none; margin:14px 0 0; padding:0 0 0 4px; position:relative; }
+  .timeline::before { content:""; position:absolute; left:17px; top:6px; bottom:6px; width:2px; background:var(--line); }
+  .timeline li { position:relative; display:grid; grid-template-columns:28px 1fr auto; gap:10px; padding:6px 0; align-items:start; }
+  .ic { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font-size:13px; z-index:1;
+        background:var(--surface-2); border:1px solid var(--line); color:var(--muted); }
+  .k-decision .ic { background:var(--accent-soft); color:var(--accent); border-color:transparent; }
+  .k-tool .ic { background:var(--tool-soft); color:var(--tool); border-color:transparent; }
+  .k-warning .ic { background:var(--warn-soft); color:var(--warn); border-color:transparent; }
+  .k-error .ic { background:var(--bad-soft); color:var(--bad); border-color:transparent; }
+  .k-stop .ic, .k-apply .ic { background:var(--ok-soft); color:var(--ok); border-color:transparent; }
+  .k-review .ic, .k-edit .ic { background:var(--review-soft); color:var(--review); border-color:transparent; }
+  .item { padding:4px 0; min-width:0; }
+  .item .title { font-weight:500; }
+  .k-thinking .title, .k-info .title { color:var(--muted); font-weight:400; }
+  .t { color:var(--muted); font-size:11.5px; font-variant-numeric:tabular-nums; padding-top:6px; }
+  details summary { cursor:pointer; list-style:none; } details summary::-webkit-details-marker { display:none; }
+  details summary::after { content:" ▸"; color:var(--muted); font-size:11px; } details[open] summary::after { content:" ▾"; }
+  pre { white-space:pre-wrap; word-break:break-word; font:12px/1.5 var(--mono); background:var(--surface-2); color:var(--ink);
+        border:1px solid var(--line); border-radius:9px; padding:10px; margin:8px 0 0; max-height:340px; overflow:auto; }
+  .panel { margin-top:16px; padding:16px; border-radius:12px; border:1px solid var(--line); background:var(--surface-2); }
+  .panel.ready { border-color:color-mix(in srgb, var(--ok) 45%, var(--line)); background:var(--ok-soft); }
+  .panel.ask { border-color:color-mix(in srgb, var(--warn) 45%, var(--line)); background:var(--warn-soft); }
+  .panel ul { margin:8px 0 0; padding-left:20px; }
+  .diff { margin-top:10px; border-radius:10px; overflow:auto; max-height:44vh; border:1px solid var(--line); background:var(--surface);
+          font:12px/1.55 var(--mono); }
+  .diff span { display:block; padding:0 12px; white-space:pre; }
+  .diff .add { background:color-mix(in srgb, var(--ok) 14%, transparent); color:var(--ok); }
+  .diff .del { background:color-mix(in srgb, var(--bad) 13%, transparent); color:var(--bad); }
+  .diff .hunk { color:var(--review); background:var(--review-soft); }
+  .diff .file { color:var(--muted); font-weight:600; }
+  .empty { display:grid; place-items:center; text-align:center; min-height:52vh; color:var(--muted); }
+  .empty .big { font-size:40px; margin-bottom:6px; }
+  .empty ol { text-align:left; display:inline-block; margin:10px 0 0; }
+  code { font:12px var(--mono); background:var(--surface-2); border:1px solid var(--line); border-radius:6px; padding:1px 5px; }
+  a { color:var(--accent); }
 </style>
 </head>
 <body>
 <header>
-  <h1>PatchLoop</h1>
-  <span class="sub">issue → localized, Git-applicable patch, with you in the loop</span>
-  <span id="health" class="badge">checking model…</span>
+  <div class="logo">P</div>
+  <div><h1>PatchLoop</h1><div class="sub">From an issue to a reviewed, Git-applicable patch, with you in the loop</div></div>
+  <span id="health" class="badge"><span class="dot"></span><span id="health-text">checking model…</span></span>
 </header>
 <main>
-  <section class="card">
+  <section class="card side">
     <h2>New repair request</h2>
-    <div class="tabs">
+    <div class="seg">
       <button id="tab-swebench" class="on" onclick="setSource('swebench')">Example task</button>
       <button id="tab-local" onclick="setSource('local')">Local repository</button>
     </div>
@@ -71,8 +141,8 @@
       <select id="task" onchange="loadTask()"><option value="">Loading…</option></select>
     </div>
     <div id="src-local" style="display:none">
-      <label>Path to a Git repository on the server</label>
-      <input id="repo_path" placeholder="/data/demo-repos/myproject">
+      <label>Path to a Git repository on this machine</label>
+      <input id="repo_path" placeholder="/data/demo-repos/myproject or C:\Users\me\demo-calc">
       <label>Commit or branch</label>
       <input id="commit" value="HEAD">
     </div>
@@ -80,19 +150,30 @@
     <textarea id="issue" placeholder="Describe the bug: what happens, what you expected, error messages…"></textarea>
     <label>Model</label>
     <select id="backend" onchange="modelNote()"><option value="qwen">Local Qwen2.5-Coder-7B</option></select>
-    <div id="model-note" class="meta"></div>
+    <div id="model-note" class="note"></div>
     <div class="row">
       <div><label>Agent</label>
         <select id="agent"><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select></div>
-      <div><label>Retrieval (top files)</label>
-        <select id="retrieval_k"><option>10</option><option>5</option><option value="0">off</option></select></div>
+      <div><label>Retrieval</label>
+        <select id="retrieval_k"><option value="10">top 10 files</option><option value="5">top 5 files</option><option value="0">off</option></select></div>
     </div>
-    <div style="margin-top:12px"><button class="primary" style="width:100%" onclick="startRun()">Run agent</button></div>
+    <label class="toggle"><input type="checkbox" id="exec_feedback">
+      <div><b>Run existing tests</b><span id="tests-note">The agent may run repository tests in a Docker sandbox, and every applied edit is re-tested for regressions.</span></div></label>
+    <button class="primary run" onclick="startRun()">Run agent</button>
     <div id="form-err" class="err"></div>
-    <div class="history"><h2 style="margin-top:14px">Sessions</h2><div id="history" class="meta">none yet</div></div>
+    <h3>Sessions</h3>
+    <div id="history" class="history meta">none yet</div>
   </section>
 
-  <section class="card" id="view"><div class="empty">Choose an issue and press <b>Run agent</b>. Every decision, tool call and recovery step appears here as it happens.</div></section>
+  <section class="card" id="view">
+    <div class="empty"><div>
+      <div class="big">⟲</div>
+      <b>Pick an issue and press Run agent</b>
+      <div>Every decision, tool call and recovery step appears here as it happens.</div>
+      <ol class="meta"><li>Planner searches and reads the code</li><li>Coder writes an edit; the harness applies it in isolation</li>
+        <li>Reviewer diagnoses failures; the Coder retries</li><li>You accept, reject or follow up</li></ol>
+    </div></div>
+  </section>
 </main>
 
 <script>
@@ -111,6 +192,7 @@ function setSource(s) {
   source = s;
   $('tab-swebench').classList.toggle('on', s === 'swebench'); $('tab-local').classList.toggle('on', s === 'local');
   $('src-swebench').style.display = s === 'swebench' ? '' : 'none'; $('src-local').style.display = s === 'local' ? '' : 'none';
+  testsNote();
 }
 async function loadTasks() {
   try {
@@ -124,28 +206,36 @@ async function loadTask() {
   const id = $('task').value; if (!id) return;
   const t = await api('/api/tasks/' + encodeURIComponent(id)); $('issue').value = t.issue;
 }
-let backends = {};
+let backends = {}, tests = {};
 const LABEL = {qwen: 'Local Qwen2.5-Coder-7B (private)', deepseek: 'DeepSeek API'};
 async function health() {
   try {
-    const h = await api('/api/health'); backends = h.backends || {};
+    const h = await api('/api/health'); backends = h.backends || {}; tests = h.tests || {};
     const names = Object.keys(backends);
-    $('health').textContent = names.length ? 'models: ' + names.map(n => backends[n].model).join(' · ') : 'no model available';
+    $('health-text').textContent = names.length ? names.map(n => backends[n].model).join(' · ') : 'no model available';
     $('health').className = names.length ? 'badge' : 'badge down';
     const cur = $('backend').value;
     $('backend').innerHTML = names.map(n => `<option value="${n}">${esc(LABEL[n] || n)} — ${esc(backends[n].model)}</option>`).join('');
     if (names.includes(cur)) $('backend').value = cur;
-    modelNote();
-  } catch (e) { $('health').textContent = 'server error: ' + e.message.slice(0, 60); $('health').className = 'badge down'; }
+    modelNote(); testsNote();
+  } catch (e) { $('health-text').textContent = 'server error: ' + e.message.slice(0, 60); $('health').className = 'badge down'; }
 }
 function modelNote() {
   $('model-note').textContent = $('backend').value === 'deepseek'
-    ? 'Hosted API: the issue text and repository code the agent reads are sent to DeepSeek; usage is billed.'
+    ? 'Hosted API: the issue text and the code the agent reads are sent to DeepSeek; usage is billed.'
     : 'Runs on this server\'s GPU; no code leaves the machine.';
+}
+function testsNote() {
+  const ok = tests.docker && (source === 'swebench' || tests.local_image);
+  $('tests-note').textContent = !tests.docker
+    ? 'Unavailable here: Docker is not installed. The agent still works; edits are not test-checked.'
+    : ok ? 'The agent may run existing repository tests in a Docker sandbox; every applied edit is re-tested for regressions.'
+         : 'Local repositories need PATCHLOOP_TEST_IMAGE (a Docker image with Python and pytest).';
 }
 async function startRun(extra={}) {
   $('form-err').textContent = '';
   const body = {source, issue:$('issue').value, agent:$('agent').value, backend:$('backend').value, retrieval_k:+$('retrieval_k').value,
+                exec_feedback:$('exec_feedback').checked,
                 instance_id:$('task').value || null, repo_path:$('repo_path').value, commit:$('commit').value, ...extra};
   try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
   catch (e) { $('form-err').textContent = e.message; }
@@ -158,38 +248,61 @@ async function poll() {
   if (!['queued','checking','running'].includes(s.status)) { clearInterval(timer); history(); }
 }
 function diffHtml(p) {
-  return p.split('\n').map(l => l.startsWith('+') && !l.startsWith('+++') ? `<span class="add">${esc(l)}</span>`
-    : l.startsWith('-') && !l.startsWith('---') ? `<span class="del">${esc(l)}</span>`
-    : l.startsWith('@@') ? `<span class="hunk">${esc(l)}</span>` : esc(l) + '\n').join('');
+  return p.split('\n').map(l => {
+    const cls = l.startsWith('diff --git') || l.startsWith('+++') || l.startsWith('---') ? 'file'
+      : l.startsWith('+') ? 'add' : l.startsWith('-') ? 'del' : l.startsWith('@@') ? 'hunk' : '';
+    return `<span class="${cls}">${esc(l) || ' '}</span>`;
+  }).join('');
+}
+function stages(s) {
+  const titles = events.map(e => (e.title || '').toLowerCase());
+  const has = re => titles.some(t => re.test(t));
+  const busy = ['queued','checking','running'].includes(s.status);
+  const list = [['Check request', true], ['Locate code', has(/planner|agent:|search|read|find|list/)],
+                ['Edit', has(/edit|coder/)], ['Apply', has(/attempt|apply/)],
+                ['Tests', has(/tests/)], ['Your decision', ['awaiting_confirmation','accepted','rejected'].includes(s.status)]];
+  let live = busy ? list.map(x => x[1]).lastIndexOf(true) : -1;
+  return list.map(([n, d], i) => `<span class="step ${i === live ? 'live' : d ? 'done' : ''}">${n}</span>`).join('');
 }
 function render(s) {
   const r = s.result || {}, busy = ['queued','checking','running'].includes(s.status);
   const tl = events.filter(e => e.kind !== 'thinking' || e === events[events.length - 1]).map(e => `
-    <li class="k-${e.kind}"><span class="t">${e.t}s</span><span class="ic">${ICON[e.kind] || '·'}</span>
-    <div>${e.detail ? `<details${['stop','error'].includes(e.kind) ? ' open' : ''}><summary>${esc(e.title)}</summary><pre>${esc(e.detail)}</pre></details>` : esc(e.title)}</div></li>`).join('');
+    <li class="k-${e.kind}"><span class="ic">${ICON[e.kind] || '·'}</span>
+    <div class="item">${e.detail ? `<details${['stop','error'].includes(e.kind) ? ' open' : ''}><summary class="title">${esc(e.title)}</summary><pre>${esc(e.detail)}</pre></details>`
+                                   : `<div class="title">${esc(e.title)}</div>`}</div><span class="t">${e.t}s</span></li>`).join('');
+  const tested = (r.candidate_attempts || []).some(a => (a.test_check || {}).status === 'passed');
   let action = '';
-  if (busy) action = `<div class="panel">Working… <button class="bad" onclick="act('cancel')">Cancel</button></div>`;
-  if (s.status === 'awaiting_confirmation') action = `<div class="panel"><b>Patch ready for your review.</b>
-      <div class="meta">Applied cleanly in an isolated checkout. No tests were run: treat it as a candidate, not a verified fix.</div>
+  if (busy) action = `<div class="panel row" style="align-items:center"><div>The agent is working… new steps appear below.</div>
+      <button class="bad" style="flex:0" onclick="act('cancel')">Cancel</button></div>`;
+  if (s.status === 'awaiting_confirmation') action = `<div class="panel ready"><b>Patch ready for your review</b>
+      <div class="meta">Applied cleanly in an isolated checkout. ${tested ? 'The existing tests it touches still pass.' : 'Not confirmed by tests: treat it as a candidate, not a verified fix.'}</div>
       <div class="diff">${diffHtml(s.patch)}</div>
-      <div class="row" style="margin-top:10px"><button class="ok" onclick="act('accept')">Accept${s.request.source === 'local' ? ' → commit on a new branch' : ' → save patch'}</button>
+      <div class="row" style="margin-top:12px"><button class="ok" onclick="act('accept')">Accept${s.request.source === 'local' ? ' → commit on a new branch' : ' → save patch'}</button>
       <button class="bad" onclick="act('reject')">Reject</button></div></div>`;
-  if (s.status === 'accepted') action = `<div class="panel">Accepted. ${r.branch ? `Committed on branch <code>${esc(r.branch)}</code>.` : ''}
+  if (s.status === 'accepted') action = `<div class="panel ready"><b>Accepted.</b> ${r.branch ? `Committed on branch <code>${esc(r.branch)}</code>.` : ''}
       Patch file: <code>${esc(r.patch_file)}</code> · <a href="/api/sessions/${s.id}/patch">download</a></div>`;
-  if (s.status === 'needs_clarification') action = `<div class="panel ask"><b>The agent stopped and needs your input.</b>
+  if (s.status === 'needs_clarification') action = `<div class="panel ask"><b>The agent stopped and needs your input</b>
       <ul>${(s.questions || []).map(q => `<li>${esc(q)}</li>`).join('')}</ul></div>`;
   const follow = busy || s.status === 'awaiting_confirmation' ? '' : `<div class="panel">
-      <b>Follow-up or changed request</b><div class="meta">Your text is appended to the issue; you can also switch agent or retrieval.</div>
-      <textarea id="guidance" style="min-height:70px" placeholder="e.g. The bug is in rules/L031.py, function _lint_aliases_in_join. Only aliases in JOINs should be checked."></textarea>
-      <div class="row" style="margin-top:8px">
+      <b>Follow-up or changed request</b><div class="meta">Your text is appended to the issue; you can also switch agent or model.</div>
+      <textarea id="guidance" style="min-height:80px;margin-top:8px" placeholder="e.g. Do not change divide; raise ValueError when b is zero."></textarea>
+      <div class="row" style="margin-top:10px">
         <select id="f-agent"><option value="">same agent (${esc(s.request.agent)})</option><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select>
         <select id="f-backend"><option value="">same model (${esc(s.request.backend)})</option>${Object.keys(backends).map(n => `<option value="${n}">${esc(LABEL[n] || n)}</option>`).join('')}</select>
         <button class="primary" onclick="followUp()">Send follow-up</button></div>
-      ${s.status === 'needs_clarification' && !r.status ? `<button style="margin-top:8px" onclick="followUp(true)">Run anyway without more detail</button>` : ''}</div>`;
+      ${s.status === 'needs_clarification' && !r.status ? `<button class="ghost" style="margin-top:10px" onclick="followUp(true)">Run anyway without more detail</button>` : ''}</div>`;
+  const tok = r.prompt_tokens ? `${(r.prompt_tokens / 1000).toFixed(1)}k / ${(r.completion_tokens / 1000).toFixed(1)}k` : '—';
   $('view').innerHTML = `
-    <div class="row" style="align-items:center"><h2 style="margin:0">Session ${esc(s.id)} <span class="status ${s.status}">${s.status.replaceAll('_', ' ')}</span></h2></div>
-    <div class="meta">round ${s.round}${s.parent ? ` · follow-up of ${esc(s.parent)}` : ''} · model ${esc(s.request.backend)} · agent ${esc(s.request.agent)} · retrieval ${s.request.retrieval_k || 'off'}
-      ${r.prompt_tokens ? ` · ${r.prompt_tokens} prompt + ${r.completion_tokens} completion tokens` : ''}${r.duration_seconds ? ` · ${r.duration_seconds}s` : ''}</div>
+    <div class="head"><h2>Session ${esc(s.id)}</h2><span class="pill ${s.status}">${s.status.replaceAll('_', ' ')}</span>
+      <span class="meta">round ${s.round}${s.parent ? ` · follow-up of ${esc(s.parent)}` : ''}</span></div>
+    <div class="stats">
+      <div class="stat"><div class="v">${esc(s.request.agent === 'pcr' ? 'P-C-R' : 'Single')}</div><div class="l">agent</div></div>
+      <div class="stat"><div class="v">${esc(s.request.backend)}</div><div class="l">model</div></div>
+      <div class="stat"><div class="v">${tok}</div><div class="l">prompt / completion tokens</div></div>
+      <div class="stat"><div class="v">${r.duration_seconds ? r.duration_seconds + 's' : '—'}</div><div class="l">duration</div></div>
+      <div class="stat"><div class="v">${s.request.exec_feedback ? 'on' : 'off'}</div><div class="l">test execution</div></div>
+    </div>
+    <div class="steps">${stages(s)}</div>
     ${action}<ul class="timeline">${tl}</ul>${follow}`;
 }
 async function act(a) { try { await api(`/api/sessions/${current}/${a}`, {method:'POST'}); poll(); } catch (e) { alert(e.message); } }
@@ -201,7 +314,8 @@ async function followUp(anyway=false) {
 }
 async function history() {
   const rows = await api('/api/sessions');
-  $('history').innerHTML = rows.length ? rows.map(r => `<a onclick="openSession('${r.id}')">${esc(r.id)} · ${esc(r.status)} · r${r.round} · ${esc(r.agent)} · ${esc(r.target || '')}</a>`).join('') : 'none yet';
+  $('history').innerHTML = rows.length ? rows.map(r => `<a onclick="openSession('${esc(r.id)}')"><span class="meta">${esc(r.id)} · r${r.round} · ${esc(r.agent)} · ${esc(r.target || '')}</span>
+      <span class="pill ${esc(r.status)}">${esc(r.status.replaceAll('_', ' '))}</span></a>`).join('') : 'none yet';
 }
 loadTasks(); health(); history();
 </script>
