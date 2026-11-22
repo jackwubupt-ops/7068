@@ -418,7 +418,8 @@ def run_real_dev(
                             applied.error_message or ""
                         )[:500]
                         failure = {
-                            "stage": "edit_blocks" if applied.status == "edit_invalid" else "apply",
+                            "stage": {"edit_invalid": "edit_blocks",
+                                      "syntax_invalid": "syntax"}.get(applied.status, "apply"),
                             "status": applied.status,
                             "error_code": applied.error_code,
                             "log_tail": str(applied.error_message or "")[:1200],

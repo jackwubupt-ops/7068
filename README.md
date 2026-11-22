@@ -65,7 +65,7 @@ Hidden benchmark tests (`test_patch`, FAIL_TO_PASS) are never run.
 Autonomous decisions: which tool to use and with which arguments, which files and line ranges to read, which files
 to edit (Planner), when to stop investigating (single agent `edit` action), and how to repair
 after a failed apply (Reviewer → Coder). The harness, not the model, applies patches, so a model
-can never run shell commands. Guards: per-task call and token budgets, a repeated-action guard,
+can never run shell commands. After `git apply`, every changed Python file must still parse (`ast`, nothing executed); an edit that breaks a previously parsable file is a failed attempt (`syntax_invalid`) and goes back to the agent. Guards: per-task call and token budgets, a repeated-action guard,
 strict reply protocols with bounded retries, and history trimming.
 
 ## 2. Requirements

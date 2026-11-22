@@ -299,6 +299,7 @@ def main() -> int:
         "max_candidates": 2,
         "docker_tests": bool(args.exec_feedback),
         "exec_feedback": bool(args.exec_feedback),
+        "harness_checks": ["git_apply", "python_syntax"] + (["existing_tests"] if args.exec_feedback else []),
         "edit_format": args.edit_format,
         "retrieval_k": args.retrieval_k,
         # Greedy decoding can still differ slightly between batch sizes in vLLM.

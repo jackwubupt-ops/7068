@@ -4,6 +4,11 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Python syntax check after apply (2026-11-22)
+
+### Added
+- `apply_candidate` parses every changed `.py` file with `ast` after `git apply` (nothing is imported or executed). If a file that parsed at the base commit no longer parses, the candidate fails as `syntax_invalid` / `python_syntax_error` with file and line, is not exported, and follows the normal failed-attempt path (P-C-R: Reviewer stage `syntax` -> Coder retry; single agent: rejected submission). New files and files already unparsable at the base commit are not blocked. Manifests list `harness_checks`.
+
 ## Execution feedback (RQ2) and a redesigned web app (2026-11-22)
 
 ### Added
