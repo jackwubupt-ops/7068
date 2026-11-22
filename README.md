@@ -20,7 +20,7 @@ guessing.
 | Entry point | web app: `python -m patchloop_app.web` |
 | Models | the **DeepSeek API** (`deepseek-flash`; used for the final experiments; no GPU needed; data leaves the machine) or local **Qwen2.5-Coder-7B-Instruct** on vLLM (private; the proposal's model, kept as the capability baseline) |
 | Evaluation | SWE-bench Lite **dev**, scored only by the official harness (`swebench==4.1.0`, local Docker) |
-| Final experiments | RQ1: reasoning effort none / low / high / max on `deepseek-flash`; RQ3: P-C-R vs single agent; Qwen-7B pilots as the model baseline |
+| Final experiments | RQ1: reasoning effort none / low / high / max on `deepseek-flash`; RQ2: execution feedback; RQ3: P-C-R vs single agent; Qwen-7B pilots as the model baseline |
 
 ---
 
@@ -182,58 +182,93 @@ retrieval, agent, edit format, workers, git commit).
 
 ### Final experiment design (DeepSeek `deepseek-flash`)
 
-| Batch | Agent | Reasoning effort | Question |
-|---|---|---|---|
-| `ds-pcr` | P-C-R | none | RQ3 and the RQ1 baseline |
-| `ds-single` | single | none | RQ3 |
-| `ds-pcr-low`, `ds-pcr-high`, `ds-pcr-max` | P-C-R | low / high / max | RQ1 |
+| Batch | Agent | Reasoning effort | Execution feedback | Question |
+|---|---|---|---|---|
+| `ds-pcr` | P-C-R | none | off | RQ3, and the RQ1/RQ2 baseline |
+| `ds-single` | single | none | off | RQ3, and the RQ2 single-agent baseline |
+| `ds-pcr-low`, `ds-pcr-high`, `ds-pcr-max` | P-C-R | low / high / max | off | RQ1 |
+| `ds-pcr-exec`, `ds-single-exec` | P-C-R / single | none | on | RQ2 |
 
-Everything else is identical across batches (edit format, retrieval top-10, call budget, answer
-caps). Results go to `final-comparison.md`; they are reported in the final report.
+Everything else is identical across batches (4 read-only tools, edit format, retrieval top-10,
+call budget, answer caps, syntax check). Each configuration ran **three times** (tags `final-t4`,
+`final-t4-r2`, `final-t4-r3`):
 
-### Final results (2026-11-21; 3 runs per configuration; official harness; all 23 Lite dev tasks gold-resolvable after the image repair)
+```bash
+RQ1_EFFORTS="low high max" EXEC_AGENTS="pcr single" TAG=final-t4 bash scripts/run_final_deepseek.sh
+python -m experiments.repeat_report --tag final-t4 --tag final-t4-r2 --tag final-t4-r3 \
+    --tasks-file GOLD_IDS --out /data/analysis/final-repeats-t4
+```
 
-Every configuration was run three times with identical settings (tags `final-ds`, `final-ds-r2`,
-`final-ds-r3`); `python -m experiments.repeat_report` combines them.
+### Final results (2026-11-22; 3 runs per configuration; official harness; 23 Lite dev tasks, all gold-resolvable after the image repair)
 
-| Config | Reasoning | Resolved per run | Mean rate | Applicable (mean) | Completion tok (mean; reasoning) | s/task | Run errors per run |
-|---|---|---|---|---|---|---|---|
-| `ds-pcr` | none | 10 / 12 / 10 | 46.4% | 23.0 | 27,622 (0) | 13.0 | 0 / 0 / 0 |
-| `ds-single` | none | 9 / 10 / 10 | 42.0% | 19.0 | 8,289 (0) | 7.5 | 0 / 0 / 0 |
-| `ds-pcr-low` | low | 11 / 9 / 11 | 44.9% | 21.3 | 157,604 (105,235) | 42.5 | 2 / 0 / 0 |
-| `ds-pcr-high` | high | 6 / 8 / 10 | 34.8% | 20.0 | 263,376 (172,517) | 63.3 | 3 / 3 / 0 |
-| `ds-pcr-max` | max | 9 / 11 / 8 | 40.6% | 19.7 | 452,191 (346,629) | 106.2 | 1 / 2 / 4 |
+| Config | Reasoning | Exec feedback | Resolved per run | Mean rate | Applicable (mean) | Completion tok (mean; reasoning) | s/task | Run errors per run |
+|---|---|---|---|---|---|---|---|---|
+| `ds-pcr` | none | off | 9 / 10 / 9 | 40.6% | 22.7 | 32,394 (0) | 17.3 | 0 / 0 / 0 |
+| `ds-single` | none | off | 11 / 11 / 9 | 44.9% | 19.7 | 8,307 (0) | 10.3 | 0 / 0 / 0 |
+| `ds-pcr-low` | low | off | 11 / 10 / 8 | 42.0% | 21.3 | 118,236 (77,510) | 40.4 | 0 / 2 / 1 |
+| `ds-pcr-high` | high | off | 9 / 8 / 9 | 37.7% | 20.7 | 243,731 (166,955) | 73.0 | 3 / 1 / 1 |
+| `ds-pcr-max` | max | off | 11 / 11 / 10 | 46.4% | 21.3 | 491,298 (372,232) | 135.4 | 2 / 0 / 2 |
+| `ds-pcr-exec` | none | **on** | 11 / 11 / 11 | **47.8%** | 22.7 | 34,452 (0) | 23.3 | 0 / 0 / 0 |
+| `ds-single-exec` | none | **on** | 10 / 7 / 8 | 36.2% | 19.3 | 9,872 (0) | 15.9 | 0 / 0 / 0 |
 
-Paired comparisons at the **task level** (each task counts once, as the share of the 3 runs that
+Paired comparisons at the **task level** (each task counts once, as the share of its 3 runs that
 resolved it, so repeated runs are not treated as independent tasks): exact sign test over tasks,
 bootstrap 95% CI resampling tasks.
 
 | Question | Pair | Mean difference | Tasks A better / B better / tied | Sign test p | 95% CI |
 |---|---|---|---|---|---|
-| RQ3 | P-C-R vs single | +4.3 pt | 3 / 3 / 17 | 1.00 | [-8.7, +18.8] |
-| RQ1 | low vs none | -1.5 pt | 2 / 4 / 17 | 0.69 | [-8.7, +7.2] |
-| RQ1 | high vs none | -11.6 pt | 1 / 6 / 16 | 0.125 | [-23.2, -1.5] |
-| RQ1 | max vs none | -5.8 pt | 2 / 5 / 16 | 0.45 | [-17.4, +5.8] |
-| RQ1 | high vs low | -10.1 pt | 1 / 6 / 16 | 0.125 | [-20.3, -1.5] |
-| Model (run 1) | DeepSeek P-C-R vs Qwen-7B P-C-R (0/23) | +43.5 pt | 10 / 0 / 13 | 0.002 | |
-| Model (run 1) | DeepSeek single vs Qwen-7B single (0/23) | +39.1 pt | 9 / 0 / 14 | 0.004 | |
+| RQ2 | P-C-R: exec feedback vs none | **+7.2 pt** | **3 / 0** / 20 | 0.25 | [0.0, +15.9] |
+| RQ2 | single: exec feedback vs none | -8.7 pt | 0 / 4 / 19 | 0.125 | [-18.8, -1.5] |
+| RQ1 | low vs none | +1.5 pt | 5 / 5 / 13 | 1.00 | [-8.7, +11.6] |
+| RQ1 | high vs none | -2.9 pt | 1 / 4 / 18 | 0.375 | [-10.1, +5.8] |
+| RQ1 | max vs none | +5.8 pt | 3 / 2 / 18 | 1.00 | [-4.3, +17.4] |
+| RQ1 | high vs low | -4.3 pt | 2 / 5 / 16 | 0.45 | [-11.6, +2.9] |
+| RQ3 | P-C-R vs single | -4.3 pt | 1 / 3 / 19 | 0.625 | [-13.0, +2.9] |
 
-- **RQ3:** no difference in resolution (46.4% vs 42.0%, tied 3 / 3 on the tasks where they
-  differ). P-C-R produces more applicable patches (23 vs 19 on average) at about 3.3x the output
-  tokens and 1.7x the time per task.
-- **RQ1:** more inference-time compute did **not** improve repair. No effort level beats thinking
-  off; high and max are lower on average (high -11.6 pt; its bootstrap CI excludes 0 but the sign
-  test, p = 0.125, does not reach significance at 23 tasks), while output tokens grow from 28K to
-  452K and time per task about 8x from none to max. Higher effort also adds a failure mode:
-  Planner reasoning that exhausts DeepSeek's default thinking room (64K/128K tokens) before it
-  answers (`REASONING_EXHAUSTED_CALL`, the main source of the run errors above).
-- **Run-to-run variation is large:** high resolved 6, 8 and 10 tasks in the three runs. A single
-  run would have overstated its drop (run 1 alone: -17.4 pt).
-- **Model:** the Qwen-7B numbers come from the pilot v3 batches re-evaluated on the same repaired
-  images (earlier server); 7B resolves none of the tasks DeepSeek resolves.
-- **Caveats:** 23 tasks; three runs per configuration; thinking mode ignores temperature. A first
-  attempt with smaller reasoning room (8K/24K/48K per call) truncated Coder calls and was
-  discarded (CHANGELOG); all numbers above come from the corrected runs.
+- **RQ2 (execution feedback):** with P-C-R it was the only change that helped consistently: 11
+  resolved in all three runs, 3 tasks better and none worse; 23 tasks are too few for significance
+  (p = 0.25). The regression check ran 77 times on P-C-R candidates (38 passed, 18 regressions
+  sent back to the Reviewer, 21 with no matching test) and cost about +6% output tokens and +35%
+  time per task. For the single agent the same feedback hurt (0 better, 4 worse): a regression
+  costs it one of its two submissions and the rewrite is often worse, whereas P-C-R's Reviewer
+  diagnoses the failure before the Coder retries. Existing tests can also encode the buggy
+  behaviour the issue asks to change, so a "regression" is a signal, not proof. Neither agent
+  ever chose the `run_tests` tool itself; all feedback came from the harness check.
+- **RQ1 (reasoning effort):** more inference-time compute did not improve repair. No effort level
+  differs significantly from thinking off, and the ranking changes between run sets (here max is
+  highest; in the earlier 2-tool runs high was lowest), while output tokens grow about 15x and
+  time about 8x from none to max. Higher effort adds a failure mode: reasoning that exhausts
+  DeepSeek's default thinking room before answering (`REASONING_EXHAUSTED_CALL`).
+- **RQ3 (role separation):** no significant difference (40.6% vs 44.9%; earlier runs 46.4% vs
+  42.0%). P-C-R produces more applicable patches (22.7 vs 19.7) at about 3.9x the output tokens
+  and 1.7x the time per task.
+- **Model:** DeepSeek vs Qwen2.5-Coder-7B (pilot v3 re-evaluated on the same repaired images,
+  0/23 for both agents): P-C-R 10 vs 0 tasks (p = 0.002), single 9 vs 0 (p = 0.004), from the
+  first DeepSeek run.
+- **Syntax check:** never triggered in the four non-thinking configurations (DeepSeek edits kept
+  the files parsable); it is covered by offline tests and matters for weaker models or the
+  Windows demo without Docker.
+
+#### Earlier agent version (2 tools, no syntax check or execution feedback; tags `final-ds`, `final-ds-r2`, `final-ds-r3`)
+
+Mean resolution: none 46.4%, single 42.0%, low 44.9%, high 34.8%, max 40.6%. Current vs earlier,
+same config, task level (`repeat_report --vs-tag`):
+
+| Config | Current | Earlier | Difference | Tasks better / worse / tied | Sign test p | 95% CI |
+|---|---|---|---|---|---|---|
+| `ds-pcr` | 40.6% | 46.4% | -5.8 pt | 1 / 2 / 20 | 1.00 | [-18.8, +5.8] |
+| `ds-single` | 44.9% | 42.0% | +2.9 pt | 1 / 0 / 22 | 1.00 | [0.0, +8.7] |
+| `ds-pcr-low` | 42.0% | 44.9% | -2.9 pt | 2 / 4 / 17 | 0.69 | [-10.1, +4.3] |
+| `ds-pcr-high` | 37.7% | 34.8% | +2.9 pt | 4 / 3 / 16 | 1.00 | [-5.8, +11.6] |
+| `ds-pcr-max` | 46.4% | 40.6% | +5.8 pt | 5 / 3 / 15 | 0.73 | [-4.3, +15.9] |
+
+The two extra tools (`find_definition`, `list_directory`) did not change resolution measurably;
+the differences are within the run-to-run variation (e.g. P-C-R none: 10/12/10 earlier, 9/10/9 now).
+
+- **Caveats:** 23 tasks; three runs per configuration; thinking mode ignores temperature and
+  run-to-run variation is large. A first attempt with smaller reasoning room (8K/24K/48K per call)
+  truncated Coder calls and was discarded; runs interrupted by API billing errors were resumed and
+  those tasks rerun (CHANGELOG).
 
 ### Qwen2.5-Coder-7B pilots: why the final experiments use DeepSeek (Lite dev, 23 tasks, search_replace)
 
@@ -270,8 +305,8 @@ repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md]
 |---|---|
 | Harness: schemas, model adapter, tracing, repository tools, clean workspaces | done (own JSON protocol and dataclasses instead of LangGraph/Pydantic) |
 | Single-agent end-to-end MVP; Planner–Coder–Reviewer with feedback | done; feedback covers apply/format failures |
-| RQ3: single agent vs. P-C-R under matched budgets | done on Lite dev (final runs on `deepseek-flash`, 3 runs: 46.4% vs 42.0%, no significant difference; Qwen-7B pilots as baseline) |
-| RQ2: execution feedback (tests in the loop) | implemented: `run_tests` tool + post-apply regression check on existing tests (Docker sandbox); evaluated as `ds-pcr-exec` / `ds-single-exec` |
+| RQ3: single agent vs. P-C-R under matched budgets | done on Lite dev (final runs on `deepseek-flash`, 3 runs: 40.6% vs 44.9%, no significant difference; Qwen-7B pilots as baseline) |
+| RQ2: execution feedback (tests in the loop) | implemented: `run_tests` tool + post-apply regression check on existing tests (Docker sandbox); evaluated as `ds-pcr-exec` / `ds-single-exec`: +7.2 pt for P-C-R (3 better, 0 worse), -8.7 pt for the single agent; not significant at 23 tasks |
 | RQ1: QLoRA fine-tuning | **changed** to reasoning effort (none / low / high / max) on `deepseek-flash`; done (more effort did not help): same question (does more compute improve repair?), inference-time instead of training-time compute; why: [docs/qwen7b-limits.md](docs/qwen7b-limits.md) |
 | Official evaluation and ablations | done on Lite dev; Lite test not run |
 | Added after measurements | retrieval, tolerant matching, diagnosis tools, eval-image repair, DeepSeek backend, interactive web app |

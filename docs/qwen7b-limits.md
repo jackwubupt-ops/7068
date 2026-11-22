@@ -35,5 +35,5 @@ proposal 的 RQ1 想回答"**多投入算力能不能提高修复能力**"，手
 
 1. **7B 一节**放 pilot v1–v3 的表，以及诊断数据（gold 文件读取率、失败类型分布）；
 2. **跨模型对比**：`scripts/run_final_deepseek.sh` 会在修复后的同一批评测镜像上重新评测 7B 的 v3 批次（旧结果保留为 `official_eval.pre-repair.json`），然后在 `final-comparison.md` 里给出 DeepSeek 对比 7B 的配对检验（P-C-R 和单 agent 各一组）。两边的设置必须一致（search_replace、检索 top-10、同样的预算）；如果 v3 的 manifest 和最终批次有不同的设置，会出现在 "Comparability warnings" 里，报告里要照实说明；
-3. **最终结论**只用 DeepSeek 的批次：RQ3 是 `ds-pcr` 对比 `ds-single`，RQ1 是 `ds-pcr-low` / `ds-pcr-high` / `ds-pcr-max` 对比 `ds-pcr`。结果见 README 第 5 节 "Final results"：推理强度提高没有带来更高的解决率（3 次平均：none 46.4%、low 44.9%、high 34.8%、max 40.6%）；最终那一轮是在新服务器上跑的，7B 的数字来自第一轮在修复后的镜像上的重评测（两组都是 0/23）；
+3. **最终结论**只用 DeepSeek 的批次：RQ3 是 `ds-pcr` 对比 `ds-single`，RQ1 是 `ds-pcr-low` / `ds-pcr-high` / `ds-pcr-max` 对比 `ds-pcr`。结果见 README 第 5 节 "Final results"：推理强度提高没有带来更高的解决率（当前版本 3 次平均：none 40.6%、low 42.0%、high 37.7%、max 46.4%；上一版本：46.4%、44.9%、34.8%、40.6%，排名每次都在变）；最终那一轮是在新服务器上跑的，7B 的数字来自第一轮在修复后的镜像上的重评测（两组都是 0/23）；
 4. **局限性**：只有 23 题，p 值和置信区间只能作参考；思考模式下 DeepSeek 不使用 temperature，每个配置跑了 3 次，结果波动较大（例如 high 三次分别解决 6、8、10 题）；DeepSeek 后端会把 issue 和代码发送到外部服务。

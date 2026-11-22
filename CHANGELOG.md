@@ -4,6 +4,16 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Final results with the current agent (2026-11-22)
+
+### Changed
+- README section 5 now reports the final experiment with the current agent (4 tools, syntax check, optional execution feedback), 7 configurations x 3 runs (`final-t4*`): RQ2 execution feedback +7.2 pt for P-C-R (3 tasks better, 0 worse) and -8.7 pt for the single agent; RQ1 no effort level better than thinking off; RQ3 no difference. The earlier 2-tool runs are kept as the previous version, compared per config with `repeat_report --vs-tag`.
+- `lite_batch --resume` reruns tasks that failed on the model API (billing, auth, rate limit, network: `API/network operation failed`) instead of keeping them as results; model-side errors stay. Used once when the DeepSeek balance ran out mid-run.
+
+### Added
+- `repeat_report --vs-tag`: compares each configuration with earlier runs of another agent version.
+- `scripts/setup_eval_server.sh`: rerunnable one-shot setup of a fresh CPU evaluation server.
+
 ## Python syntax check after apply (2026-11-22)
 
 ### Added

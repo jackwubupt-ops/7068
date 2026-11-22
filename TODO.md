@@ -18,6 +18,7 @@
 - [ ] **和老师确认 RQ1 的变更**（QLoRA → 推理强度），按课程流程登记
 - [x] **跑最终实验**（2026-11-21，新的 16 核 / 32 GiB 实例，`RQ1_EFFORTS="low high max"`）：5 个 DeepSeek 批次都 `tasks_finished = 23`，gold 自检 23/23；结果见 README 第 5 节 "Final results"；之后又各重复了 2 次（`final-ds-r2`、`final-ds-r3`），README 里是 3 次的汇总（`experiments.repeat_report`）
   - 旧服务器上的 7B pilot 批次没有迁移过来；模型对比用第一轮（旧服务器上在修复后的镜像上重评测）的 7B 结果 0/23
+- [x] 当前版本（4 个工具 + 语法检查 + 执行反馈）7 组 × 3 次已跑完（`final-t4*`，2026-11-22，32 核新服务器），结果在 README 第 5 节
 - [ ] 把 README 的 "Final results" 两张表放进报告；写明 23 题的统计局限、每个配置跑了 3 次且波动较大（high：6/8/10）、思考模式的随机性、第一次额度过小那一轮作废的原因
 - [ ] 打包下载 `/data/runs` 和 `/data/analysis`，然后停机（按量计费）
 
