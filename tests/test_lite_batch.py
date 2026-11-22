@@ -117,6 +117,30 @@ class BatchTests(unittest.TestCase):
         self.assertEqual(summary["tasks_finished"], 3)
         self.assertTrue(any(p.name.startswith("owner__proj-2.interrupted-") for p in self.out.iterdir()))
 
+    def test_resume_retries_api_failures_but_keeps_agent_failures(self):
+        def first(task, task_dir):
+            if task.instance_id != "owner__proj-1":
+                task_dir.mkdir(parents=True)
+            if task.instance_id == "owner__proj-2":
+                return {"instance_id": task.instance_id, "status": "experiment_error",
+                        "error": "APIStatusError: API/network operation failed"}
+            if task.instance_id == "owner__proj-11":
+                return {"instance_id": task.instance_id, "status": "experiment_error",
+                        "error": "RuntimeError: QWEN_TRUNCATED_OUTPUT:planner"}
+            return fake_run_one(task, task_dir)
+
+        self.run_it(run_one=first)
+        calls = []
+
+        def record(task, task_dir):
+            calls.append(task.instance_id)
+            return fake_run_one(task, task_dir)
+        summary = self.run_it(run_one=record, resume=True)
+        self.assertEqual(calls, ["owner__proj-2"])          # model-side error is a real result
+        self.assertEqual(summary["tasks_finished"], 3)
+        statuses = [json.loads(x)["status"] for x in (self.out / "results.jsonl").read_text().splitlines()]
+        self.assertEqual(sorted(statuses), ["experiment_error", "no_candidate_files", "prediction_ready"])
+
     def test_resume_rejects_different_task_list(self):
         self.run_it()
         other = build_manifest(self.tasks[:1], dataset_id=LITE_DATASET_ID, settings={})

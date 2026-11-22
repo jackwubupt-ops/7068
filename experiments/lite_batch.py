@@ -94,6 +94,15 @@ def build_manifest(tasks: list[DevelopmentTask], *, dataset_id: str,
     }
 
 
+INFRA_ERROR_MARK = "API/network operation failed"   # experiments.live_deepseek._safe_error
+
+
+def is_infra_failure(line: dict) -> bool:
+    """A task that stopped because the model API failed (no balance, auth, rate limit, network)."""
+    return (line.get("status") in ("experiment_error", "batch_error")
+            and INFRA_ERROR_MARK in str(line.get("error") or ""))
+
+
 def _summary_line(report: dict) -> dict:
     return {key: report.get(key) for key in SUMMARY_FIELDS}
 
@@ -126,7 +135,17 @@ def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     results_path = out_dir / "results.jsonl"
-    done = {line["instance_id"] for line in _read_jsonl(results_path)}
+    lines = _read_jsonl(results_path)
+    retry = [line for line in lines if is_infra_failure(line)]
+    if retry:
+        # API/billing/network failures say nothing about the agent: run those tasks again.
+        kept = [line for line in lines if not is_infra_failure(line)]
+        results_path.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in kept),
+                                encoding="utf-8")
+        log(f"Resume: retrying {len(retry)} task(s) that failed on the API/network, not on the agent: "
+            + ", ".join(line["instance_id"] for line in retry))
+        lines = kept
+    done = {line["instance_id"] for line in lines}
     began = time.monotonic()
     lock = threading.Lock()  # guards results.jsonl appends and log lines
 
