@@ -47,6 +47,19 @@ class RepeatReportTests(unittest.TestCase):
         self.assertEqual(c["warnings"], [])
         self.assertIn("Sign test p", Path(f"{prefix}.md").read_text(encoding="utf-8"))
 
+    def test_vs_tag_compares_the_same_config_across_versions(self):
+        batch(self.root, "old1", "pcr", ["o__r-1"])
+        batch(self.root, "old2", "pcr", ["o__r-1"])
+        prefix = self.root / "out" / "vs"
+        repeat_report.main(["--runs-dir", str(self.root), "--tag", "t1", "--tag", "t2",
+                            "--vs-tag", "old1", "--vs-tag", "old2", "--out", str(prefix)])
+        report = json.loads(Path(f"{prefix}.json").read_text(encoding="utf-8"))
+        version = [c for c in report["comparisons"] if c["title"].startswith("Version:")]
+        self.assertEqual(len(version), 1)                  # pcr-high has no earlier runs
+        self.assertEqual((version[0]["a"], version[0]["b"]), ("ds-pcr", "ds-pcr (earlier)"))
+        self.assertEqual(version[0]["diff_mean"], 0.25)    # current 0.5 vs earlier 0.25
+        self.assertEqual(report["vs_tags"], ["old1", "old2"])
+
     def test_needs_two_tags_and_matching_tasks(self):
         with self.assertRaises(SystemExit):
             repeat_report.main(["--runs-dir", str(self.root), "--tag", "t1", "--out", str(self.root / "x")])

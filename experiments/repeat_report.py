@@ -105,7 +105,8 @@ def task_level_compare(a_runs: list[dict], b_runs: list[dict], *, iterations: in
     }
 
 
-def build_report(runs: dict, tags: list[str], *, iterations: int = 10000, seed: int = 7608) -> dict:
+def build_report(runs: dict, tags: list[str], *, iterations: int = 10000, seed: int = 7608,
+                 vs_runs: dict | None = None, vs_tags: list[str] | None = None) -> dict:
     comparisons = []
     for label_a, label_b, title in DEFAULT_PAIRS:
         if label_a not in runs or label_b not in runs:
@@ -115,7 +116,17 @@ def build_report(runs: dict, tags: list[str], *, iterations: int = 10000, seed: 
         comparisons.append({"title": title, "a": label_a, "b": label_b, "warnings": warnings,
                             **task_level_compare(runs[label_a], runs[label_b],
                                                  iterations=iterations, seed=seed)})
-    return {"tags": tags, "configs": {label: summarize(r) for label, r in runs.items()},
+    for label, earlier in (vs_runs or {}).items():
+        if label not in runs:
+            continue
+        # Same config, two agent versions (e.g. tools added since the earlier runs).
+        warnings = sorted({w for ra, rb in zip(runs[label], earlier)
+                           for w in comparability(ra, rb) if "same evaluation run id" not in w})
+        comparisons.append({"title": f"Version: {label} current vs earlier ({', '.join(vs_tags or [])})",
+                            "a": label, "b": f"{label} (earlier)", "warnings": warnings,
+                            **task_level_compare(runs[label], earlier, iterations=iterations, seed=seed)})
+    return {"tags": tags, "vs_tags": vs_tags or [],
+            "configs": {label: summarize(r) for label, r in runs.items()},
             "comparisons": comparisons, "bootstrap": {"iterations": iterations, "seed": seed},
             "note": ("Task-level tests: each task counts once (share of runs resolved), so repeated "
                      "runs are not treated as independent tasks. Pooled counts are descriptive.")}
@@ -161,6 +172,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--runs-dir", default="/data/runs")
     parser.add_argument("--tag", action="append", required=True, help="run tag (repeatable, >= 2)")
     parser.add_argument("--tasks-file", help="restrict to these instance IDs (one per line)")
+    parser.add_argument("--vs-tag", action="append", default=[],
+                        help="tags of EARLIER runs of the same configs (another agent version): adds "
+                             "per-config current-vs-earlier comparisons (repeatable)")
     parser.add_argument("--iterations", type=int, default=10000)
     parser.add_argument("--seed", type=int, default=7608)
     parser.add_argument("--out", required=True, help="output prefix: writes PREFIX.json and PREFIX.md")
@@ -171,8 +185,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.tasks_file:
         tasks = {line.strip() for line in Path(args.tasks_file).read_text(encoding="utf-8").splitlines()
                  if line.strip()}
+    vs_runs = load_runs(Path(args.runs_dir), args.vs_tag, tasks=tasks) if args.vs_tag else None
     report = build_report(load_runs(Path(args.runs_dir), args.tag, tasks=tasks), args.tag,
-                          iterations=args.iterations, seed=args.seed)
+                          iterations=args.iterations, seed=args.seed,
+                          vs_runs=vs_runs, vs_tags=args.vs_tag)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(f"{args.out}.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     markdown = render_markdown(report)
