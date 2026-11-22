@@ -103,7 +103,8 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     def api_list():
         rows = sorted(manager.sessions.values(), key=lambda s: s.created, reverse=True)
         return jsonify([{"id": s.id, "status": s.status, "round": s.round, "parent": s.parent,
-                         "agent": s.request.agent,
+                         "agent": s.request.agent, "source": s.request.source,
+                         "title": (s.request.issue.strip().splitlines() or [""])[0][:90],
                          "target": s.request.instance_id or s.request.repo_path
                          or (f"pasted {s.request.snippet_name}" if s.request.snippet_name else "")}
                         for s in rows[:30]])

@@ -4,6 +4,11 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Web app redesign (2026-11-22)
+
+### Changed
+- New layout: a session sidebar (issue title and status dot per session, "New request"), a composer page ("What should PatchLoop fix?": source tabs, the bug description, four option selects in one row, a test-execution switch, Run), and a run page that reads top to bottom: title and status, settings, a five-step progress bar, the request as a message, the agent's work as collapsible phases (Prepare, Locate the code, Repair plan, Edit, Check, Reviewer diagnosis; repeated attempts are numbered) each with a one-line summary, the result (patch with Accept/Reject, questions, or failure reason), and a follow-up box docked at the bottom. `/api/sessions` returns the issue title and source.
+
 ## Free-form code in the app (2026-11-22)
 
 ### Added
