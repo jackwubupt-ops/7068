@@ -9,10 +9,10 @@ These are development milestones, not published GitHub releases.
 ### Removed
 - The original CodeNexus code-generation demo and its Task 1-3 CLIs, which are not part of the final agent: `app.py`, `templates/`, `static/`, `start.ps1`, `code_agent.py`, `test_agent.py`, `evaluator.py`, `manual_generate.py`, `Visualization*.py`, `experiment_results_extreme.csv`, `demo_localization.py`, `localize.py`, `repair.py`, `repair_loop.py`, `requirements.txt`, `.env.example`, `.env.qwen.example`, `examples/`, and their tests.
 - SWE-bench 3.0.0-era evaluation helpers (`experiments/swebench_eval_compat.py`, `experiments/swebench_report.py`, `scripts/evaluate_saved_swebench.sh`), superseded by `experiments/official_eval.py` with swebench 4.1.0.
-- Superseded docs (`docs/task1-3.md`, AutoDL and CPU-only runbooks, small-Qwen notes, live-smoke notes, code review notes) and `TODO.md` (unfinished work is listed in README section 7); CI workflows for retired experiments.
+- Superseded docs (`docs/task1-3.md`, AutoDL and CPU-only runbooks, small-Qwen notes, live-smoke notes, code review notes) and `TODO.md` (unfinished work is listed in README section 7).
 
 ### Changed
-- `pipeline_agent.py` is only the Planner handoff; `prompt_agent.py` no longer contains the demo's prompt refiner. CI runs the offline suite on Linux and Windows for `main` and `feat/**`. README gains a course submission checklist; CONTRIBUTING describes the current layout.
+- `pipeline_agent.py` is only the Planner handoff; `prompt_agent.py` no longer contains the demo's prompt refiner. README gains a course submission checklist; CONTRIBUTING describes the current layout.
 
 ## Final results with the current agent (2026-11-22)
 
