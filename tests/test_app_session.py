@@ -143,6 +143,24 @@ class AppSessionTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         mgr.start(req, run_async=False)
 
+    def test_reasoning_effort_is_a_per_request_choice_for_deepseek_only(self):
+        efforts = []
+
+        def factory(reasoning_effort=None):
+            efforts.append(reasoning_effort)
+            return ScriptedBackend([READ, GOOD])
+        mgr = SessionManager(self.root / "runs", {"deepseek": factory, "qwen": factory})
+        s = mgr.start(self.local(backend="deepseek", reasoning_effort="high", retrieval_k=0), run_async=False)
+        self.assertEqual(s.status, "awaiting_confirmation")
+        self.assertEqual(efforts, ["high"])
+        self.assertTrue(any("reasoning effort high" in e["title"] for e in s.view()["events"]))
+        mgr.start(self.local(backend="deepseek", retrieval_k=0), run_async=False)
+        self.assertEqual(efforts, ["high", None])              # "none" keeps the default backend
+        for bad in (self.local(backend="qwen", reasoning_effort="low"),
+                    self.local(backend="deepseek", reasoning_effort="medium")):
+            with self.assertRaises(ValueError):
+                mgr.start(bad, run_async=False)
+
 
 class DescribeTests(unittest.TestCase):
     def test_feedback_and_output_descriptions(self):

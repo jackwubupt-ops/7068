@@ -17,6 +17,7 @@ guessing.
 |---|---|
 | Users | maintainers/contributors of Python repositories triaging bug reports |
 | Need | a first candidate fix, localized and applicable, with a visible trace of how it was found |
+| Scope | **in:** a bug report against a Python repository (a SWE-bench Lite dev example, or any local Git repository), follow-ups that add guidance or change the agent, model, reasoning effort or test execution. **out:** new features or refactors, non-Python code, requests unrelated to the repository (these stop with clarification questions), pushing or merging (an accepted patch is only committed on a new local branch) |
 | Entry point | web app: `python -m patchloop_app.web` |
 | Models | the **DeepSeek API** (`deepseek-flash`; used for the final experiments; no GPU needed; data leaves the machine) or local **Qwen2.5-Coder-7B-Instruct** on vLLM (private; the proposal's model, kept as the capability baseline) |
 | Evaluation | SWE-bench Lite **dev**, scored only by the official harness (`swebench==4.1.0`, local Docker) |
@@ -296,7 +297,40 @@ ability, not localization or the agent loop, so RQ1/RQ3 on 7B would compare 0 ag
 final experiments therefore run on `deepseek-flash`; the 7B batches are re-evaluated on the
 repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md](docs/qwen7b-limits.md).
 
-## 6. Integrity, privacy and safety
+## 6. Reliability, non-functional requirements, integrity and privacy
+
+### 6.1 Failure situations and recovery
+
+| Failure | Detection | Bounded recovery or safe stop | What the user sees | Evidence |
+|---|---|---|---|---|
+| Vague or off-topic request | fewer than 8 words, or the text matches no code in the repository (retrieval) | stop **before any model call** | questions asking for the file, function or expected behaviour; "run anyway" button | `samples/03`, `tests/test_app_session.py` |
+| Invalid repository or commit | Git checks: repository root, commit exists, clean tree | stop, nothing exported | `failed` with the reason | `samples/04` |
+| Edit cannot be applied / bad edit format | SEARCH must match exactly once; `git apply --check` in an isolated worktree | P-C-R: Reviewer diagnoses, Coder retries (2 attempts); single agent: 2 submissions | warning per failed attempt, then a patch or questions | `tests/test_edit_blocks.py`, `tests/test_deepseek_swebench_dev.py` |
+| Edit breaks Python syntax | `ast.parse` of every changed file (nothing executed) | same retry path (`syntax_invalid`) | the file, line and error in the timeline | `tests/test_syntax_check.py` |
+| Edit breaks existing tests (with "Run existing tests") | tests that passed at the base commit fail with the patch (Docker sandbox) | Reviewer -> Coder retry; if the retry does not apply, the earlier applicable patch is kept | test check result in the timeline | `samples/05`, `tests/test_exec_feedback.py`; 18 regressions caught in the final P-C-R runs |
+| Model reply truncated, empty, or thinking runs out | finish reason / stage caps (`QWEN_TRUNCATED_OUTPUT`, `REASONING_EXHAUSTED_CALL`) | counted as a failed reply or attempt, never a crash; per-task budgets end the run | warning, then a stop with questions | `tests/test_reasoning_effort.py`; run errors per configuration in section 5 |
+| Agent loops or exceeds its budget | per-task caps: 20 model calls, 15k answer tokens (+ reasoning budget), 14 Planner / 16 agent steps, repeated-action guard | stop | `needs_clarification` with what was tried | `tests/test_single_agent.py`, `tests/test_reasoning_effort.py` |
+| Model API unavailable (no balance, auth, network) | API error | the run fails cleanly; `lite_batch --resume` reruns only those tasks | `failed` with a generic API error (no response text) | `tests/test_lite_batch.py`; used once in the final runs |
+| User changes their mind | Cancel / Reject / Follow-up buttons | cancel after the current model call; reject exports nothing; at most 5 follow-up rounds | session status | `tests/test_app_session.py` |
+
+**Repeated external actions.** Every model call is billed and sends data to DeepSeek, so calls are
+bounded per task (calls, answer tokens, reasoning tokens, request timeout) and the SDK does not
+retry automatically; batches rerun failed tasks only on an explicit `--resume`. The agent never
+changes the user's repository: edits are applied in temporary worktrees, and only **Accept**
+commits the patch, on a new branch `patchloop/<session>`; nothing is ever pushed.
+
+### 6.2 Non-functional requirements
+
+| Requirement | Target / check | Measured (final runs, 23 tasks x 3) | Trade-off |
+|---|---|---|---|
+| Latency (interactive use) | thinking off: under 60 s per task | P-C-R 17 s, single 10 s, with test execution 23 s per task | thinking low/high/max: 40 / 73 / 135 s with no gain in resolution |
+| Cost per task | bounded by 20 calls and 15k answer tokens; reported per run | P-C-R ~32k output + ~37k prompt tokens; single ~8k output; max effort ~490k output | P-C-R costs ~4x the single agent for more applicable patches; max effort ~15x |
+| Workload / concurrency | batch runs with 4 parallel tasks per configuration | 3 runs x 7 configurations in parallel on a 32-vCPU / 64 GiB server; each session in the app runs in its own thread and temporary worktree | budgets are per task; there is no server-wide rate limit beyond the API's own |
+| Privacy | code stays local with the Qwen backend; DeepSeek receives the issue and the code the agent reads | stated in the UI before every DeepSeek run; `.env` is git-ignored; reports store no prompt text | DeepSeek is far stronger (10/23 vs 0/23) but data leaves the machine |
+| Safety of execution | the model never runs commands; tests run only in a no-network, capability-dropped Docker container with limits | `tests/test_exec_feedback.py` checks the sandbox flags | test execution needs Docker; without it the app says so and continues |
+| Reproducibility | every batch records its settings and Git commit (`manifest.json`) | 36 batches in `final_results/runs/` | thinking mode ignores temperature, so runs are repeated 3 times |
+
+### 6.3 Integrity and privacy rules
 
 - Gold patches, `test_patch`, `FAIL_TO_PASS`/`PASS_TO_PASS` and hints never enter a prompt: the
   task loader keeps only issue, repository and commit. Gold is read only by the post-hoc analysis
@@ -347,6 +381,9 @@ repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md]
 | Sample inputs: ordinary task, changed request, failure case | `samples/01`-`05` |
 | Evaluation scripts, results, success/failure traces | `experiments/`, `scripts/run_final_deepseek.sh`; `final_results/` (results, `samples/` traces) |
 | Settings recorded, variable outputs accounted for | every batch `manifest.json`; 3 runs per configuration, task-level paired tests (section 5) |
+| Users, needs, scope | top table (Users, Need, Scope) |
+| Reliability: at least two failure situations, detection, recovery, user feedback, repeated external actions | section 6.1 (nine situations, each with tests or traces) |
+| Non-functional requirements: targets, measures, results, trade-offs | section 6.2 |
 | Credentials kept out; mocks and unavailable parts labelled | section 6; `.env` is git-ignored; offline tests are labelled as scripted |
 | Submitted version identified | section 9 |
 | AI-use declaration and prompts | section 9 |
@@ -354,7 +391,7 @@ repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md]
 ## 9. Submitted version, AI use, attribution
 
 - Submitted version: tag `[v1.0-final]`, commit `[SHA]`.
-- AI assistance: see `AI_DECLARATION.md` (tools used, what they helped with, project prompts).
+- AI assistance: see [`AI_DECLARATION.md`](AI_DECLARATION.md) (tools used, what they helped with, project prompts in `ai_prompts/`).
 - Reused software and data: SWE-bench / SWE-bench Lite (dataset and evaluation harness),
   Qwen2.5-Coder-7B-Instruct, vLLM, PyTorch, Hugging Face `datasets` / `huggingface_hub`, the OpenAI
   Python SDK (as an OpenAI-compatible client), Flask, and the DeepSeek API; used under their

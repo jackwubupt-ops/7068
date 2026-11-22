@@ -53,6 +53,7 @@ class Request:
     skip_clarification: bool = False
     backend: str = "qwen"            # "qwen" (local vLLM) | "deepseek" (hosted API)
     exec_feedback: bool = False      # run existing repository tests in Docker (RQ2)
+    reasoning_effort: str = "none"   # DeepSeek thinking: none | low | high | max (RQ1)
 
 
 @dataclass
@@ -321,6 +322,10 @@ class SessionManager:
             raise ValueError("agent must be pcr|single and edit_format search_replace|diff")
         if not 0 <= int(request.retrieval_k) <= 50:
             raise ValueError("retrieval_k must be in [0, 50]")
+        if request.reasoning_effort not in ("none", "low", "high", "max"):
+            raise ValueError("reasoning_effort must be none|low|high|max")
+        if request.reasoning_effort != "none" and request.backend != "deepseek":
+            raise ValueError("Reasoning effort (thinking mode) is available for the DeepSeek model only")
         if not request.issue.strip() or len(request.issue) > 20000:
             raise ValueError("Issue must contain 1-20000 characters")
         if isinstance(self.backend_factory, dict) and request.backend not in self.backend_factory:
@@ -420,9 +425,11 @@ class SessionManager:
         out = self.runs_dir / session.id
         factory = (self.backend_factory[req.backend] if isinstance(self.backend_factory, dict)
                    else self.backend_factory)
-        inner = factory()
+        # Thinking mode is a per-request choice; "none" keeps the server's default settings.
+        inner = factory(req.reasoning_effort) if req.reasoning_effort != "none" else factory()
         backend = TracingBackend(inner, session)
         session.emit("info", f"Model: {inner.model}"
+                     + (f", reasoning effort {req.reasoning_effort}" if req.reasoning_effort != "none" else "")
                      + (" (hosted DeepSeek API: the issue and code are sent to DeepSeek)"
                         if getattr(inner, "provider", "") == "deepseek" else " (local, nothing leaves this server)"))
         session.emit("info", f"Starting the {'Planner-Coder-Reviewer' if req.agent == 'pcr' else 'single'} agent")

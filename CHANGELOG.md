@@ -4,6 +4,13 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Guideline gaps closed (2026-11-22)
+
+### Added
+- Web app: per-request **reasoning effort** (DeepSeek thinking none/low/high/max, the RQ1 variable) next to the execution-feedback switch (RQ2), so every studied improvement is usable in the working agent; the timeline and run statistics show the choice; Qwen requests reject thinking.
+- README: a Scope row (what the demo accepts and refuses), section 6.1 (nine failure situations with detection, bounded recovery or safe stop, user feedback and evidence; risks of repeated external API calls), section 6.2 (non-functional targets vs measured latency, cost, workload, privacy, safety, reproducibility), checklist rows for both.
+- `AI_DECLARATION.md` skeleton (tools, what they helped with, prompts in `ai_prompts/`, missing records).
+
 ## Repository cleanup for submission (2026-11-22)
 
 ### Removed

@@ -89,6 +89,7 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
                 retrieval_k=int(body.get("retrieval_k", 10)),
                 skip_clarification=bool(body.get("skip_clarification", False)),
                 exec_feedback=bool(body.get("exec_feedback", False)),
+                reasoning_effort=str(body.get("reasoning_effort") or "none"),
                 backend=str(body.get("backend") or default_backend()),
             )
             session = manager.start(req)
@@ -134,7 +135,8 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     def api_followup(sid):
         body = request.get_json(force=True, silent=True) or {}
         try:
-            changes = {k: body.get(k) for k in ("agent", "edit_format", "backend", "exec_feedback")}
+            changes = {k: body.get(k) for k in ("agent", "edit_format", "backend", "exec_feedback",
+                                                "reasoning_effort")}
             if body.get("retrieval_k") is not None:
                 changes["retrieval_k"] = int(body["retrieval_k"])
             session = manager.follow_up(sid, str(body.get("guidance", "")), **changes)
@@ -200,7 +202,15 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"Unknown example task {iid}")
         return by_id[iid]
 
-    factories = {name: (lambda n=name, st=st: make_backend(n, st)) for name, st in configured.items()}
+    def factory_for(name, settings):
+        def factory(reasoning_effort=None):
+            # A request may switch DeepSeek thinking on (RQ1); budgets follow backends.REASONING_DEFAULTS.
+            if reasoning_effort in (None, "none"):
+                return make_backend(name, settings)
+            return make_backend(name, load_settings(name, reasoning_effort=reasoning_effort))
+        return factory
+
+    factories = {name: factory_for(name, st) for name, st in configured.items()}
     manager = SessionManager(args.runs_dir, factories, task_lookup=lookup)
 
     def health():

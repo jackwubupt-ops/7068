@@ -149,7 +149,7 @@
     <label>Issue (edit freely: this is what the agent works from)</label>
     <textarea id="issue" placeholder="Describe the bug: what happens, what you expected, error messages…"></textarea>
     <label>Model</label>
-    <select id="backend" onchange="modelNote()"><option value="qwen">Local Qwen2.5-Coder-7B</option></select>
+    <select id="backend" onchange="modelNote(); effortNote()"><option value="qwen">Local Qwen2.5-Coder-7B</option></select>
     <div id="model-note" class="note"></div>
     <div class="row">
       <div><label>Agent</label>
@@ -157,6 +157,11 @@
       <div><label>Retrieval</label>
         <select id="retrieval_k"><option value="10">top 10 files</option><option value="5">top 5 files</option><option value="0">off</option></select></div>
     </div>
+    <label>Reasoning effort (DeepSeek thinking mode)</label>
+    <select id="reasoning_effort" onchange="effortNote()">
+      <option value="none">none — thinking off (fastest, default)</option>
+      <option value="low">low</option><option value="high">high</option><option value="max">max (slowest)</option></select>
+    <div id="effort-note" class="note"></div>
     <label class="toggle"><input type="checkbox" id="exec_feedback">
       <div><b>Run existing tests</b><span id="tests-note">The agent may run repository tests in a Docker sandbox, and every applied edit is re-tested for regressions.</span></div></label>
     <button class="primary run" onclick="startRun()">Run agent</button>
@@ -217,13 +222,21 @@ async function health() {
     const cur = $('backend').value;
     $('backend').innerHTML = names.map(n => `<option value="${n}">${esc(LABEL[n] || n)} — ${esc(backends[n].model)}</option>`).join('');
     if (names.includes(cur)) $('backend').value = cur;
-    modelNote(); testsNote();
+    modelNote(); testsNote(); effortNote();
   } catch (e) { $('health-text').textContent = 'server error: ' + e.message.slice(0, 60); $('health').className = 'badge down'; }
 }
 function modelNote() {
   $('model-note').textContent = $('backend').value === 'deepseek'
     ? 'Hosted API: the issue text and the code the agent reads are sent to DeepSeek; usage is billed.'
     : 'Runs on this server\'s GPU; no code leaves the machine.';
+}
+function effortNote() {
+  const ds = $('backend').value === 'deepseek';
+  $('reasoning_effort').disabled = !ds; if (!ds) $('reasoning_effort').value = 'none';
+  const v = $('reasoning_effort').value;
+  $('effort-note').textContent = !ds ? 'Thinking mode is available for the DeepSeek model only.'
+    : v === 'none' ? 'Measured on 23 tasks: about 17 s and 32k output tokens per task.'
+    : `More hidden reasoning per call: about ${({low:'2x', high:'4x', max:'8x'})[v]} the time and much higher token cost; it did not resolve more tasks in our evaluation.`;
 }
 function testsNote() {
   const ok = tests.docker && (source === 'swebench' || tests.local_image);
@@ -235,7 +248,7 @@ function testsNote() {
 async function startRun(extra={}) {
   $('form-err').textContent = '';
   const body = {source, issue:$('issue').value, agent:$('agent').value, backend:$('backend').value, retrieval_k:+$('retrieval_k').value,
-                exec_feedback:$('exec_feedback').checked,
+                exec_feedback:$('exec_feedback').checked, reasoning_effort:$('reasoning_effort').value,
                 instance_id:$('task').value || null, repo_path:$('repo_path').value, commit:$('commit').value, ...extra};
   try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
   catch (e) { $('form-err').textContent = e.message; }
@@ -300,6 +313,7 @@ function render(s) {
       <div class="stat"><div class="v">${esc(s.request.backend)}</div><div class="l">model</div></div>
       <div class="stat"><div class="v">${tok}</div><div class="l">prompt / completion tokens</div></div>
       <div class="stat"><div class="v">${r.duration_seconds ? r.duration_seconds + 's' : '—'}</div><div class="l">duration</div></div>
+      <div class="stat"><div class="v">${esc(s.request.reasoning_effort || 'none')}</div><div class="l">reasoning effort</div></div>
       <div class="stat"><div class="v">${s.request.exec_feedback ? 'on' : 'off'}</div><div class="l">test execution</div></div>
     </div>
     <div class="steps">${stages(s)}</div>
