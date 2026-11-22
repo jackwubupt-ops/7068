@@ -43,6 +43,7 @@ from utils.repo_tools import is_tracked
 SWEBENCH_PYTHON = "/opt/miniconda3/envs/testbed/bin/python"
 MAX_TARGETS = 4
 MAX_TOOL_RUNS = 3
+KEYWORD = "::-k="   # harness-only target form "path::-k=NAME" (pytest -k NAME on that file)
 TARGET = re.compile(r"[A-Za-z0-9_./-]{1,200}(::[A-Za-z0-9_.\[\]-]{1,120}){0,3}")
 PYTEST_LINE = re.compile(r"^(PASSED|FAILED|ERROR|XFAIL|XPASS)\s+(\S+)", re.M)
 UNITTEST_LINE = re.compile(r"^(\w+) \(([\w.]+)\)\s*(?:\n.*?)?\.\.\.\s*(ok|FAIL|ERROR|skipped|expected failure)",
@@ -115,6 +116,7 @@ def _docker_argv(env: TestEnv, name: str, targets: list[str], *, apply: bool,
               "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--pids-limit", "512",
               "--memory", f"{env.memory_mb}m", "--cpus", str(env.cpus),
               "-e", "PYTHONDONTWRITEBYTECODE=1", "-e", "PYTEST_ADDOPTS=", "-e", f"APPLY={int(apply)}"]
+    targets = _argv_targets(targets)
     pytest = [env.python, "-m", "pytest", "-rA", "-q", "-p", "no:cacheprovider", "--tb=short",
               "--color=no", *targets]
     if env.mode == "swebench":
@@ -127,6 +129,34 @@ def _docker_argv(env: TestEnv, name: str, targets: list[str], *, apply: bool,
             "-e", "HOME=/tmp", "-e", "PYTHONPATH=/workspace", "--workdir", "/workspace",
             "--mount", f"type=bind,src={worktree},dst=/workspace,readonly",
             env.image, "sh", "-c", script, env.python, *targets]
+
+
+def _argv_targets(targets: list[str]) -> list[str]:
+    out = []
+    for target in targets:
+        path, sep, keyword = target.partition(KEYWORD)
+        out += [path, "-k", keyword] if sep else [target]
+    return out
+
+
+def _groups(targets: list[str]) -> list[list[str]]:
+    """pytest -k applies to the whole command, so each keyword target runs on its own."""
+    plain = [t for t in targets if KEYWORD not in t]
+    return ([plain] if plain else []) + [[t] for t in targets if KEYWORD in t]
+
+
+def _merge(results: list[RunResult]) -> RunResult:
+    if len(results) == 1:
+        return results[0]
+    order = ("docker_error", "timeout", "completed")
+    status = min((r.status for r in results), key=order.index)
+    outcomes = {}
+    for r in results:
+        outcomes.update(r.outcomes)
+    codes = [r.exit_code for r in results]
+    code = None if None in codes else max(codes)
+    return RunResult(status, code, outcomes, "\n".join(r.tail for r in results)[-6000:],
+                     round(sum(r.seconds for r in results), 2))
 
 
 def docker_run(env: TestEnv, checkout: Path, base_commit: str, patch: str | None,
@@ -212,10 +242,17 @@ class TestTool:
         return target
 
     def _base(self, targets: list[str]) -> RunResult:
-        key = "\n".join(targets)
-        if key not in self.base_cache:
-            self.base_cache[key] = self.runner(self.env, self.checkout, self.base, None, targets)
-        return self.base_cache[key]
+        results = []
+        for group in _groups(targets):
+            key = "\n".join(group)
+            if key not in self.base_cache:
+                self.base_cache[key] = self.runner(self.env, self.checkout, self.base, None, group)
+            results.append(self.base_cache[key])
+        return _merge(results)
+
+    def _patched(self, patch: str, targets: list[str]) -> RunResult:
+        return _merge([self.runner(self.env, self.checkout, self.base, patch, group)
+                       for group in _groups(targets)])
 
     # ---- agent tool -------------------------------------------------------------
     def run_tool(self, repo_root=None, *, test_path=None) -> dict:
@@ -250,8 +287,30 @@ class TestTool:
             # e.g. sqlfluff: src/sqlfluff/rules/L031.py -> test/rules/std_L031_test.py
             near = sorted(p for p, n in names.items() if p not in exact and len(stem) >= 4
                           and re.search(rf"(^|[_\-]){re.escape(stem)}([_\-.]|$)", n.removesuffix(".py") + "."))
-            targets += [m for m in (exact + near)[:2] if m not in targets]
+            found = (exact + near)[:2] or self._data_driven(stem)
+            targets += [m for m in found if m not in targets]
         return targets[:MAX_TARGETS]
+
+    def _data_driven(self, stem: str) -> list[str]:
+        """Tests kept as data, e.g. sqlfluff test/fixtures/rules/std_rule_cases/L031.yml read by
+        test/rules/yaml_test_cases_test.py: run that test file with pytest -k <stem>."""
+        if len(stem) < 3 or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", stem):
+            return []
+        from utils.repo_tools import _tracked_files
+        files = _tracked_files(self.checkout)
+        fixture_dirs = sorted({f.rsplit("/", 2)[-2] for f in files if "/" in f and not f.endswith(".py")
+                               and _is_test_file(f.rsplit(".", 1)[0] + ".py")
+                               and f.rsplit("/", 1)[-1].rsplit(".", 1)[0] == stem})
+        if not fixture_dirs:
+            return []
+        for test in sorted(f for f in files if _is_test_file(f)):
+            try:
+                text = (self.checkout / test).read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            if any(d in text for d in fixture_dirs):
+                return [f"{test}{KEYWORD}{stem}"]
+        return []
 
     def check_patch(self, patch: str, changed_files: list[str]) -> dict:
         if not self.available:
@@ -262,7 +321,7 @@ class TestTool:
             self.records.append({"kind": "check", **record})
             return record
         before = self._base(targets)
-        after = self.runner(self.env, self.checkout, self.base, patch, targets)
+        after = self._patched(patch, targets)
         record = {"targets": targets, "base": _summary(before), "patched": _summary(after),
                   "seconds": round(before.seconds + after.seconds, 2)}
         if before.status != "completed" or after.status == "docker_error":

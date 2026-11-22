@@ -130,6 +130,30 @@ class TestToolTests(unittest.TestCase):
         self.assertEqual(tool.select_targets(["src/pkg/core/parser.py"]), ["test/core/parser_test.py"])
         self.assertEqual(tool.validate_target("test/rules/std_L031_test.py"), "test/rules/std_L031_test.py")
 
+    def test_data_driven_tests_run_with_keyword_in_their_own_pytest_call(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        repo, sha = make_repo(Path(temp.name), {
+            "src/pkg/rules/L031.py": "X = 1\n", "src/pkg/rules/L044.py": "X = 1\n",
+            "test/fixtures/rules/std_rule_cases/L031.yml": "rule: L031\n",
+            "test/rules/yaml_test_cases_test.py": "DIR = 'std_rule_cases'\n" + TEST_FILE,
+            "test/rules/std_L044_test.py": TEST_FILE})
+        calls = []
+
+        def runner(env, checkout, base, patch, targets):
+            calls.append(list(targets))
+            return RunResult("completed", 0, {f"{targets[0]}#{patch is None}": "PASSED"}, "", 1.0)
+        tool = TestTool(ENV, repo, sha, runner=runner)
+        targets = tool.select_targets(["src/pkg/rules/L031.py", "src/pkg/rules/L044.py"])
+        self.assertEqual(targets, ["test/rules/yaml_test_cases_test.py::-k=L031", "test/rules/std_L044_test.py"])
+        tool.check_patch("P", ["src/pkg/rules/L031.py", "src/pkg/rules/L044.py"])
+        self.assertEqual(calls, [["test/rules/std_L044_test.py"], ["test/rules/yaml_test_cases_test.py::-k=L031"],
+                                 ["test/rules/std_L044_test.py"], ["test/rules/yaml_test_cases_test.py::-k=L031"]])
+        argv = _docker_argv(ENV, "n", ["test/rules/yaml_test_cases_test.py::-k=L031"], apply=False, worktree=None)
+        self.assertEqual(argv[-3:], ["test/rules/yaml_test_cases_test.py", "-k", "L031"])
+        with self.assertRaises(ValueError):   # the agent cannot use the harness-only form
+            tool.validate_target("test/rules/yaml_test_cases_test.py::-k=L031")
+
     def test_regression_message_names_tests(self):
         text = regression_message({"targets": ["t.py"], "regressions": ["t.py::a"], "log_tail": "boom"})
         self.assertIn("t.py::a", text)
