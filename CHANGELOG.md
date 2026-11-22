@@ -4,6 +4,12 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Readable session view (2026-11-22)
+
+### Changed
+- Web app session page: a status banner that says what happened and what to do next; settings as chips; a five-step progress bar; the request and every follow-up shown as message bubbles; the trace as one card per step, labelled by role (Planner, Coder, Reviewer, Harness), with each tool call merged with its result, the repair plan rendered as hypothesis and planned changes, edits as original/replacement code, retrieval and search results as file chips, and harness notices in plain words; follow-ups can change the reasoning effort. Test execution is disabled with an explanation when Docker is unavailable.
+- Attempt numbers are shown for single-agent submissions too.
+
 ## Guideline gaps closed (2026-11-22)
 
 ### Added

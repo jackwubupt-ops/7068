@@ -448,9 +448,9 @@ class SessionManager:
                          "PATCHLOOP_TEST_IMAGE for local repositories); the run continued without tests.")
         if "USER_CANCELLED" in str(result.get("error", "")):
             raise Cancelled("USER_CANCELLED")
-        for attempt in result.get("candidate_attempts", []):
+        for number, attempt in enumerate(result.get("candidate_attempts", []), 1):
             session.emit("apply" if attempt.get("patch_status") == "applied" else "warning",
-                         f"attempt {attempt.get('attempt', '')}: {attempt.get('patch_status')}",
+                         f"attempt {attempt.get('attempt') or number}: {attempt.get('patch_status')}",
                          _short({k: attempt.get(k) for k in ("error_code", "changed_files",
                                                              "search_match_modes")}, 600))
             check = attempt.get("test_check")

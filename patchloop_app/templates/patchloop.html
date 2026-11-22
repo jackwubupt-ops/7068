@@ -6,135 +6,180 @@
 <title>PatchLoop</title>
 <style>
   :root {
-    --bg:#f4f5f8; --surface:#ffffff; --surface-2:#f8f9fb; --ink:#141824; --muted:#6b7280; --line:#e6e8ee;
-    --accent:#4f46e5; --accent-soft:#eef0ff; --ok:#0f8a5f; --ok-soft:#e6f6ef; --warn:#b45309; --warn-soft:#fff6e6;
-    --bad:#c62828; --bad-soft:#fdecec; --tool:#0e7490; --tool-soft:#e6f6f9; --review:#7c3aed; --review-soft:#f3edff;
-    --shadow:0 1px 2px rgba(16,24,40,.04), 0 4px 16px rgba(16,24,40,.06);
+    --bg:#f3f4f8; --surface:#ffffff; --surface-2:#f7f8fb; --surface-3:#eef0f5; --ink:#121826; --ink-2:#384152;
+    --muted:#6b7280; --line:#e4e7ee; --accent:#4f46e5; --accent-2:#6366f1; --accent-soft:#eef0ff;
+    --ok:#0d8a5b; --ok-soft:#e5f6ee; --warn:#b45309; --warn-soft:#fff5e5; --bad:#c62828; --bad-soft:#fdecec;
+    --planner:#4f46e5; --coder:#7c3aed; --reviewer:#c2410c; --harness:#0e7490; --system:#6b7280;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 8px 24px rgba(16,24,40,.06);
     --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg:#0d1017; --surface:#151a23; --surface-2:#1b212c; --ink:#e7e9ee; --muted:#9aa3b2; --line:#262d3a;
-      --accent:#8b8cf8; --accent-soft:#23254a; --ok:#34c28a; --ok-soft:#12291f; --warn:#f0a43a; --warn-soft:#2d2210;
-      --bad:#f07474; --bad-soft:#331717; --tool:#4cc3d9; --tool-soft:#10282d; --review:#b494fb; --review-soft:#251c3a;
-      --shadow:none;
+      --bg:#0b0e14; --surface:#141923; --surface-2:#1a202c; --surface-3:#222937; --ink:#e8eaf0; --ink-2:#c3c8d3;
+      --muted:#97a0b0; --line:#262e3c; --accent:#8b8cf8; --accent-2:#a5a6ff; --accent-soft:#23254a;
+      --ok:#34c28a; --ok-soft:#12291f; --warn:#f0a43a; --warn-soft:#2d2210; --bad:#f07474; --bad-soft:#331717;
+      --planner:#9b9cff; --coder:#b794fb; --reviewer:#fb923c; --harness:#4cc3d9; --system:#97a0b0; --shadow:none;
     }
   }
   * { box-sizing:border-box; }
-  body { margin:0; font:14px/1.55 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--ink); }
+  body { margin:0; font:14px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); }
   header { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:14px; padding:12px 24px;
-           background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
-  .logo { width:30px; height:30px; border-radius:9px; display:grid; place-items:center; color:#fff; font-weight:700;
-          background:linear-gradient(135deg,#6366f1,#06b6d4); }
-  header h1 { font-size:17px; margin:0; letter-spacing:-.01em; }
-  header .sub { color:var(--muted); font-size:13px; }
+           background:color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  .logo { width:32px; height:32px; border-radius:10px; display:grid; place-items:center; color:#fff; font-weight:800;
+          background:linear-gradient(135deg,#6366f1,#06b6d4); box-shadow:0 4px 12px rgba(99,102,241,.35); }
+  header h1 { font-size:17px; margin:0; letter-spacing:-.01em; } header .sub { color:var(--muted); font-size:12.5px; }
   .badge { margin-left:auto; display:flex; align-items:center; gap:8px; padding:5px 12px; border-radius:999px; font-size:12px;
-           background:var(--surface-2); border:1px solid var(--line); color:var(--muted); }
-  .dot { width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 3px var(--ok-soft); }
+           background:var(--surface-2); border:1px solid var(--line); color:var(--muted); max-width:50%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .dot { flex:none; width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 3px var(--ok-soft); }
   .badge.down .dot { background:var(--bad); box-shadow:0 0 0 3px var(--bad-soft); }
-  main { display:grid; grid-template-columns:400px minmax(0,1fr); gap:20px; padding:20px 24px; max-width:1500px; margin:0 auto; }
-  @media (max-width: 960px) { main { grid-template-columns:1fr; padding:16px; } }
-  .card { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; box-shadow:var(--shadow); min-width:0; }
+  main { display:grid; grid-template-columns:390px minmax(0,1fr); gap:20px; padding:20px 24px; max-width:1480px; margin:0 auto; }
+  @media (max-width: 980px) { main { grid-template-columns:1fr; padding:14px; } }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow:var(--shadow); min-width:0; }
   .side { position:sticky; top:76px; align-self:start; max-height:calc(100vh - 96px); overflow:auto; }
-  @media (max-width: 960px) { .side { position:static; max-height:none; } }
+  @media (max-width: 980px) { .side { position:static; max-height:none; } }
   h2 { font-size:15px; margin:0 0 12px; letter-spacing:-.01em; }
-  h3 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:18px 0 8px; }
+  h3 { font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin:18px 0 8px; font-weight:600; }
   label { display:block; font-size:12px; font-weight:500; color:var(--muted); margin:12px 0 5px; }
-  input, select, textarea { width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:9px; font:inherit;
+  input, select, textarea { width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:10px; font:inherit;
                             background:var(--surface-2); color:var(--ink); transition:border-color .15s, box-shadow .15s; }
   input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
-  textarea { min-height:180px; resize:vertical; font:12.5px/1.5 var(--mono); }
-  .seg { display:grid; grid-template-columns:1fr 1fr; padding:3px; gap:3px; border-radius:10px; background:var(--surface-2); border:1px solid var(--line); }
+  select:disabled { opacity:.55; }
+  textarea { min-height:150px; resize:vertical; font:12.5px/1.5 var(--mono); }
+  .seg { display:grid; grid-template-columns:1fr 1fr; padding:3px; gap:3px; border-radius:11px; background:var(--surface-3); }
   .seg button { border:0; background:transparent; padding:7px; border-radius:8px; color:var(--muted); font-weight:500; }
-  .seg button.on { background:var(--surface); color:var(--ink); box-shadow:var(--shadow); }
-  button { padding:8px 14px; border-radius:9px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
-           font:inherit; font-weight:500; cursor:pointer; transition:transform .05s, background .15s; }
-  button:active { transform:translateY(1px); }
-  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
-  button.primary:hover { filter:brightness(1.08); }
+  .seg button.on { background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(16,24,40,.12); }
+  button { padding:8px 14px; border-radius:10px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
+           font:inherit; font-weight:500; cursor:pointer; transition:transform .05s, filter .15s, background .15s; }
+  button:hover { filter:brightness(.98); } button:active { transform:translateY(1px); }
+  button.primary { background:linear-gradient(135deg,var(--accent),var(--accent-2)); border-color:transparent; color:#fff; }
   button.ok { background:var(--ok); border-color:var(--ok); color:#fff; }
-  button.bad { color:var(--bad); border-color:color-mix(in srgb, var(--bad) 35%, var(--line)); }
+  button.bad { color:var(--bad); border-color:color-mix(in srgb, var(--bad) 35%, var(--line)); background:var(--surface); }
   button.ghost { background:transparent; }
-  button:disabled { opacity:.5; cursor:default; }
   .row { display:flex; gap:10px; } .row > * { flex:1; min-width:0; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0 10px; }
+  .opts { margin-top:14px; padding:4px 12px 12px; border:1px solid var(--line); border-radius:12px; background:var(--surface-2); }
+  .opts > summary { cursor:pointer; padding:8px 0 2px; font-size:12px; font-weight:600; color:var(--ink-2); list-style:none; }
+  .opts > summary::-webkit-details-marker { display:none; } .opts > summary::before { content:"▸ "; color:var(--muted); }
+  .opts[open] > summary::before { content:"▾ "; }
   .toggle { display:flex; align-items:flex-start; gap:10px; margin-top:12px; padding:10px 12px; border-radius:10px;
-            border:1px solid var(--line); background:var(--surface-2); cursor:pointer; }
+            border:1px solid var(--line); background:var(--surface); cursor:pointer; }
   .toggle input { width:auto; margin-top:3px; accent-color:var(--accent); }
   .toggle b { display:block; font-size:13px; } .toggle span { font-size:12px; color:var(--muted); }
-  .meta { color:var(--muted); font-size:12px; }
-  .note { margin-top:6px; font-size:12px; color:var(--muted); }
-  .run { width:100%; margin-top:16px; padding:11px; font-size:15px; }
+  .note { margin-top:5px; font-size:11.5px; color:var(--muted); line-height:1.45; }
+  .run { width:100%; margin-top:16px; padding:11px; font-size:15px; font-weight:600; }
   .err { color:var(--bad); font-size:12.5px; margin-top:8px; }
-  .history a { display:flex; justify-content:space-between; gap:8px; padding:7px 9px; border-radius:8px; color:var(--ink);
-               text-decoration:none; font-size:12.5px; cursor:pointer; }
-  .history a:hover { background:var(--surface-2); }
-  .history a .meta { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .history a { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:10px;
+               color:var(--ink); text-decoration:none; font-size:12.5px; cursor:pointer; border:1px solid transparent; }
+  .history a:hover { background:var(--surface-2); border-color:var(--line); }
+  .history a.cur { background:var(--accent-soft); border-color:transparent; }
+  .history .hwho { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .history .hwho small { display:block; color:var(--muted); }
+  .meta { color:var(--muted); font-size:12px; }
   .pill { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600;
-          background:var(--accent-soft); color:var(--accent); white-space:nowrap; }
+          background:var(--accent-soft); color:var(--accent); white-space:nowrap; flex:none; }
   .pill.awaiting_confirmation, .pill.accepted { background:var(--ok-soft); color:var(--ok); }
   .pill.needs_clarification, .pill.rejected, .pill.cancelled { background:var(--warn-soft); color:var(--warn); }
   .pill.failed { background:var(--bad-soft); color:var(--bad); }
   .pill.running::before, .pill.checking::before, .pill.queued::before { content:""; width:7px; height:7px; border-radius:50%;
           background:currentColor; animation:pulse 1.2s infinite; }
   @keyframes pulse { 50% { opacity:.25; } }
-  .head { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-  .head h2 { margin:0; }
-  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin:14px 0 4px; }
-  .stat { padding:10px 12px; border-radius:10px; background:var(--surface-2); border:1px solid var(--line); }
-  .stat .v { font-size:16px; font-weight:600; } .stat .l { font-size:11.5px; color:var(--muted); }
-  .steps { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 2px; }
-  .step { font-size:12px; padding:3px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
-  .step.done { color:var(--ok); border-color:color-mix(in srgb, var(--ok) 40%, var(--line)); background:var(--ok-soft); }
-  .step.live { color:var(--accent); border-color:var(--accent); background:var(--accent-soft); }
-  .timeline { list-style:none; margin:14px 0 0; padding:0 0 0 4px; position:relative; }
-  .timeline::before { content:""; position:absolute; left:17px; top:6px; bottom:6px; width:2px; background:var(--line); }
-  .timeline li { position:relative; display:grid; grid-template-columns:28px 1fr auto; gap:10px; padding:6px 0; align-items:start; }
-  .ic { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font-size:13px; z-index:1;
-        background:var(--surface-2); border:1px solid var(--line); color:var(--muted); }
-  .k-decision .ic { background:var(--accent-soft); color:var(--accent); border-color:transparent; }
-  .k-tool .ic { background:var(--tool-soft); color:var(--tool); border-color:transparent; }
-  .k-warning .ic { background:var(--warn-soft); color:var(--warn); border-color:transparent; }
-  .k-error .ic { background:var(--bad-soft); color:var(--bad); border-color:transparent; }
-  .k-stop .ic, .k-apply .ic { background:var(--ok-soft); color:var(--ok); border-color:transparent; }
-  .k-review .ic, .k-edit .ic { background:var(--review-soft); color:var(--review); border-color:transparent; }
-  .item { padding:4px 0; min-width:0; }
-  .item .title { font-weight:500; }
-  .k-thinking .title, .k-info .title { color:var(--muted); font-weight:400; }
-  .t { color:var(--muted); font-size:11.5px; font-variant-numeric:tabular-nums; padding-top:6px; }
-  details summary { cursor:pointer; list-style:none; } details summary::-webkit-details-marker { display:none; }
-  details summary::after { content:" ▸"; color:var(--muted); font-size:11px; } details[open] summary::after { content:" ▾"; }
-  pre { white-space:pre-wrap; word-break:break-word; font:12px/1.5 var(--mono); background:var(--surface-2); color:var(--ink);
-        border:1px solid var(--line); border-radius:9px; padding:10px; margin:8px 0 0; max-height:340px; overflow:auto; }
-  .panel { margin-top:16px; padding:16px; border-radius:12px; border:1px solid var(--line); background:var(--surface-2); }
-  .panel.ready { border-color:color-mix(in srgb, var(--ok) 45%, var(--line)); background:var(--ok-soft); }
-  .panel.ask { border-color:color-mix(in srgb, var(--warn) 45%, var(--line)); background:var(--warn-soft); }
-  .panel ul { margin:8px 0 0; padding-left:20px; }
-  .diff { margin-top:10px; border-radius:10px; overflow:auto; max-height:44vh; border:1px solid var(--line); background:var(--surface);
-          font:12px/1.55 var(--mono); }
-  .diff span { display:block; padding:0 12px; white-space:pre; }
-  .diff .add { background:color-mix(in srgb, var(--ok) 14%, transparent); color:var(--ok); }
-  .diff .del { background:color-mix(in srgb, var(--bad) 13%, transparent); color:var(--bad); }
-  .diff .hunk { color:var(--review); background:var(--review-soft); }
-  .diff .file { color:var(--muted); font-weight:600; }
-  .empty { display:grid; place-items:center; text-align:center; min-height:52vh; color:var(--muted); }
-  .empty .big { font-size:40px; margin-bottom:6px; }
-  .empty ol { text-align:left; display:inline-block; margin:10px 0 0; }
-  code { font:12px var(--mono); background:var(--surface-2); border:1px solid var(--line); border-radius:6px; padding:1px 5px; }
+  /* session view */
+  .hero { display:flex; gap:14px; align-items:flex-start; padding:16px; border-radius:14px; background:var(--surface-2); border:1px solid var(--line); }
+  .hero .big { width:42px; height:42px; flex:none; border-radius:12px; display:grid; place-items:center; font-size:20px; background:var(--accent-soft); color:var(--accent); }
+  .hero.awaiting_confirmation .big, .hero.accepted .big { background:var(--ok-soft); color:var(--ok); }
+  .hero.needs_clarification .big, .hero.rejected .big, .hero.cancelled .big { background:var(--warn-soft); color:var(--warn); }
+  .hero.failed .big { background:var(--bad-soft); color:var(--bad); }
+  .hero h2 { margin:0 0 2px; font-size:16px; } .hero p { margin:0; color:var(--ink-2); font-size:13px; }
+  .hero .ids { margin-left:auto; text-align:right; flex:none; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 0; }
+  .chip { display:inline-flex; gap:5px; align-items:center; padding:3px 9px; border-radius:8px; font-size:12px; background:var(--surface-3); color:var(--ink-2); }
+  .chip b { font-weight:600; color:var(--ink); }
+  .steps { display:flex; align-items:center; gap:0; margin:16px 0 4px; flex-wrap:wrap; row-gap:8px; }
+  .step { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); }
+  .step .n { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:700; background:var(--surface-3); }
+  .step.done { color:var(--ok); } .step.done .n { background:var(--ok); color:#fff; }
+  .step.live { color:var(--accent); font-weight:600; } .step.live .n { background:var(--accent); color:#fff; box-shadow:0 0 0 4px var(--accent-soft); }
+  .step + .step::before { content:""; width:22px; height:2px; background:var(--line); margin:0 8px; border-radius:2px; }
+  .panel { margin-top:16px; padding:16px; border-radius:14px; border:1px solid var(--line); background:var(--surface-2); }
+  .panel.ready { border-color:color-mix(in srgb, var(--ok) 40%, var(--line)); background:color-mix(in srgb, var(--ok-soft) 60%, var(--surface)); }
+  .panel.ask { border-color:color-mix(in srgb, var(--warn) 40%, var(--line)); background:color-mix(in srgb, var(--warn-soft) 70%, var(--surface)); }
+  .panel h4 { margin:0 0 4px; font-size:14px; } .panel ul { margin:8px 0 0; padding-left:20px; }
+  .working { display:flex; align-items:center; gap:12px; }
+  .spinner { width:18px; height:18px; border-radius:50%; border:2.5px solid var(--accent-soft); border-top-color:var(--accent); animation:spin .8s linear infinite; flex:none; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .bubble { margin-top:16px; padding:12px 14px; border-radius:14px 14px 14px 4px; background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 18%, transparent); }
+  .bubble .who { font-size:11.5px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+  .bubble .txt { white-space:pre-wrap; word-break:break-word; max-height:7.5em; overflow:hidden; position:relative; color:var(--ink-2); }
+  .bubble.open .txt { max-height:none; }
+  .bubble .more { margin-top:4px; font-size:12px; color:var(--accent); cursor:pointer; background:none; border:0; padding:0; }
+  .section-title { display:flex; align-items:center; gap:10px; margin:20px 0 6px; font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+  .section-title::after { content:""; flex:1; height:1px; background:var(--line); }
+  .tl { list-style:none; margin:0; padding:0; }
+  .ev { display:grid; grid-template-columns:34px 1fr auto; gap:12px; padding:9px 0; align-items:start; position:relative; }
+  .ev::before { content:""; position:absolute; left:16px; top:40px; bottom:-6px; width:2px; background:var(--line); }
+  .ev:last-child::before { display:none; }
+  .ic { width:34px; height:34px; border-radius:11px; display:grid; place-items:center; font-size:15px; z-index:1;
+        background:var(--surface-3); color:var(--system); }
+  .lane-planner .ic { background:color-mix(in srgb, var(--planner) 14%, var(--surface)); color:var(--planner); }
+  .lane-coder .ic { background:color-mix(in srgb, var(--coder) 14%, var(--surface)); color:var(--coder); }
+  .lane-reviewer .ic { background:color-mix(in srgb, var(--reviewer) 14%, var(--surface)); color:var(--reviewer); }
+  .lane-harness .ic { background:color-mix(in srgb, var(--harness) 14%, var(--surface)); color:var(--harness); }
+  .k-warning .ic, .k-error .ic { background:var(--warn-soft); color:var(--warn); }
+  .k-error .ic { background:var(--bad-soft); color:var(--bad); }
+  .k-stop .ic, .k-apply .ic { background:var(--ok-soft); color:var(--ok); }
+  .body { min-width:0; padding-top:2px; }
+  .who { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+  .lane-planner .who { color:var(--planner); } .lane-coder .who { color:var(--coder); } .lane-reviewer .who { color:var(--reviewer); }
+  .lane-harness .who { color:var(--harness); } .lane-system .who { color:var(--system); }
+  .what { font-weight:500; color:var(--ink); word-break:break-word; }
+  .k-info .what { font-weight:400; color:var(--ink-2); }
+  .res { margin-top:3px; font-size:12.5px; color:var(--ink-2); }
+  .res .arrow { color:var(--muted); }
+  .t { color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums; padding-top:4px; }
+  .detail { margin-top:8px; }
+  details.more > summary { cursor:pointer; list-style:none; font-size:12px; color:var(--accent); margin-top:4px; }
+  details.more > summary::-webkit-details-marker { display:none; }
+  pre, .code { white-space:pre-wrap; word-break:break-word; font:12px/1.5 var(--mono); background:var(--surface-2); color:var(--ink);
+        border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:6px 0 0; max-height:340px; overflow:auto; }
+  .code span { display:block; }
+  .code .s { color:var(--bad); } .code .r { color:var(--ok); } .code .m { color:var(--muted); font-weight:600; }
+  .kv { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .plan { margin-top:8px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--surface-2); }
+  .plan b { display:block; font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:6px 0 3px; }
+  .plan b:first-child { margin-top:0; } .plan ul { margin:0; padding-left:18px; } .plan p { margin:0; color:var(--ink-2); }
+  .files { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .file { font:11.5px var(--mono); padding:3px 8px; border-radius:7px; background:var(--surface-3); color:var(--ink-2); }
+  .file small { font-family:system-ui,sans-serif; color:var(--muted); margin-left:4px; }
+  .dots::after { content:"…"; animation:dots 1.2s steps(3,end) infinite; display:inline-block; width:1em; overflow:hidden; vertical-align:bottom; }
+  @keyframes dots { from { width:0; } to { width:1em; } }
+  .diff { margin-top:10px; border-radius:12px; overflow:auto; max-height:46vh; border:1px solid var(--line); background:var(--surface); font:12px/1.6 var(--mono); }
+  .diff span { display:block; padding:0 14px; white-space:pre; }
+  .diff .add { background:color-mix(in srgb, var(--ok) 13%, transparent); color:var(--ok); }
+  .diff .del { background:color-mix(in srgb, var(--bad) 12%, transparent); color:var(--bad); }
+  .diff .hunk { color:var(--coder); background:color-mix(in srgb, var(--coder) 9%, transparent); }
+  .diff .file { display:block; border-radius:0; background:var(--surface-3); color:var(--ink-2); font-weight:600; padding:2px 14px; }
+  .empty { display:grid; place-items:center; text-align:center; min-height:60vh; color:var(--muted); }
+  .empty .big { font-size:44px; margin-bottom:8px; }
+  .flow { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:18px; text-align:left; }
+  @media (max-width: 700px) { .flow { grid-template-columns:1fr 1fr; } }
+  .flow div { padding:12px; border-radius:12px; background:var(--surface-2); border:1px solid var(--line); font-size:12.5px; color:var(--ink-2); }
+  .flow b { display:block; color:var(--ink); margin-bottom:2px; }
+  code { font:12px var(--mono); background:var(--surface-3); border-radius:6px; padding:1px 5px; }
   a { color:var(--accent); }
 </style>
 </head>
 <body>
 <header>
   <div class="logo">P</div>
-  <div><h1>PatchLoop</h1><div class="sub">From an issue to a reviewed, Git-applicable patch, with you in the loop</div></div>
+  <div><h1>PatchLoop</h1><div class="sub">From a bug report to a reviewed, Git-applicable patch, with you in the loop</div></div>
   <span id="health" class="badge"><span class="dot"></span><span id="health-text">checking model…</span></span>
 </header>
 <main>
   <section class="card side">
     <h2>New repair request</h2>
     <div class="seg">
-      <button id="tab-swebench" class="on" onclick="setSource('swebench')">Example task</button>
-      <button id="tab-local" onclick="setSource('local')">Local repository</button>
+      <button id="tab-swebench" class="on" onclick="setSource('swebench')">Example issue</button>
+      <button id="tab-local" onclick="setSource('local')">My repository</button>
     </div>
     <div id="src-swebench">
       <label>SWE-bench Lite dev issue (repository and commit are fixed)</label>
@@ -142,28 +187,31 @@
     </div>
     <div id="src-local" style="display:none">
       <label>Path to a Git repository on this machine</label>
-      <input id="repo_path" placeholder="/data/demo-repos/myproject or C:\Users\me\demo-calc">
+      <input id="repo_path" placeholder="/data/demo-repos/myproject  or  C:\Users\me\demo-calc">
       <label>Commit or branch</label>
       <input id="commit" value="HEAD">
     </div>
-    <label>Issue (edit freely: this is what the agent works from)</label>
-    <textarea id="issue" placeholder="Describe the bug: what happens, what you expected, error messages…"></textarea>
-    <label>Model</label>
-    <select id="backend" onchange="modelNote(); effortNote()"><option value="qwen">Local Qwen2.5-Coder-7B</option></select>
-    <div id="model-note" class="note"></div>
-    <div class="row">
-      <div><label>Agent</label>
-        <select id="agent"><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select></div>
-      <div><label>Retrieval</label>
-        <select id="retrieval_k"><option value="10">top 10 files</option><option value="5">top 5 files</option><option value="0">off</option></select></div>
-    </div>
-    <label>Reasoning effort (DeepSeek thinking mode)</label>
-    <select id="reasoning_effort" onchange="effortNote()">
-      <option value="none">none — thinking off (fastest, default)</option>
-      <option value="low">low</option><option value="high">high</option><option value="max">max (slowest)</option></select>
-    <div id="effort-note" class="note"></div>
-    <label class="toggle"><input type="checkbox" id="exec_feedback">
-      <div><b>Run existing tests</b><span id="tests-note">The agent may run repository tests in a Docker sandbox, and every applied edit is re-tested for regressions.</span></div></label>
+    <label>What is wrong? (the agent works only from this text)</label>
+    <textarea id="issue" placeholder="e.g. divide(3, 2) returns 1 but it should return 1.5 — division should be true division."></textarea>
+    <details class="opts" open>
+      <summary>Agent options</summary>
+      <label>Model</label>
+      <select id="backend" onchange="modelNote(); effortNote()"><option value="qwen">Local Qwen2.5-Coder-7B</option></select>
+      <div id="model-note" class="note"></div>
+      <div class="grid2">
+        <div><label>Agent</label>
+          <select id="agent"><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select></div>
+        <div><label>Retrieval</label>
+          <select id="retrieval_k"><option value="10">top 10 files</option><option value="5">top 5 files</option><option value="0">off</option></select></div>
+      </div>
+      <label>Reasoning effort</label>
+      <select id="reasoning_effort" onchange="effortNote()">
+        <option value="none">none — thinking off (fastest)</option>
+        <option value="low">low</option><option value="high">high</option><option value="max">max (slowest)</option></select>
+      <div id="effort-note" class="note"></div>
+      <label class="toggle"><input type="checkbox" id="exec_feedback">
+        <div><b>Run existing tests</b><span id="tests-note">The agent may run repository tests in a Docker sandbox; every applied edit is re-tested for regressions.</span></div></label>
+    </details>
     <button class="primary run" onclick="startRun()">Run agent</button>
     <div id="form-err" class="err"></div>
     <h3>Sessions</h3>
@@ -173,19 +221,23 @@
   <section class="card" id="view">
     <div class="empty"><div>
       <div class="big">⟲</div>
-      <b>Pick an issue and press Run agent</b>
+      <b style="color:var(--ink);font-size:16px">Describe a bug and press Run agent</b>
       <div>Every decision, tool call and recovery step appears here as it happens.</div>
-      <ol class="meta"><li>Planner searches and reads the code</li><li>Coder writes an edit; the harness applies it in isolation</li>
-        <li>Reviewer diagnoses failures; the Coder retries</li><li>You accept, reject or follow up</li></ol>
+      <div class="flow">
+        <div><b>1 · Locate</b>The Planner searches, finds definitions and reads the code.</div>
+        <div><b>2 · Edit</b>The Coder writes a small edit against the original commit.</div>
+        <div><b>3 · Check</b>The harness applies it in isolation, checks syntax and (optionally) tests; failures go to the Reviewer.</div>
+        <div><b>4 · You decide</b>Accept, reject, or send a follow-up with more guidance.</div>
+      </div>
     </div></div>
   </section>
 </main>
 
 <script>
-let source = 'swebench', current = null, since = 0, timer = null, events = [];
-const ICON = {decision:'➜', tool:'⚙', warning:'!', error:'✕', stop:'■', apply:'✓', review:'✎', edit:'✎', info:'·', thinking:'…'};
+let source = 'swebench', current = null, since = 0, timer = null, events = [], issueOpen = false;
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const $ = id => document.getElementById(id);
+const BUSY = ['queued','checking','running'];
 
 async function api(path, opts={}) {
   const r = await fetch(path, {headers:{'Content-Type':'application/json'}, ...opts});
@@ -217,7 +269,7 @@ async function health() {
   try {
     const h = await api('/api/health'); backends = h.backends || {}; tests = h.tests || {};
     const names = Object.keys(backends);
-    $('health-text').textContent = names.length ? names.map(n => backends[n].model).join(' · ') : 'no model available';
+    $('health-text').textContent = names.length ? 'model ready · ' + names.map(n => backends[n].model).join(' · ') : 'no model available';
     $('health').className = names.length ? 'badge' : 'badge down';
     const cur = $('backend').value;
     $('backend').innerHTML = names.map(n => `<option value="${n}">${esc(LABEL[n] || n)} — ${esc(backends[n].model)}</option>`).join('');
@@ -235,13 +287,14 @@ function effortNote() {
   $('reasoning_effort').disabled = !ds; if (!ds) $('reasoning_effort').value = 'none';
   const v = $('reasoning_effort').value;
   $('effort-note').textContent = !ds ? 'Thinking mode is available for the DeepSeek model only.'
-    : v === 'none' ? 'Measured on 23 tasks: about 17 s and 32k output tokens per task.'
-    : `More hidden reasoning per call: about ${({low:'2x', high:'4x', max:'8x'})[v]} the time and much higher token cost; it did not resolve more tasks in our evaluation.`;
+    : v === 'none' ? 'Measured on 23 issues: about 17 s and 32k output tokens per issue.'
+    : `More hidden reasoning per call: about ${({low:'2x', high:'4x', max:'8x'})[v]} the time and much higher token cost; it did not resolve more issues in our evaluation.`;
 }
 function testsNote() {
   const ok = tests.docker && (source === 'swebench' || tests.local_image);
+  $('exec_feedback').disabled = !ok; if (!ok) $('exec_feedback').checked = false;
   $('tests-note').textContent = !tests.docker
-    ? 'Unavailable here: Docker is not installed. The agent still works; edits are not test-checked.'
+    ? 'Unavailable on this machine (Docker is not installed). The agent still works; edits are checked for syntax only.'
     : ok ? 'The agent may run existing repository tests in a Docker sandbox; every applied edit is re-tested for regressions.'
          : 'Local repositories need PATCHLOOP_TEST_IMAGE (a Docker image with Python and pytest).';
 }
@@ -253,82 +306,205 @@ async function startRun(extra={}) {
   try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
   catch (e) { $('form-err').textContent = e.message; }
 }
-function openSession(id) { current = id; since = 0; events = []; clearInterval(timer); poll(); timer = setInterval(poll, 1200); history(); }
+function openSession(id) { current = id; since = 0; events = []; issueOpen = false; clearInterval(timer); poll(); timer = setInterval(poll, 1200); history(); }
 async function poll() {
   if (!current) return;
   const s = await api(`/api/sessions/${current}?since=${since}`);
   events = events.concat(s.events); since = s.event_count; render(s);
-  if (!['queued','checking','running'].includes(s.status)) { clearInterval(timer); history(); }
+  if (!BUSY.includes(s.status)) { clearInterval(timer); history(); }
+}
+
+/* ---------- turning raw events into readable steps ---------- */
+const TOOL_ICON = {search_repo:'⌕', read_file:'▤', find_definition:'⌖', list_directory:'▦', run_tests:'⚗', retrieval:'≣'};
+function laneOf(e) {
+  const t = (e.title || '').toLowerCase();
+  if (t.startsWith('planner')) return 'planner';
+  if (t.startsWith('coder')) return 'coder';
+  if (t.startsWith('reviewer')) return 'reviewer';
+  if (t.startsWith('agent')) return 'planner';
+  if (['tool','apply','warning'].includes(e.kind)) return 'harness';
+  return 'system';
+}
+const LANE_NAME = {planner:'Planner', coder:'Coder', reviewer:'Reviewer', harness:'Harness', system:'PatchLoop'};
+function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+function stripStage(t) { return String(t || '').replace(/^(planner|coder|reviewer|agent):\s*/i, ''); }
+function toolName(t) { const m = /^([a-z_]+)\b/.exec(t || ''); return m ? m[1] : ''; }
+function parseJSON(s) { try { const v = JSON.parse(s); return v && typeof v === 'object' ? v : null; } catch (e) { return null; } }
+function detailHtml(e) {
+  const d = e.detail; if (!d) return '';
+  const obj = parseJSON(d);
+  if (obj && (obj.root_cause_hypothesis || obj.planned_changes)) {
+    return `<div class="plan">${obj.root_cause_hypothesis ? `<b>Root-cause hypothesis</b><p>${esc(obj.root_cause_hypothesis)}</p>` : ''}
+      ${(obj.planned_changes || []).length ? `<b>Planned changes</b><ul>${obj.planned_changes.map(c => `<li>${esc(c)}</li>`).join('')}</ul>` : ''}</div>`;
+  }
+  if (obj && !Array.isArray(obj)) {
+    const parts = Object.entries(obj).filter(([k, v]) => v !== null && v !== '' && !(Array.isArray(v) && !v.length));
+    if (!parts.length) return '';
+    return `<div class="kv">${parts.map(([k, v]) => `<span class="chip">${esc(k.replaceAll('_', ' '))}: <b>${esc(Array.isArray(v) ? v.join(', ') : typeof v === 'object' ? JSON.stringify(v) : v)}</b></span>`).join('')}</div>`;
+  }
+  if (d.includes('<<<<<<< SEARCH') || d.startsWith('diff --git')) return codeHtml(d);
+  const lines = d.split('\n');
+  if (e.kind === 'tool' && lines.length > 1 && lines.every(l => /^\S+\.\w+(\s|$)/.test(l.trim()) || !l.trim())) {
+    return `<div class="files">${lines.filter(l => l.trim()).map(l => { const [f, ...why] = l.trim().split(/\s+/);
+      return `<span class="file">${esc(f)}${why.length ? `<small>${esc(why.join(' ').replace(/[()]/g, ''))}</small>` : ''}</span>`; }).join('')}</div>`;
+  }
+  if (e.kind === 'tool' && !d.includes('\n') && d.length < 400) {
+    return `<div class="files">${d.split(/,\s*/).map(f => `<span class="file">${esc(f)}</span>`).join('')}</div>`;
+  }
+  return `<pre>${esc(d)}</pre>`;
+}
+function codeHtml(d) {
+  let mode = '';
+  return `<div class="code">${d.split('\n').map(l => {
+    if (l.startsWith('<<<<<<< SEARCH')) { mode = 's'; return `<span class="m">— original —</span>`; }
+    if (l.startsWith('=======')) { mode = 'r'; return `<span class="m">— replacement —</span>`; }
+    if (l.startsWith('>>>>>>> REPLACE')) { mode = ''; return ''; }
+    if (l.startsWith('FILE:')) return `<span class="m">${esc(l)}</span>`;
+    if (l.startsWith('+') && !l.startsWith('+++')) return `<span class="r">${esc(l)}</span>`;
+    if (l.startsWith('-') && !l.startsWith('---')) return `<span class="s">${esc(l)}</span>`;
+    return `<span class="${mode}">${esc(l) || ' '}</span>`;
+  }).join('')}</div>`;
+}
+function steps(list, busy) {
+  // merge "decision: use tool X" with the tool result that follows it
+  const out = [];
+  const shown = list.filter((e, i) => e.kind !== 'thinking' || (busy && i === list.length - 1));
+  for (let i = 0; i < shown.length; i++) {
+    const e = shown[i], next = shown[i + 1];
+    if (e.kind === 'decision' && next && next.kind === 'tool' && !/final plan/.test(e.title)) {
+      const tool = toolName(next.title);
+      let res = next.title.includes('->') ? next.title.split('->').slice(1).join('->').trim() : next.title;
+      if (tool === 'read_file') { const m = /lines (\S+)/.exec(next.title); res = m ? `read lines ${m[1]}` : 'read'; }
+      if (/ failed$/.test(next.title)) res = 'tool error';
+      out.push({lane: laneOf(e), kind: /failed$/.test(next.title) ? 'warning' : 'decision', icon: TOOL_ICON[tool] || '➜',
+                what: cap(stripStage(e.title)), res, detail: next, t: e.t});
+      i++; continue;
+    }
+    const lane = laneOf(e);
+    const icon = e.kind === 'thinking' ? '…' : e.kind === 'stop' ? '■' : e.kind === 'apply' ? '✓' : e.kind === 'warning' ? '!' :
+                 e.kind === 'error' ? '✕' : e.kind === 'edit' ? '✎' : e.kind === 'tool' ? (TOOL_ICON[toolName(e.title)] || '⚙') :
+                 /final plan/.test(e.title) ? '◎' : e.kind === 'decision' ? '➜' : '·';
+    let what = cap(stripStage(e.title));
+    if (e.kind === 'thinking') what = `${LANE_NAME[lane]} is thinking`;
+    for (const [re, text] of NICE) if (re.test(e.title)) what = text;
+    const plan = /^planner: final plan, candidate files (.*)$/i.exec(e.title);
+    if (plan) { const files = [...new Set((plan[1].match(/'([^']+)'/g) || []).map(f => f.slice(1, -1)))];
+                what = files.length ? `Repair plan · candidate file${files.length > 1 ? 's' : ''}: ${files.join(', ')}` : 'Repair plan · no candidate file found'; }
+    out.push({lane, kind: e.kind, icon, what, res: '', detail: e, t: e.t});
+  }
+  return out;
+}
+const NICE = [
+  [/^STOP SEARCHING/, 'Search budget reached: the Planner is asked to write its plan now'],
+  [/^Now write the fix/, 'Investigation done: the agent is asked to write the edit'],
+  [/^Previous edit failed|^Previous patch failed/, 'The previous attempt failed: the feedback goes back to the Coder'],
+  [/^Repeated action/, 'Repeated tool call skipped (the result is already known)'],
+  [/^Protocol (validation )?error/, 'Reply rejected by the protocol check; the model is asked to correct it'],
+  [/^Your previous reply hit the output token limit/, 'Reply was too long and was cut off; the model is asked to answer shorter'],
+  [/^Submission rejected/, 'Submission rejected; the agent may investigate further or resubmit'],
+];
+function stepHtml(st) {
+  const d = st.detail && st.detail.detail ? detailHtml(st.detail) : '';
+  const long = d && (d.includes('class="code"') || d.includes('<pre>')) && !['stop','error'].includes(st.kind);
+  return `<li class="ev lane-${st.lane} k-${st.kind}"><span class="ic">${st.icon}</span>
+    <div class="body"><div class="who">${LANE_NAME[st.lane]}</div>
+      <div class="what ${st.kind === 'thinking' ? 'dots' : ''}">${esc(st.what)}</div>
+      ${st.res ? `<div class="res"><span class="arrow">→</span> ${esc(st.res)}</div>` : ''}
+      ${d ? (long ? `<details class="more"><summary>show details</summary>${d}</details>` : `<div class="detail">${d}</div>`) : ''}
+    </div><span class="t">${st.t}s</span></li>`;
 }
 function diffHtml(p) {
   return p.split('\n').map(l => {
-    const cls = l.startsWith('diff --git') || l.startsWith('+++') || l.startsWith('---') ? 'file'
+    const cls = l.startsWith('diff --git') ? 'file' : l.startsWith('+++') || l.startsWith('---') ? 'file'
       : l.startsWith('+') ? 'add' : l.startsWith('-') ? 'del' : l.startsWith('@@') ? 'hunk' : '';
     return `<span class="${cls}">${esc(l) || ' '}</span>`;
   }).join('');
 }
-function stages(s) {
+const HERO = {
+  queued: ['⏳', 'Waiting to start', 'Another repair is running; this one starts next.'],
+  checking: ['⌕', 'Checking the request', 'Retrieval and the clarification rule run before any model call.'],
+  running: ['⟳', 'The agent is working', 'Follow each decision and tool call below.'],
+  awaiting_confirmation: ['✓', 'Patch ready for your review', 'Accept to keep it, reject to discard it, or send a follow-up.'],
+  accepted: ['✓', 'Patch accepted', 'The patch was saved; for a local repository it is committed on a new branch.'],
+  rejected: ['✕', 'Patch rejected', 'Nothing was exported. Send a follow-up to try again with more guidance.'],
+  needs_clarification: ['?', 'The agent needs more information', 'It stopped instead of guessing. Answer below with a follow-up.'],
+  failed: ['!', 'The run failed', 'See the last steps for the reason; nothing was exported.'],
+  cancelled: ['■', 'Cancelled', 'Stopped after the current model call.'],
+};
+function progress(s) {
   const titles = events.map(e => (e.title || '').toLowerCase());
   const has = re => titles.some(t => re.test(t));
-  const busy = ['queued','checking','running'].includes(s.status);
-  const list = [['Check request', true], ['Locate code', has(/planner|agent:|search|read|find|list/)],
-                ['Edit', has(/edit|coder/)], ['Apply', has(/attempt|apply/)],
-                ['Tests', has(/tests/)], ['Your decision', ['awaiting_confirmation','accepted','rejected'].includes(s.status)]];
-  let live = busy ? list.map(x => x[1]).lastIndexOf(true) : -1;
-  return list.map(([n, d], i) => `<span class="step ${i === live ? 'live' : d ? 'done' : ''}">${n}</span>`).join('');
+  const busy = BUSY.includes(s.status);
+  const list = [['Request', true], ['Locate', has(/^(planner|agent):|retrieval|search|read_file|find_definition/)],
+                ['Edit', has(/edit/)], ['Check', has(/attempt|tests after/)],
+                ['Decide', ['awaiting_confirmation','accepted','rejected'].includes(s.status)]];
+  const live = busy ? list.map(x => x[1]).lastIndexOf(true) : -1;
+  return list.map(([n, d], i) => `<span class="step ${i === live ? 'live' : d ? 'done' : ''}"><span class="n">${d && i !== live ? '✓' : i + 1}</span>${n}</span>`).join('');
 }
 function render(s) {
-  const r = s.result || {}, busy = ['queued','checking','running'].includes(s.status);
-  const tl = events.filter(e => e.kind !== 'thinking' || e === events[events.length - 1]).map(e => `
-    <li class="k-${e.kind}"><span class="ic">${ICON[e.kind] || '·'}</span>
-    <div class="item">${e.detail ? `<details${['stop','error'].includes(e.kind) ? ' open' : ''}><summary class="title">${esc(e.title)}</summary><pre>${esc(e.detail)}</pre></details>`
-                                   : `<div class="title">${esc(e.title)}</div>`}</div><span class="t">${e.t}s</span></li>`).join('');
-  const tested = (r.candidate_attempts || []).some(a => (a.test_check || {}).status === 'passed');
+  const r = s.result || {}, busy = BUSY.includes(s.status), req = s.request || {};
+  const [hic, htitle, htext] = HERO[s.status] || ['·', s.status, ''];
+  const tested = events.some(e => /existing tests after the edit: passed/.test(e.title));
+  const issueParts = String(req.issue || '').split(/\n\nMaintainer follow-up \(round \d+\): /);
   let action = '';
-  if (busy) action = `<div class="panel row" style="align-items:center"><div>The agent is working… new steps appear below.</div>
-      <button class="bad" style="flex:0" onclick="act('cancel')">Cancel</button></div>`;
-  if (s.status === 'awaiting_confirmation') action = `<div class="panel ready"><b>Patch ready for your review</b>
-      <div class="meta">Applied cleanly in an isolated checkout. ${tested ? 'The existing tests it touches still pass.' : 'Not confirmed by tests: treat it as a candidate, not a verified fix.'}</div>
+  if (busy) action = `<div class="panel working"><span class="spinner"></span><div style="flex:1">The agent is working… new steps appear below as they happen.</div>
+      <button class="bad" onclick="act('cancel')">Cancel</button></div>`;
+  if (s.status === 'awaiting_confirmation') action = `<div class="panel ready"><h4>Proposed patch</h4>
+      <div class="meta">Applied cleanly in an isolated checkout of the original commit. ${tested ? 'The existing tests it touches still pass.' : 'Not confirmed by tests: review it as a candidate, not a verified fix.'}</div>
       <div class="diff">${diffHtml(s.patch)}</div>
-      <div class="row" style="margin-top:12px"><button class="ok" onclick="act('accept')">Accept${s.request.source === 'local' ? ' → commit on a new branch' : ' → save patch'}</button>
-      <button class="bad" onclick="act('reject')">Reject</button></div></div>`;
-  if (s.status === 'accepted') action = `<div class="panel ready"><b>Accepted.</b> ${r.branch ? `Committed on branch <code>${esc(r.branch)}</code>.` : ''}
-      Patch file: <code>${esc(r.patch_file)}</code> · <a href="/api/sessions/${s.id}/patch">download</a></div>`;
-  if (s.status === 'needs_clarification') action = `<div class="panel ask"><b>The agent stopped and needs your input</b>
+      <div class="row" style="margin-top:12px"><button class="ok" onclick="act('accept')">✓ Accept${req.source === 'local' ? ' and commit on a new branch' : ' and save the patch'}</button>
+      <button class="bad" onclick="act('reject')">✕ Reject</button></div></div>`;
+  if (s.status === 'accepted') action = `<div class="panel ready"><h4>Accepted</h4>${r.branch ? `Committed on branch <code>${esc(r.branch)}</code> (your current branch is unchanged). ` : ''}
+      Patch file <code>${esc(r.patch_file)}</code> · <a href="/api/sessions/${s.id}/patch">download</a></div>`;
+  if (s.status === 'needs_clarification') action = `<div class="panel ask"><h4>Questions from the agent</h4>
       <ul>${(s.questions || []).map(q => `<li>${esc(q)}</li>`).join('')}</ul></div>`;
   const follow = busy || s.status === 'awaiting_confirmation' ? '' : `<div class="panel">
-      <b>Follow-up or changed request</b><div class="meta">Your text is appended to the issue; you can also switch agent or model.</div>
-      <textarea id="guidance" style="min-height:80px;margin-top:8px" placeholder="e.g. Do not change divide; raise ValueError when b is zero."></textarea>
+      <h4>${s.status === 'needs_clarification' ? 'Answer the agent' : 'Follow-up or changed request'}</h4>
+      <div class="meta">Your text is added to the issue as maintainer guidance; you can also switch the agent, model or reasoning effort.</div>
+      <textarea id="guidance" style="min-height:80px;margin-top:8px" placeholder="e.g. The bug is in calc.py; keep divide's signature and raise ValueError when b is zero."></textarea>
       <div class="row" style="margin-top:10px">
-        <select id="f-agent"><option value="">same agent (${esc(s.request.agent)})</option><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select>
-        <select id="f-backend"><option value="">same model (${esc(s.request.backend)})</option>${Object.keys(backends).map(n => `<option value="${n}">${esc(LABEL[n] || n)}</option>`).join('')}</select>
-        <button class="primary" onclick="followUp()">Send follow-up</button></div>
-      ${s.status === 'needs_clarification' && !r.status ? `<button class="ghost" style="margin-top:10px" onclick="followUp(true)">Run anyway without more detail</button>` : ''}</div>`;
-  const tok = r.prompt_tokens ? `${(r.prompt_tokens / 1000).toFixed(1)}k / ${(r.completion_tokens / 1000).toFixed(1)}k` : '—';
+        <select id="f-agent"><option value="">same agent (${esc(req.agent)})</option><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select>
+        <select id="f-backend"><option value="">same model (${esc(req.backend)})</option>${Object.keys(backends).map(n => `<option value="${n}">${esc(LABEL[n] || n)}</option>`).join('')}</select>
+        <select id="f-effort"><option value="">same effort (${esc(req.reasoning_effort || 'none')})</option><option value="none">none</option><option value="low">low</option><option value="high">high</option><option value="max">max</option></select>
+      </div>
+      <div class="row" style="margin-top:10px"><button class="primary" onclick="followUp()">Send follow-up</button>
+      ${s.status === 'needs_clarification' && !r.status ? `<button class="ghost" onclick="followUp(true)">Run anyway without more detail</button>` : ''}</div></div>`;
+  const tok = r.prompt_tokens ? `${(r.prompt_tokens / 1000).toFixed(1)}k in · ${(r.completion_tokens / 1000).toFixed(1)}k out` : '';
+  const bubbles = `<div class="bubble ${issueOpen ? 'open' : ''}"><div class="who">Your request${req.instance_id ? ` · ${esc(req.instance_id)}` : req.repo_path ? ` · ${esc(req.repo_path)}` : ''}</div>
+      <div class="txt">${esc(issueParts[0])}</div>${issueParts[0].length > 400 ? `<button class="more" onclick="issueOpen=!issueOpen;render(lastView)">${issueOpen ? 'show less' : 'show all'}</button>` : ''}</div>
+      ${issueParts.slice(1).map(g => `<div class="bubble"><div class="who">Your follow-up</div><div class="txt">${esc(g)}</div></div>`).join('')}`;
+  lastView = s;
   $('view').innerHTML = `
-    <div class="head"><h2>Session ${esc(s.id)}</h2><span class="pill ${s.status}">${s.status.replaceAll('_', ' ')}</span>
-      <span class="meta">round ${s.round}${s.parent ? ` · follow-up of ${esc(s.parent)}` : ''}</span></div>
-    <div class="stats">
-      <div class="stat"><div class="v">${esc(s.request.agent === 'pcr' ? 'P-C-R' : 'Single')}</div><div class="l">agent</div></div>
-      <div class="stat"><div class="v">${esc(s.request.backend)}</div><div class="l">model</div></div>
-      <div class="stat"><div class="v">${tok}</div><div class="l">prompt / completion tokens</div></div>
-      <div class="stat"><div class="v">${r.duration_seconds ? r.duration_seconds + 's' : '—'}</div><div class="l">duration</div></div>
-      <div class="stat"><div class="v">${esc(s.request.reasoning_effort || 'none')}</div><div class="l">reasoning effort</div></div>
-      <div class="stat"><div class="v">${s.request.exec_feedback ? 'on' : 'off'}</div><div class="l">test execution</div></div>
+    <div class="hero ${s.status}"><span class="big">${hic}</span>
+      <div><h2>${esc(htitle)}</h2><p>${esc(htext)}</p></div>
+      <div class="ids"><span class="pill ${s.status}">${s.status.replaceAll('_', ' ')}</span><div class="meta" style="margin-top:6px">session ${esc(s.id)} · round ${s.round}</div></div></div>
+    <div class="chips">
+      <span class="chip">agent <b>${req.agent === 'pcr' ? 'Planner–Coder–Reviewer' : 'single'}</b></span>
+      <span class="chip">model <b>${esc(req.backend)}</b></span>
+      <span class="chip">reasoning <b>${esc(req.reasoning_effort || 'none')}</b></span>
+      <span class="chip">tests <b>${req.exec_feedback ? 'on' : 'off'}</b></span>
+      ${tok ? `<span class="chip">tokens <b>${tok}</b></span>` : ''}
+      ${r.duration_seconds ? `<span class="chip">time <b>${r.duration_seconds}s</b></span>` : ''}
     </div>
-    <div class="steps">${stages(s)}</div>
-    ${action}<ul class="timeline">${tl}</ul>${follow}`;
+    <div class="steps">${progress(s)}</div>
+    ${bubbles}
+    ${action}
+    <div class="section-title">What the agent did</div>
+    <ul class="tl">${steps(events, busy).map(stepHtml).join('')}</ul>
+    ${follow}`;
 }
+let lastView = null;
 async function act(a) { try { await api(`/api/sessions/${current}/${a}`, {method:'POST'}); poll(); } catch (e) { alert(e.message); } }
 async function followUp(anyway=false) {
   const g = anyway ? '' : ($('guidance')?.value || '');
-  const agent = $('f-agent')?.value || null, backend = $('f-backend')?.value || null;
-  try { const s = await api(`/api/sessions/${current}/followup`, {method:'POST', body:JSON.stringify({guidance:g, agent, backend})}); openSession(s.id); }
+  const agent = $('f-agent')?.value || null, backend = $('f-backend')?.value || null, reasoning_effort = $('f-effort')?.value || null;
+  try { const s = await api(`/api/sessions/${current}/followup`, {method:'POST', body:JSON.stringify({guidance:g, agent, backend, reasoning_effort})}); openSession(s.id); }
   catch (e) { alert(e.message); }
 }
 async function history() {
   const rows = await api('/api/sessions');
-  $('history').innerHTML = rows.length ? rows.map(r => `<a onclick="openSession('${esc(r.id)}')"><span class="meta">${esc(r.id)} · r${r.round} · ${esc(r.agent)} · ${esc(r.target || '')}</span>
+  $('history').innerHTML = rows.length ? rows.map(r => `<a class="${r.id === current ? 'cur' : ''}" onclick="openSession('${esc(r.id)}')">
+      <span class="hwho">${esc(r.target || '')}<small>${esc(r.id)} · round ${r.round} · ${esc(r.agent)}</small></span>
       <span class="pill ${esc(r.status)}">${esc(r.status.replaceAll('_', ' '))}</span></a>`).join('') : 'none yet';
 }
 loadTasks(); health(); history();
