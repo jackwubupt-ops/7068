@@ -269,8 +269,12 @@ same config, task level (`repeat_report --vs-tag`):
 | `ds-pcr-high` | 37.7% | 34.8% | +2.9 pt | 4 / 3 / 16 | 1.00 | [-5.8, +11.6] |
 | `ds-pcr-max` | 46.4% | 40.6% | +5.8 pt | 5 / 3 / 15 | 0.73 | [-4.3, +15.9] |
 
-The two extra tools (`find_definition`, `list_directory`) did not change resolution measurably;
-the differences are within the run-to-run variation (e.g. P-C-R none: 10/12/10 earlier, 9/10/9 now).
+The agents did use the new tools: `find_definition` in 201 of 483 task runs (7.8% of all tool
+calls, taking share from `search_repo`, 45% -> 33%), `list_directory` only 8 times; `run_tests` was
+attempted 3 times and never produced a test run. Resolution did not change measurably: the
+differences are within the run-to-run variation (e.g. P-C-R none: 10/12/10 earlier, 9/10/9 now).
+The tools change how the agent localizes (more direct jumps to definitions, slightly more reads:
+3.1 vs 2.6 `read_file` per task), not how often it fixes the issue.
 
 - **Caveats:** 23 tasks; three runs per configuration; thinking mode ignores temperature and
   run-to-run variation is large. A first attempt with smaller reasoning room (8K/24K/48K per call)
