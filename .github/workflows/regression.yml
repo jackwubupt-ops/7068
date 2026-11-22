@@ -1,14 +1,13 @@
-name: PatchLoop full regression
+name: PatchLoop regression
 on:
   push:
-    branches: [main, feature/patchloop-task2, feature/patchloop-task3, feature/qwen-swebench-dev, experiment/deepseek-live-smoke]
+    branches: [main, "feat/**"]
   pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
   regression:
-    name: Regression / Python 3.11 / ${{ matrix.os }}
+    name: Offline tests / Python 3.11 / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,56 +16,18 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Python 3.11
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements-lock.txt
+          python -m pip install -r requirements-lock.txt "datasets>=3,<5"
       - name: Dependency consistency
         run: python -m pip check
-      - name: Compile Python sources
-        run: python -m compileall -q app.py code_agent.py config.py demo_localization.py evaluator.py localize.py pipeline_agent.py prompt_agent.py repair.py repair_loop.py swebench_dev.py test_agent.py utils patchloop_task2 examples experiments tests
-      - name: Full regression suite
+      - name: Compile sources
+        run: python -m compileall -q config.py pipeline_agent.py prompt_agent.py swebench_dev.py utils patchloop_task2 patchloop_app experiments tests
+      - name: Offline test suite (scripted model replies; no API calls)
         run: python -m unittest discover -s tests -v
-      - name: Task 1 scripted offline demo
-        run: python demo_localization.py --offline
-
-  docker-smoke:
-    name: Docker execution grounded feedback smoke / Ubuntu
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install minimal planner dependencies
-        run: python -m pip install openai python-dotenv
-      - name: Pre-pull trusted image
-        run: docker pull python:3.11-slim
-      - name: Actual no-network Docker feedback loop (scripted model)
-        run: python -m examples.task3_docker_smoke
-
-  real-swebench-dev-smoke:
-    name: Real SWE-bench full dev issue / Git checkout / no LLM
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install dev data dependencies
-        run: python -m pip install "datasets>=3.0,<5" "openai>=1.68,<3" "python-dotenv>=1.0,<2"
-      - name: Real development instance checkout and search
-        run: python -m examples.swebench_real_dev_smoke

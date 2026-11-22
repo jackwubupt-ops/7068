@@ -12,7 +12,7 @@ These are development milestones, not published GitHub releases.
 - Superseded docs (`docs/task1-3.md`, AutoDL and CPU-only runbooks, small-Qwen notes, live-smoke notes, code review notes) and `TODO.md` (unfinished work is listed in README section 7).
 
 ### Changed
-- `pipeline_agent.py` is only the Planner handoff; `prompt_agent.py` no longer contains the demo's prompt refiner. README gains a course submission checklist; CONTRIBUTING describes the current layout.
+- `pipeline_agent.py` is only the Planner handoff; `prompt_agent.py` no longer contains the demo's prompt refiner. CI (`regression.yml`) runs the offline suite on Linux and Windows for `main` and `feat/**`; workflows of retired experiments are removed. README gains a course submission checklist; CONTRIBUTING describes the current layout.
 
 ## Final results with the current agent (2026-11-22)
 
