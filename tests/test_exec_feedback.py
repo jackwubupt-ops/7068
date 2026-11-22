@@ -60,7 +60,7 @@ class ParsingAndArgvTests(unittest.TestCase):
                              apply=False, worktree=Path("/tmp/wt"))
         self.assertIn("--read-only", mount)
         self.assertIn("65534:65534", mount)
-        self.assertIn("type=bind,src=/tmp/wt,dst=/workspace,readonly", mount)
+        self.assertIn(f"type=bind,src={Path('/tmp/wt')},dst=/workspace,readonly", mount)  # OS path form
         self.assertEqual(swebench_image("pydicom__pydicom-1139"),
                          "swebench/sweb.eval.x86_64.pydicom_1776_pydicom-1139:latest")
 
