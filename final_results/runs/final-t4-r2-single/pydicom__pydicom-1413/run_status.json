@@ -1,0 +1,300 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pydicom__pydicom-1413",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "f909c76e31f759246cec3708dadd173c5d6e84b1",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": false,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "efaf2a8221dfa3f573ae04feed7cce5732fdbe61c2b8de01e66da281d0aae519",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pydicom/dataelem.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "4cf6c4bcd4c5dea18e160b5455ca562971c13076cf563a7559e09c4845b12ed1",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pydicom/dataelem.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "OL"
+    },
+    {
+      "step": 2,
+      "action": "search_repo",
+      "search_query": "'OL'"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pydicom/filewriter.py"
+    },
+    {
+      "step": 4,
+      "action": "search_repo",
+      "search_query": "def write_OWvalue"
+    },
+    {
+      "step": 5,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\" string=\"false\">{\"relative_pat"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "pydicom/filewriter.py"
+    },
+    {
+      "step": 7,
+      "action": "search_repo",
+      "search_query": "def convert_OBvalue"
+    },
+    {
+      "step": 8,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\" string=\"false\">{\"relative_pat"
+    },
+    {
+      "step": 9,
+      "action": "read_file",
+      "read_path": "pydicom/values.py"
+    },
+    {
+      "step": 10,
+      "action": "search_repo",
+      "search_query": "def _convert_value"
+    },
+    {
+      "step": 11,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\" string=\"false\">{\"relative_pat"
+    },
+    {
+      "step": 12,
+      "action": "read_file",
+      "read_path": "pydicom/dataelem.py"
+    },
+    {
+      "step": 13,
+      "action": "edit"
+    },
+    {
+      "step": 14,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pydicom/dataset.py",
+    "pydicom/util/codify.py",
+    "pydicom/filewriter.py",
+    "pydicom/filereader.py",
+    "pydicom/multival.py",
+    "pydicom/dataelem.py",
+    "pydicom/valuerep.py",
+    "pydicom/config.py",
+    "pydicom/fileset.py",
+    "pydicom/pixel_data_handlers/util.py"
+  ],
+  "read_files": [
+    "pydicom/dataelem.py",
+    "pydicom/filewriter.py",
+    "pydicom/values.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pydicom/dataelem.py"
+  ],
+  "patch_size_bytes": 588,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 943,
+      "completion_tokens": 14,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.744,
+      "dropped_history_messages": 0,
+      "output_sha256": "79353657529e8f358aba20b4331705256e5226e7f5266371fd366e57fe77daab"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1484,
+      "completion_tokens": 15,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.914,
+      "dropped_history_messages": 0,
+      "output_sha256": "be9c1a7095b3e272cbaf5c607dabd07f0ece10af84fcedfe4c9d9c633332261c"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1970,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.807,
+      "dropped_history_messages": 0,
+      "output_sha256": "b8884974d3cba86b5e0e035efd397753341c49456b6644eeb2d96945576da912"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3041,
+      "completion_tokens": 18,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.905,
+      "dropped_history_messages": 0,
+      "output_sha256": "1fac990dd600c317929c0d8a6b5e88b4f8d04bcc0f2840b5dd0cc232c097d5f0"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3185,
+      "completion_tokens": 61,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.941,
+      "dropped_history_messages": 0,
+      "output_sha256": "ef5b679a44c95ab0cb06190d76639be34fe993e780f2e9cd34505df27f8eba43"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3309,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.732,
+      "dropped_history_messages": 0,
+      "output_sha256": "740d5a81ca36d24968394d7314fc42d7a3bbd058eacf86d5f2ae57e6176f5052"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5012,
+      "completion_tokens": 18,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.122,
+      "dropped_history_messages": 0,
+      "output_sha256": "fbb4a5a30e68961fc2d8e8cdc11c8a23af0be1ddf58ea41b3da4c50f1ca0b08b"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5131,
+      "completion_tokens": 61,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.761,
+      "dropped_history_messages": 0,
+      "output_sha256": "81c8296163566ea791a8ff15d78331a00932569dfe42aec99e6b5a1b79dc8844"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5255,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.023,
+      "dropped_history_messages": 0,
+      "output_sha256": "ec43aab741728aafee5a6cdf20955c1e06b53b2a01cd4f8f55c20d4d96f4049d"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6079,
+      "completion_tokens": 17,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.954,
+      "dropped_history_messages": 0,
+      "output_sha256": "49f23134d93154f917b3baf1acf569cb18dc5fa7007f6ff1dcd28fbac788df83"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6213,
+      "completion_tokens": 91,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.065,
+      "dropped_history_messages": 0,
+      "output_sha256": "c8d63151960c7e96bff0b398dd0da738f3972b3168cfccbbd7e45b36f27127a0"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6337,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.593,
+      "dropped_history_messages": 0,
+      "output_sha256": "43a5e2c1dc20b8378c3c709de2034f50a26514e6e1afc45daab1f24597f87423"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9126,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.903,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9271,
+      "completion_tokens": 174,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.074,
+      "dropped_history_messages": 0,
+      "output_sha256": "efaf2a8221dfa3f573ae04feed7cce5732fdbe61c2b8de01e66da281d0aae519"
+    }
+  ],
+  "agent_calls": 14,
+  "prompt_tokens": 66356,
+  "completion_tokens": 588,
+  "reasoning_tokens": 0,
+  "duration_seconds": 16.08,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

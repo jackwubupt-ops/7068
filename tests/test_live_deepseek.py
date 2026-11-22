@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from experiments.live_deepseek import (
-    ISSUE, LiveDeepSeek, create_real_git_fixture, run_live_experiment,
+    LiveDeepSeek, create_real_git_fixture, run_live_experiment,
 )
 
 

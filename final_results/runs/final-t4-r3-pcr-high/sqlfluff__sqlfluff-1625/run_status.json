@@ -1,0 +1,263 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1625",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "14e1a23a3166b9a645a16de96f694c77a5d4abb7",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": false,
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "b4f3c14eebfe0278844b3d85fbb114713a6d058c4495fac046f4d775a3fa4856",
+      "raw_model_patch_sha256": "f61ac8e58d76d76ec193317d3fd85edcfa45670524cb1b947ed08e8ea4fbb94c",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "src/sqlfluff/rules/L031.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/rules/L031.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "f8500ad1f576a5a602a6e2145c622df35eb84339a11e57ad0be0c4ee73994b35",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 14,
+      "reasoning_tokens": 11,
+      "latency_seconds": 0.829,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 960,
+      "completion_tokens": 98,
+      "reasoning_tokens": 65,
+      "latency_seconds": 0.935,
+      "dropped_history_messages": 0,
+      "output_sha256": "3cc75fae292e3152cae70d0341677b26d9ad199a203befd684dae612e2f77387"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5027,
+      "completion_tokens": 43,
+      "reasoning_tokens": 9,
+      "latency_seconds": 1.061,
+      "dropped_history_messages": 0,
+      "output_sha256": "94a4d52e673de5c9c85b7f208cde50a67e3d0fb29cf6430fadd4cb83329de046"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5529,
+      "completion_tokens": 201,
+      "reasoning_tokens": 175,
+      "latency_seconds": 2.114,
+      "dropped_history_messages": 0,
+      "output_sha256": "6f7099c92a0ffd064bdf758fc6139042a0eeed806e0f46b922dfb7c9e608aba9"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6096,
+      "completion_tokens": 125,
+      "reasoning_tokens": 82,
+      "latency_seconds": 1.321,
+      "dropped_history_messages": 0,
+      "output_sha256": "aede5c73209de3d43b41b3e36a89a619008d4a35c527398015235fc9ea60e6ef"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6180,
+      "completion_tokens": 63,
+      "reasoning_tokens": 34,
+      "latency_seconds": 1.454,
+      "dropped_history_messages": 0,
+      "output_sha256": "8bdc755084d9510d1d27b439a9d7c3b148e7ec9f273c570d8ce80acb52646efd"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6597,
+      "completion_tokens": 390,
+      "reasoning_tokens": 353,
+      "latency_seconds": 3.2,
+      "dropped_history_messages": 0,
+      "output_sha256": "92facb2bd4c72db978c7646a212d579231e99bcce93d16511215754df508501c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6675,
+      "completion_tokens": 42,
+      "reasoning_tokens": 11,
+      "latency_seconds": 1.06,
+      "dropped_history_messages": 0,
+      "output_sha256": "8487badf57d06e54d25db77ba26d5b485ae6499f689cfe06047408bf10810f7d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6947,
+      "completion_tokens": 596,
+      "reasoning_tokens": 569,
+      "latency_seconds": 4.921,
+      "dropped_history_messages": 0,
+      "output_sha256": "e266c8d88181978a0c16fb5a04f2d922ddaba4523365eeaa6af297af1ae32973"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7049,
+      "completion_tokens": 94,
+      "reasoning_tokens": 62,
+      "latency_seconds": 1.432,
+      "dropped_history_messages": 0,
+      "output_sha256": "006c46cfb46e9939015cf4a33afc2a1bbfde7e7fa8d1ee4cf2cf2cd5829ee3e9"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7317,
+      "completion_tokens": 2384,
+      "reasoning_tokens": 1702,
+      "latency_seconds": 17.508,
+      "dropped_history_messages": 0,
+      "output_sha256": "72fbb96e08098f52d0c3711bb8b484ce411a90889ece197eb3af3dd8721e29b2"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1971,
+      "completion_tokens": 12594,
+      "reasoning_tokens": 12339,
+      "latency_seconds": 79.584,
+      "dropped_history_messages": 0,
+      "output_sha256": "f61ac8e58d76d76ec193317d3fd85edcfa45670524cb1b947ed08e8ea4fbb94c"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L031.py"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L031.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "L031"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "std_rule_cases",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "Avoid using aliases in join condition",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "L031:"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1,
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "src/sqlfluff/rules/L031.py",
+    "src/sqlfluff/rules/L028.py",
+    "src/sqlfluff/rules/L026.py",
+    "src/sqlfluff/rules/L044.py",
+    "src/sqlfluff/dialects/dialect_tsql.py",
+    "src/sqlfluff/core/rules/analysis/select_crawler.py",
+    "examples/01_basic_api_usage.py",
+    "src/sqlfluff/core/rules/analysis/select.py",
+    "src/sqlfluff/dialects/dialect_ansi.py",
+    "src/sqlfluff/core/dialects/base.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "src/sqlfluff/rules/L031.py"
+  ],
+  "patch_size_bytes": 944,
+  "prompt_tokens": 60385,
+  "completion_tokens": 16644,
+  "reasoning_tokens": 15412,
+  "duration_seconds": 118.36,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

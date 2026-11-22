@@ -9,3 +9,5 @@ logs/
 *.log
 .env.*
 !.env.example
+.venv-patchloop-client/
+app-runs/

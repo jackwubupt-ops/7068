@@ -1,0 +1,275 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pydicom__pydicom-1139",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "b9fb05c177b685bf683f7f57b2d57374eb7d882d",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "a9052a15353b5f6429a0da79866c215c88e03311cdc6ba1d703f811cd1c1b6da",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pydicom/valuerep.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "c557459588a75a72cca8218b3a0a6eb91b5405ab703fc251a143a05a1e270ba1",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pydicom/valuerep.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pydicom/tests/test_valuerep.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 38
+          },
+          "failing": [],
+          "seconds": 1.02
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 38
+          },
+          "failing": [],
+          "seconds": 1.02
+        },
+        "seconds": 2.04,
+        "status": "passed",
+        "regressions": [],
+        "newly_passing": []
+      }
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "find_definition",
+      "definition_name": "PersonName3"
+    },
+    {
+      "step": 2,
+      "action": "search_repo",
+      "search_query": "class PersonName3"
+    },
+    {
+      "step": 3,
+      "action": "search_repo",
+      "search_query": "PersonName3"
+    },
+    {
+      "step": 4,
+      "action": "search_repo",
+      "search_query": "class PersonName"
+    },
+    {
+      "step": 5,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\" string=\"false\">{\"relative_pat"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "pydicom/valuerep.py"
+    },
+    {
+      "step": 7,
+      "action": "read_file",
+      "read_path": "pydicom/valuerep.py"
+    },
+    {
+      "step": 8,
+      "action": "edit"
+    },
+    {
+      "step": 9,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "passed"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pydicom/dataset.py",
+    "pydicom/tag.py",
+    "pydicom/dataelem.py",
+    "pydicom/jsonrep.py",
+    "pydicom/uid.py",
+    "pydicom/filewriter.py",
+    "pydicom/valuerep.py",
+    "pydicom/values.py",
+    "pydicom/config.py",
+    "pydicom/filereader.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "pydicom/tests/test_valuerep.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 38
+        },
+        "failing": [],
+        "seconds": 1.02
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 38
+        },
+        "failing": [],
+        "seconds": 1.02
+      },
+      "seconds": 2.04,
+      "status": "passed",
+      "regressions": [],
+      "newly_passing": []
+    }
+  ],
+  "read_files": [
+    "pydicom/valuerep.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pydicom/valuerep.py"
+  ],
+  "patch_size_bytes": 613,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 947,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.814,
+      "dropped_history_messages": 0,
+      "output_sha256": "7c5c8eea2cb0017c22038c99afee15af807de4806fe1d8214d43edcf68f93e0f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1010,
+      "completion_tokens": 17,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.07,
+      "dropped_history_messages": 0,
+      "output_sha256": "6ad1616724d19aa18452fc4978dbe3e4476b4388f05aeea93d06873f3828aafc"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1072,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.553,
+      "dropped_history_messages": 0,
+      "output_sha256": "756fd9d078615390488048c2f7864af6a6dd3e768e69c082364327086139ad83"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1506,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.679,
+      "dropped_history_messages": 0,
+      "output_sha256": "6821d4d328ab2b3ed252b125d8cf14a7c37d183248c6b3135509dcec4cb155bd"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1626,
+      "completion_tokens": 63,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.604,
+      "dropped_history_messages": 0,
+      "output_sha256": "e6d9a4a90a9440683758b765266fb26b7ed9a3242b30b94d51a957bb0938b9a7"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1752,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.645,
+      "dropped_history_messages": 0,
+      "output_sha256": "52fd279fb650a86f59fb3ebb3d9c1ca6c34f2afbc4bd2d45e99933333ea7df29"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5544,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.671,
+      "dropped_history_messages": 0,
+      "output_sha256": "9c7484b6ad764e04a03c1b2bda097da40e5c87e4df66754536f9552be21d17b5"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6317,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.685,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6450,
+      "completion_tokens": 112,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.999,
+      "dropped_history_messages": 0,
+      "output_sha256": "a9052a15353b5f6429a0da79866c215c88e03311cdc6ba1d703f811cd1c1b6da"
+    }
+  ],
+  "agent_calls": 9,
+  "prompt_tokens": 26224,
+  "completion_tokens": 305,
+  "reasoning_tokens": 0,
+  "duration_seconds": 10.18,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

@@ -1,0 +1,321 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1606",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "c78b50f4337ecbe536a961336ca91a1176efc0e8",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "42e1d8167d9c8aa65cd28442ecdec93ebb5a06967b746382cb8a9788d5c71363",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/tools.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "7eeace7afc0a71f589d6c27b21654b11e49fdfab7295fc7f19e0bdc53334f5de",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/tools.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_tools.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 11
+          },
+          "failing": [],
+          "seconds": 2.42
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 10,
+            "FAILED": 1
+          },
+          "failing": [
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+          ],
+          "seconds": 2.48
+        },
+        "seconds": 4.9,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+        ],
+        "newly_passing": []
+      }
+    },
+    {
+      "raw_model_output_sha256": "42e1d8167d9c8aa65cd28442ecdec93ebb5a06967b746382cb8a9788d5c71363",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/tools.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "7eeace7afc0a71f589d6c27b21654b11e49fdfab7295fc7f19e0bdc53334f5de",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/tools.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_tools.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 11
+          },
+          "failing": [],
+          "seconds": 2.42
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 10,
+            "FAILED": 1
+          },
+          "failing": [
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+          ],
+          "seconds": 2.74
+        },
+        "seconds": 5.16,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+        ],
+        "newly_passing": []
+      }
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "regressions"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_tools.py"
+    },
+    {
+      "step": 6,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "regressions"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/modelchain.py",
+    "pvlib/pvsystem.py",
+    "pvlib/temperature.py",
+    "pvlib/bifacial/pvfactors.py",
+    "pvlib/location.py",
+    "pvlib/tools.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/singlediode.py",
+    "pvlib/iam.py",
+    "pvlib/forecast.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_tools.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 11
+        },
+        "failing": [],
+        "seconds": 2.42
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 10,
+          "FAILED": 1
+        },
+        "failing": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+        ],
+        "seconds": 2.48
+      },
+      "seconds": 4.9,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+      ],
+      "newly_passing": []
+    },
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_tools.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 11
+        },
+        "failing": [],
+        "seconds": 2.42
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 10,
+          "FAILED": 1
+        },
+        "failing": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+        ],
+        "seconds": 2.74
+      },
+      "seconds": 5.16,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+      ],
+      "newly_passing": []
+    }
+  ],
+  "read_files": [
+    "pvlib/tests/test_tools.py",
+    "pvlib/tools.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/tools.py"
+  ],
+  "patch_size_bytes": 838,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3058,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.747,
+      "dropped_history_messages": 0,
+      "output_sha256": "4f7399b19d3eaa54a7363a5a42589454c669f99d57f8af05397c51ab6f26e2fe"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5120,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.607,
+      "dropped_history_messages": 0,
+      "output_sha256": "dcea4c8f31ecd6e88d3e86c950e2d390887e15a0ddc794590e5d1766b61d34a7"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5623,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.696,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5754,
+      "completion_tokens": 224,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.595,
+      "dropped_history_messages": 0,
+      "output_sha256": "42e1d8167d9c8aa65cd28442ecdec93ebb5a06967b746382cb8a9788d5c71363"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6549,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.753,
+      "dropped_history_messages": 0,
+      "output_sha256": "a01b8895205dc4154ab30de00854e54850ff335acd4b5d40cb5a801c2c6ee2ec"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8767,
+      "completion_tokens": 224,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.77,
+      "dropped_history_messages": 0,
+      "output_sha256": "42e1d8167d9c8aa65cd28442ecdec93ebb5a06967b746382cb8a9788d5c71363"
+    }
+  ],
+  "agent_calls": 6,
+  "prompt_tokens": 34871,
+  "completion_tokens": 537,
+  "reasoning_tokens": 0,
+  "duration_seconds": 16.79,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

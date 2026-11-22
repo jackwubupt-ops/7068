@@ -143,6 +143,59 @@ class AppSessionTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         mgr.start(req, run_async=False)
 
+    def test_reasoning_effort_is_a_per_request_choice_for_deepseek_only(self):
+        efforts = []
+
+        def factory(reasoning_effort=None):
+            efforts.append(reasoning_effort)
+            return ScriptedBackend([READ, GOOD])
+        mgr = SessionManager(self.root / "runs", {"deepseek": factory, "qwen": factory})
+        s = mgr.start(self.local(backend="deepseek", reasoning_effort="high", retrieval_k=0), run_async=False)
+        self.assertEqual(s.status, "awaiting_confirmation")
+        self.assertEqual(efforts, ["high"])
+        self.assertTrue(any("reasoning effort high" in e["title"] for e in s.view()["events"]))
+        mgr.start(self.local(backend="deepseek", retrieval_k=0), run_async=False)
+        self.assertEqual(efforts, ["high", None])              # "none" keeps the default backend
+        for bad in (self.local(backend="qwen", reasoning_effort="low"),
+                    self.local(backend="deepseek", reasoning_effort="medium")):
+            with self.assertRaises(ValueError):
+                mgr.start(bad, run_async=False)
+
+    def test_uncommitted_edits_are_what_the_agent_sees_and_stay_untouched(self):
+        mod = self.repo / "pkg" / "mod.py"
+        edited = ORIGINAL + "\n\ndef h():\n    return 3\n"
+        mod.write_text(edited)
+        (self.repo / "pkg" / "new.py").write_text("Z = 1\n")
+        before = subprocess.run(["git", "-C", str(self.repo), "status", "--porcelain"], capture_output=True, text=True).stdout
+        mgr = self.manager([READ, GOOD])
+        s = mgr.start(self.local(retrieval_k=0), run_async=False)
+        self.assertEqual(s.status, "awaiting_confirmation")
+        self.assertTrue(any(e["title"] == "Using your uncommitted changes" for e in s.view()["events"]))
+        self.assertNotEqual(s.result["base_commit"], self.sha)            # a snapshot commit, child of HEAD
+        self.assertEqual(mod.read_text(), edited)                         # working tree untouched
+        after = subprocess.run(["git", "-C", str(self.repo), "status", "--porcelain"], capture_output=True, text=True).stdout
+        self.assertEqual(before, after)                                   # index untouched
+        head = subprocess.run(["git", "-C", str(self.repo), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+        self.assertEqual(head, self.sha)                                  # branch untouched
+        view = mgr.accept(s.id)
+        branch = view["result"]["branch"]
+        shown = subprocess.run(["git", "-C", str(self.repo), "show", f"{branch}:pkg/mod.py"], capture_output=True, text=True).stdout
+        self.assertIn("def h():", shown)                                  # accepted on top of the snapshot
+        self.assertIn("return -1", shown)
+
+    def test_pasted_code_runs_in_a_private_repository(self):
+        mgr = self.manager([READ, GOOD])
+        req = Request(issue=ISSUE, source="snippet", snippet_name="pkg/mod.py", snippet_code=ORIGINAL,
+                      agent="single", retrieval_k=0)
+        s = mgr.start(req, run_async=False)
+        self.assertEqual(s.status, "awaiting_confirmation", s.view()["events"][-3:])
+        self.assertIn("return -1", s.patch)
+        self.assertEqual(mgr.accept(s.id)["status"], "accepted")
+        for bad in (dict(snippet_name="../x.py", snippet_code="x=1"), dict(snippet_name="a.py", snippet_code=" "),
+                    dict(snippet_name="/etc/passwd", snippet_code="x")):
+            with self.assertRaises(ValueError):
+                mgr.start(Request(issue=ISSUE, source="snippet", agent="single", **bad), run_async=False)
+
 
 class DescribeTests(unittest.TestCase):
     def test_feedback_and_output_descriptions(self):
@@ -199,6 +252,20 @@ class WebRouteTests(unittest.TestCase):
         self.assertEqual(client.post(f"/api/sessions/{sid}/accept").get_json()["status"], "accepted")
         self.assertEqual(client.get("/api/sessions/nope").status_code, 404)
         self.assertEqual(len(client.get("/api/sessions").get_json()), 1)
+
+    def test_deepseek_only_deployment_defaults_to_deepseek(self):
+        mgr = SessionManager(self.root / "runs", {"deepseek": lambda: ScriptedBackend([READ, GOOD])})
+        client = create_app(mgr).test_client()
+        r = client.post("/api/sessions", json={"issue": ISSUE, "source": "local", "repo_path": str(self.repo),
+                                               "agent": "single", "retrieval_k": 0})
+        self.assertEqual(r.status_code, 200, r.get_data(as_text=True))
+        self.assertEqual(r.get_json()["request"]["backend"], "deepseek")
+        import time
+        for _ in range(200):  # let the background run finish before the temp dir goes away
+            if client.get(f"/api/sessions/{r.get_json()['id']}").get_json()["status"] not in (
+                    "queued", "checking", "running"):
+                break
+            time.sleep(0.05)
 
 
 if __name__ == "__main__":

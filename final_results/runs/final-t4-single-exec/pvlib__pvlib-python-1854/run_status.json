@@ -1,0 +1,362 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1854",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "27a3a07ebc84b11014d3753e4923902adf9a38c0",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "4f7f02f224dd778287a61c99b1783449b42f7474f667f1ff0bd80bc21540fc53",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 2,
+      "edited_files": [
+        "pvlib/pvsystem.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "a21a2c1996469712278b2f08d965bde61430bd472a3764601cbf837dab94dca6",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/pvsystem.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_pvsystem.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 281
+          },
+          "failing": [],
+          "seconds": 3.92
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 280,
+            "FAILED": 1
+          },
+          "failing": [
+            "pvlib/tests/test_pvsystem.py::test_PVSystem_multiple_array_creation"
+          ],
+          "seconds": 4.39
+        },
+        "seconds": 8.31,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_pvsystem.py::test_PVSystem_multiple_array_creation"
+        ],
+        "newly_passing": []
+      }
+    },
+    {
+      "raw_model_output_sha256": "a3aaf15be75967d3ea1944491ddfdc395f48958ed245388cea98fef748648068",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/tests/test_pvsystem.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "d76762e7cb812993d2a8675a0e78186abf39d34031da40988788f0e0c0597b8d",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/tests/test_pvsystem.py"
+      ],
+      "test_check": {
+        "status": "no_tests",
+        "targets": []
+      }
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "find_definition",
+      "definition_name": "PVSystem"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "step": 4,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "step": 6,
+      "action": "edit"
+    },
+    {
+      "step": 7,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "regressions"
+    },
+    {
+      "step": 8,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_pvsystem.py"
+    },
+    {
+      "step": 9,
+      "action": "search_repo",
+      "search_query": "def test_PVSystem_multiple_array_creation"
+    },
+    {
+      "step": 10,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_pvsystem.py"
+    },
+    {
+      "step": 11,
+      "action": "edit"
+    },
+    {
+      "step": 12,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "no_tests"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/pvsystem.py",
+    "pvlib/modelchain.py",
+    "pvlib/temperature.py",
+    "pvlib/location.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/iotools/pvgis.py",
+    "docs/examples/irradiance-transposition/plot_seasonal_tilt.py",
+    "pvlib/tests/test_pvsystem.py",
+    "pvlib/tools.py",
+    "pvlib/irradiance.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_pvsystem.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 281
+        },
+        "failing": [],
+        "seconds": 3.92
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 280,
+          "FAILED": 1
+        },
+        "failing": [
+          "pvlib/tests/test_pvsystem.py::test_PVSystem_multiple_array_creation"
+        ],
+        "seconds": 4.39
+      },
+      "seconds": 8.31,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_pvsystem.py::test_PVSystem_multiple_array_creation"
+      ],
+      "newly_passing": []
+    },
+    {
+      "kind": "check",
+      "status": "no_tests",
+      "targets": []
+    }
+  ],
+  "read_files": [
+    "pvlib/pvsystem.py",
+    "pvlib/tests/test_pvsystem.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/pvsystem.py",
+    "pvlib/tests/test_pvsystem.py"
+  ],
+  "patch_size_bytes": 633,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1400,
+      "completion_tokens": 15,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.606,
+      "dropped_history_messages": 0,
+      "output_sha256": "b802d764208760fa8500ff8710a4628e21b3c40f98f18853ae0550782e1665d3"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1512,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.482,
+      "dropped_history_messages": 0,
+      "output_sha256": "c833045af1c329cd9dc01668ddc7e789c816949eae15b6f1a27e59c47173312a"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3042,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.788,
+      "dropped_history_messages": 0,
+      "output_sha256": "0b231feaf83546c57573645097f6f89e71ca45ed29138da8a9d6866b5c43a8e1"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4111,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.679,
+      "dropped_history_messages": 0,
+      "output_sha256": "44c0d762766bf026435d8c392ece8c09557016ea210d2db82bc61473a468b677"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4860,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.588,
+      "dropped_history_messages": 0,
+      "output_sha256": "64652807100f59ddfc80feb015bbe0ca9141a35753482a1769165f37cd727ae8"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5355,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.155,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5487,
+      "completion_tokens": 417,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.049,
+      "dropped_history_messages": 0,
+      "output_sha256": "4f7f02f224dd778287a61c99b1783449b42f7474f667f1ff0bd80bc21540fc53"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6501,
+      "completion_tokens": 31,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.994,
+      "dropped_history_messages": 0,
+      "output_sha256": "9940fa070e1d7242e0af2417fc0a8660fcc73fd76d70676f182d7d6681b07460"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6602,
+      "completion_tokens": 23,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.855,
+      "dropped_history_messages": 0,
+      "output_sha256": "e5698901c382654b5c946d39dd40eb535ece3221740cabaf7980dc3a87de265b"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6760,
+      "completion_tokens": 33,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.6,
+      "dropped_history_messages": 0,
+      "output_sha256": "b46a8c5160901feb849d21faf40121c7a6a34aba2ac11ba7d51b984c70f8bdcf"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7338,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.709,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7481,
+      "completion_tokens": 113,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.952,
+      "dropped_history_messages": 0,
+      "output_sha256": "a3aaf15be75967d3ea1944491ddfdc395f48958ed245388cea98fef748648068"
+    }
+  ],
+  "agent_calls": 12,
+  "prompt_tokens": 60449,
+  "completion_tokens": 754,
+  "reasoning_tokens": 0,
+  "duration_seconds": 22.06,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

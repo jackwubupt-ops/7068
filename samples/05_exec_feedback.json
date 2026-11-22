@@ -1,0 +1,8 @@
+{
+  "name": "05_exec_feedback",
+  "kind": "ordinary task with execution feedback",
+  "description": "A marshmallow issue (SWE-bench Lite dev) with 'Run existing tests' on: the repository's existing tests run in a Docker sandbox at the base commit and again with the applied edit; regressions would go back to the Reviewer.",
+  "request": {"source": "swebench", "instance_id": "marshmallow-code__marshmallow-1359", "issue": "@task",
+              "agent": "pcr", "retrieval_k": 10, "exec_feedback": true},
+  "expect": "The trace shows the test check after the edit (passed, or regressions followed by a Reviewer diagnosis and a Coder retry) and ends awaiting confirmation. Needs Docker and the task's evaluation image; without them the trace says test execution is unavailable."
+}

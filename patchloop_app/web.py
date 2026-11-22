@@ -3,14 +3,16 @@
     python -m patchloop_app.web --port 7860 --runs-dir /data/app-runs
 
 Open http://127.0.0.1:7860 (through an SSH tunnel, or see --host/--token).
-Requires the local vLLM server (scripts/start_qwen_small.sh) and the client
-venv; settings come from .env exactly as for the batch experiments.
+Needs at least one backend: DEEPSEEK_API_KEY in .env (no GPU) and/or the local
+vLLM server (scripts/start_qwen_small.sh). Settings come from .env exactly as for
+the batch experiments.
 """
 from __future__ import annotations
 
 import argparse
 import hmac
 import os
+import shutil
 from pathlib import Path
 
 from flask import Flask, Response, jsonify, make_response, render_template, request
@@ -24,6 +26,14 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     app = Flask(__name__, template_folder=str(Path(__file__).with_name("templates")))
     tasks = tasks or []
     by_id = {t.instance_id: t for t in tasks}
+
+    def default_backend() -> str:
+        # A request without "backend" uses qwen if configured, else the only one there is
+        # (e.g. a DeepSeek-only deployment without a GPU).
+        factories = manager.backend_factory
+        if isinstance(factories, dict) and factories and "qwen" not in factories:
+            return next(iter(factories))
+        return "qwen"
 
     @app.before_request
     def check_token():
@@ -78,7 +88,11 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
                 edit_format=str(body.get("edit_format", "search_replace")),
                 retrieval_k=int(body.get("retrieval_k", 10)),
                 skip_clarification=bool(body.get("skip_clarification", False)),
-                backend=str(body.get("backend", "qwen")),
+                exec_feedback=bool(body.get("exec_feedback", False)),
+                reasoning_effort=str(body.get("reasoning_effort") or "none"),
+                snippet_name=(str(body["snippet_name"]).strip() if body.get("snippet_name") else None),
+                snippet_code=(str(body["snippet_code"]) if body.get("snippet_code") else None),
+                backend=str(body.get("backend") or default_backend()),
             )
             session = manager.start(req)
         except (ValueError, TypeError) as exc:
@@ -89,8 +103,11 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     def api_list():
         rows = sorted(manager.sessions.values(), key=lambda s: s.created, reverse=True)
         return jsonify([{"id": s.id, "status": s.status, "round": s.round, "parent": s.parent,
-                         "agent": s.request.agent,
-                         "target": s.request.instance_id or s.request.repo_path} for s in rows[:30]])
+                         "agent": s.request.agent, "source": s.request.source,
+                         "title": (s.request.issue.strip().splitlines() or [""])[0][:90],
+                         "target": s.request.instance_id or s.request.repo_path
+                         or (f"pasted {s.request.snippet_name}" if s.request.snippet_name else "")}
+                        for s in rows[:30]])
 
     @app.get("/api/sessions/<sid>")
     def api_get(sid):
@@ -123,7 +140,8 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
     def api_followup(sid):
         body = request.get_json(force=True, silent=True) or {}
         try:
-            changes = {k: body.get(k) for k in ("agent", "edit_format", "backend")}
+            changes = {k: body.get(k) for k in ("agent", "edit_format", "backend", "exec_feedback",
+                                                "reasoning_effort")}
             if body.get("retrieval_k") is not None:
                 changes["retrieval_k"] = int(body["retrieval_k"])
             session = manager.follow_up(sid, str(body.get("guidance", "")), **changes)
@@ -189,14 +207,24 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"Unknown example task {iid}")
         return by_id[iid]
 
-    factories = {name: (lambda n=name, st=st: make_backend(n, st)) for name, st in configured.items()}
+    def factory_for(name, settings):
+        def factory(reasoning_effort=None):
+            # A request may switch DeepSeek thinking on (RQ1); budgets follow backends.REASONING_DEFAULTS.
+            if reasoning_effort in (None, "none"):
+                return make_backend(name, settings)
+            return make_backend(name, load_settings(name, reasoning_effort=reasoning_effort))
+        return factory
+
+    factories = {name: factory_for(name, st) for name, st in configured.items()}
     manager = SessionManager(args.runs_dir, factories, task_lookup=lookup)
 
     def health():
         return {"status": "ok", "backends": {
             name: {"model": st.model, "context_chars": st.context_chars, "max_calls": st.max_calls,
                    "data_leaves_server": name == "deepseek"} for name, st in configured.items()},
-            "unavailable": problems}
+            "unavailable": problems,
+            "tests": {"docker": bool(shutil.which("docker")),
+                      "local_image": os.environ.get("PATCHLOOP_TEST_IMAGE") or None}}
 
     app = create_app(manager, health=health, tasks=tasks, token=args.token)
     print(f"PatchLoop web app on http://{args.host}:{args.port}  (runs in {args.runs_dir})")

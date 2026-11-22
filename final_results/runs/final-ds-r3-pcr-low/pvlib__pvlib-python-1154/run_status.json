@@ -1,0 +1,178 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1154",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "0b8f24c265d76320067a5ee908a57d475cd1bb24",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 5,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "6ab6a43dc601bc8c9887c4b08dfa071031ae413f5af6b4f982ec184b373e087f",
+      "raw_model_patch_sha256": "f50f6ec228a04f088afc96a485ca238d16254e54bc8e58526d05de1b0dd27d17",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/irradiance.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/irradiance.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "2aa50e65bf04de599849eef699a69cac1be4c79f06fba28ee0a9521fc0435697",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 14,
+      "reasoning_tokens": 11,
+      "latency_seconds": 0.533,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 802,
+      "completion_tokens": 78,
+      "reasoning_tokens": 51,
+      "latency_seconds": 0.808,
+      "dropped_history_messages": 0,
+      "output_sha256": "ac4aece588a62adcc0110b03182e0f944388bc46bb02d0acf06477d033dad30f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 987,
+      "completion_tokens": 37,
+      "reasoning_tokens": 7,
+      "latency_seconds": 0.539,
+      "dropped_history_messages": 0,
+      "output_sha256": "c1444130ab3ff5b876ffb000ca1345811c0a2173e07316cd4f53a1bb2183bfce"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2996,
+      "completion_tokens": 37,
+      "reasoning_tokens": 7,
+      "latency_seconds": 0.706,
+      "dropped_history_messages": 0,
+      "output_sha256": "14c132b8f643f3a56cb6f682a361b443ea5ac1a12104a3834e6e683e47c8df37"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4369,
+      "completion_tokens": 570,
+      "reasoning_tokens": 101,
+      "latency_seconds": 3.687,
+      "dropped_history_messages": 0,
+      "output_sha256": "5429ab6addaea59188f91f3c42b14346e4ef4129b81ef99dbc3a73c4b7cfaef7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4865,
+      "completion_tokens": 613,
+      "reasoning_tokens": 147,
+      "latency_seconds": 3.142,
+      "dropped_history_messages": 0,
+      "output_sha256": "cc2c08920a9fe19da787b56598d863f28797e0ff070cfb7ee2693f2bc9141c8e"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1572,
+      "completion_tokens": 1962,
+      "reasoning_tokens": 1724,
+      "latency_seconds": 10.932,
+      "dropped_history_messages": 0,
+      "output_sha256": "f50f6ec228a04f088afc96a485ca238d16254e54bc8e58526d05de1b0dd27d17"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "def reindl"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1,
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/irradiance.py",
+    "pvlib/shading.py",
+    "pvlib/iam.py",
+    "pvlib/clearsky.py",
+    "docs/examples/plot_diffuse_aoi_correction.py",
+    "pvlib/pvsystem.py",
+    "docs/examples/plot_transposition_gain.py",
+    "versioneer.py",
+    "pvlib/ivtools/sdm.py",
+    "pvlib/singlediode.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pvlib/irradiance.py"
+  ],
+  "patch_size_bytes": 777,
+  "prompt_tokens": 15628,
+  "completion_tokens": 3311,
+  "reasoning_tokens": 2048,
+  "duration_seconds": 22.53,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

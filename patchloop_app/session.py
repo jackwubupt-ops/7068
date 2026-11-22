@@ -23,9 +23,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 import threading
 import time
 import uuid
@@ -52,6 +54,10 @@ class Request:
     retrieval_k: int = 10
     skip_clarification: bool = False
     backend: str = "qwen"            # "qwen" (local vLLM) | "deepseek" (hosted API)
+    exec_feedback: bool = False      # run existing repository tests in Docker (RQ2)
+    reasoning_effort: str = "none"   # DeepSeek thinking: none | low | high | max (RQ1)
+    snippet_name: str | None = None  # source == "snippet": file name and code pasted in the page
+    snippet_code: str | None = None
 
 
 @dataclass
@@ -125,6 +131,20 @@ def describe_feedback(content: str) -> tuple[str, str, str] | None:
                 lines = result.get("lines") or []
                 span = f"{lines[0]['line_number']}-{lines[-1]['line_number']}" if lines else "empty"
                 return "tool", f"read_file {result.get('file_path')} lines {span}", ""
+            if name == "run_tests":
+                counts = result.get("counts") or {}
+                return ("tool", f"run_tests {result.get('test_path')} -> "
+                        + (", ".join(f"{v} {k.lower()}" for k, v in sorted(counts.items())) or "no results"),
+                        ", ".join(result.get("failing", [])[:8]))
+            if name == "find_definition":
+                defs = result.get("definitions", [])
+                return ("tool", f"find_definition -> {len(defs)} definitions",
+                        ", ".join(f"{d.get('qualified_name')} ({d.get('file_path')}:{d.get('start_line')})"
+                                  for d in defs[:8]))
+            if name == "list_directory":
+                entries = result.get("entries", [])
+                return ("tool", f"list_directory {result.get('directory')} -> {len(entries)} entries",
+                        ", ".join(e.get("name", "") for e in entries[:20]))
             return "tool", f"{name} result", _short(result)
     for prefix, kind in (("Protocol validation error:", "warning"), ("Protocol error:", "warning"),
                          ("Repeated action:", "warning"), ("Submission rejected", "warning"),
@@ -148,6 +168,12 @@ def describe_output(stage: str, raw: str) -> tuple[str, str, str]:
             if action == "read_file":
                 span = f" lines {args.get('start_line', 1)}-{args.get('end_line', 'end')}"
                 return "decision", f"{stage}: read {args.get('relative_path')}{span}", ""
+            if action == "find_definition":
+                return "decision", f"{stage}: find where “{args.get('name')}” is defined", ""
+            if action == "run_tests":
+                return "decision", f"{stage}: run the existing tests in {args.get('test_path')}", ""
+            if action == "list_directory":
+                return "decision", f"{stage}: list the directory {args.get('relative_path', '.')}", ""
             if action == "final":
                 plan = data.get("plan") or {}
                 files = [f.get("file_path") for f in plan.get("suspected_files", []) if isinstance(f, dict)]
@@ -248,6 +274,49 @@ def resolve_local(repo_path: str, commit: str) -> tuple[Path, str, str]:
     return root, sha, f"local/{name}"
 
 
+SNIPPET_NAME = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,80}(/[A-Za-z0-9_][A-Za-z0-9_.-]{0,80}){0,4}")
+MAX_SNIPPET_CHARS = 100_000
+MAX_SNAPSHOT_FILES = 2000
+
+
+def snapshot_working_tree(root: Path) -> str | None:
+    """Commit object for the CURRENT working tree (uncommitted and untracked, non-ignored files),
+    with HEAD as parent. Uses a temporary index: the user's index, branch and files are untouched
+    and no ref is created. None when the working tree is clean."""
+    status = _git("-C", str(root), "status", "--porcelain", "--untracked-files=all")
+    if not status:
+        return None
+    if len(status.splitlines()) > MAX_SNAPSHOT_FILES:
+        raise ValueError("Too many uncommitted files to snapshot; commit or .gitignore them first")
+    with tempfile.TemporaryDirectory(prefix="patchloop-index-") as temp:
+        env = {**os.environ, "GIT_INDEX_FILE": str(Path(temp) / "index")}
+
+        def git(*args):
+            proc = subprocess.run(["git", "-c", "core.hooksPath=/dev/null", "-C", str(root), *args],
+                                  capture_output=True, text=True, timeout=120, env=env)
+            if proc.returncode:
+                raise ValueError(f"git {args[0]} failed: {proc.stderr.strip()[:300]}")
+            return proc.stdout.strip()
+        git("read-tree", "HEAD")
+        git("add", "-A")
+        tree = git("write-tree")
+        return git("-c", "user.name=PatchLoop", "-c", "user.email=patchloop@localhost", "commit-tree",
+                   tree, "-p", "HEAD", "-m", "PatchLoop snapshot of uncommitted changes")
+
+
+def make_snippet_repo(base: Path, name: str, code: str) -> Path:
+    """A private Git repository holding one pasted file (for code typed in the page)."""
+    root = base / uuid.uuid4().hex[:12]
+    target = root / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(code if code.endswith("\n") else code + "\n", encoding="utf-8")
+    _git("init", "-q", str(root))
+    _git("-C", str(root), "add", "-A")
+    _git("-C", str(root), "-c", "user.name=PatchLoop", "-c", "user.email=patchloop@localhost",
+         "commit", "-q", "-m", "pasted code")
+    return root
+
+
 def local_checkout_fn(root: Path):
     """checkout_fn for run_qwen_dev: a private clone at the base commit."""
     def checkout(task, destination: Path) -> Path:
@@ -300,6 +369,18 @@ class SessionManager:
             raise ValueError("agent must be pcr|single and edit_format search_replace|diff")
         if not 0 <= int(request.retrieval_k) <= 50:
             raise ValueError("retrieval_k must be in [0, 50]")
+        if request.source == "snippet":
+            name, code = request.snippet_name or "", request.snippet_code or ""
+            if not SNIPPET_NAME.fullmatch(name) or ".." in name.split("/"):
+                raise ValueError("File name must be a relative path such as calc.py or pkg/util.py")
+            if not code.strip() or len(code) > MAX_SNIPPET_CHARS:
+                raise ValueError(f"Paste 1-{MAX_SNIPPET_CHARS} characters of code")
+        elif request.source not in ("swebench", "local"):
+            raise ValueError("source must be swebench, local or snippet")
+        if request.reasoning_effort not in ("none", "low", "high", "max"):
+            raise ValueError("reasoning_effort must be none|low|high|max")
+        if request.reasoning_effort != "none" and request.backend != "deepseek":
+            raise ValueError("Reasoning effort (thinking mode) is available for the DeepSeek model only")
         if not request.issue.strip() or len(request.issue) > 20000:
             raise ValueError("Issue must contain 1-20000 characters")
         if isinstance(self.backend_factory, dict) and request.backend not in self.backend_factory:
@@ -342,9 +423,22 @@ class SessionManager:
             return task, None
         if req.source == "local":
             root, sha, repo = resolve_local(req.repo_path or "", req.commit)
+            if (req.commit or "HEAD") == "HEAD":
+                snapshot = snapshot_working_tree(root)
+                if snapshot:
+                    # The agent works on what the user sees in their editor, not only on HEAD.
+                    sha = snapshot
+                    session.emit("info", "Using your uncommitted changes",
+                                 "The working tree differs from HEAD; the agent works on a snapshot of it. "
+                                 "Your files, index and branch are not changed.")
             iid = f"{repo.split('/')[1]}__local-{sha[:10]}"
             return DevelopmentTask(iid, repo, sha, req.issue), root
-        raise ValueError("source must be swebench or local")
+        if req.source == "snippet":
+            root = make_snippet_repo(self.runs_dir / "snippets", req.snippet_name, req.snippet_code)
+            sha = _git("-C", str(root), "rev-parse", "HEAD")
+            session.result["snippet_repo"] = str(root)
+            return DevelopmentTask(f"snippet__{sha[:10]}", "local/pasted-code", sha, req.issue), root
+        raise ValueError("source must be swebench, local or snippet")
 
     def _run(self, session: Session) -> None:
         req = session.request
@@ -388,15 +482,22 @@ class SessionManager:
             session.result.setdefault("error", f"{type(exc).__name__}: {exc}"[:500])
             session.emit("error", "Run failed", f"{type(exc).__name__}: {exc}"[:1000])
 
+    @staticmethod
+    def _test_env(req: Request):
+        from patchloop_task2.test_exec import env_for_local, env_for_swebench
+        return env_for_swebench if req.source == "swebench" else (lambda _iid: env_for_local())
+
     def _run_agent(self, session: Session, task, checkout_fn) -> None:
         from experiments.qwen_small_dev import run_qwen_dev
         req = session.request
         out = self.runs_dir / session.id
         factory = (self.backend_factory[req.backend] if isinstance(self.backend_factory, dict)
                    else self.backend_factory)
-        inner = factory()
+        # Thinking mode is a per-request choice; "none" keeps the server's default settings.
+        inner = factory(req.reasoning_effort) if req.reasoning_effort != "none" else factory()
         backend = TracingBackend(inner, session)
         session.emit("info", f"Model: {inner.model}"
+                     + (f", reasoning effort {req.reasoning_effort}" if req.reasoning_effort != "none" else "")
                      + (" (hosted DeepSeek API: the issue and code are sent to DeepSeek)"
                         if getattr(inner, "provider", "") == "deepseek" else " (local, nothing leaves this server)"))
         session.emit("info", f"Starting the {'Planner-Coder-Reviewer' if req.agent == 'pcr' else 'single'} agent")
@@ -406,22 +507,37 @@ class SessionManager:
             task_loader=lambda instance_id: task, checkout_fn=checkout_fn,
             edit_format=req.edit_format,
             **({"retrieval_k": req.retrieval_k} if req.retrieval_k else {}),
+            **({"exec_feedback": True, "test_env_fn": self._test_env(req)} if req.exec_feedback else {}),
         )
         session.result = result
+        if req.exec_feedback and not result.get("test_env_available", False):
+            session.emit("warning", "Test execution unavailable",
+                         "No Docker test image for this repository (SWE-bench eval image, or "
+                         "PATCHLOOP_TEST_IMAGE for local repositories); the run continued without tests.")
         if "USER_CANCELLED" in str(result.get("error", "")):
             raise Cancelled("USER_CANCELLED")
-        for attempt in result.get("candidate_attempts", []):
+        for number, attempt in enumerate(result.get("candidate_attempts", []), 1):
             session.emit("apply" if attempt.get("patch_status") == "applied" else "warning",
-                         f"attempt {attempt.get('attempt', '')}: {attempt.get('patch_status')}",
+                         f"attempt {attempt.get('attempt') or number}: {attempt.get('patch_status')}",
                          _short({k: attempt.get(k) for k in ("error_code", "changed_files",
                                                              "search_match_modes")}, 600))
+            check = attempt.get("test_check")
+            if check:
+                ok = check.get("status") in ("passed", "no_tests", "no_baseline", "infra_error", "unavailable")
+                session.emit("tool" if ok else "warning",
+                             f"existing tests after the edit: {check.get('status')}",
+                             _short({k: check.get(k) for k in ("targets", "regressions", "newly_passing")
+                                     if check.get(k)}, 800))
         status = result.get("status")
         if status == "prediction_ready":
             pred = json.loads((out / "predictions.jsonl").read_text(encoding="utf-8").splitlines()[0])
             session.patch = pred["model_patch"]
             session.status = "awaiting_confirmation"
+            tested = any(a.get("test_check", {}).get("status") == "passed"
+                         for a in result.get("candidate_attempts", []))
             session.emit("stop", "A Git-applicable patch is ready. Review it, then accept or reject.",
-                         "It was applied in an isolated checkout only; no tests were run.")
+                         "It was applied in an isolated checkout; the existing tests it touches still pass."
+                         if tested else "It was applied in an isolated checkout only; no tests confirmed it.")
         elif status == "experiment_error":
             session.status = "failed"
             session.emit("error", f"Agent error at {result.get('failed_stage')}", str(result.get("error")))

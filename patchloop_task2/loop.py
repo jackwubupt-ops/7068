@@ -9,10 +9,10 @@ from pathlib import Path
 import hashlib
 import json
 
-from .coder import CoderError, build_messages, extract_diff, permitted_paths
+from .coder import build_messages, extract_diff, permitted_paths
 from .execution import DockerTestRunner, DockerTestSpec
 from .normalizer import normalize_hunk_counts
-from .reviewer import ReviewerError, review_failure
+from .reviewer import review_failure
 from .workspace import (
     WorkspaceError, _good_result, _run_git, apply_candidate,
     isolated_worktree, resolve_base,

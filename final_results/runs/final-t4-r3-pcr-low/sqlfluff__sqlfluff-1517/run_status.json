@@ -1,0 +1,122 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1517",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "304a197829f98e7425a46d872ada73176137e5ae",
+  "status": "experiment_error",
+  "edit_format": "search_replace",
+  "exec_feedback": false,
+  "live_api_preflight": true,
+  "planner_calls": 4,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_started",
+  "patch_sha256": null,
+  "source_checkout_clean": null,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 14,
+      "reasoning_tokens": 11,
+      "latency_seconds": 1.046,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1816,
+      "completion_tokens": 244,
+      "reasoning_tokens": 59,
+      "latency_seconds": 2.292,
+      "dropped_history_messages": 0,
+      "output_sha256": "e9916856502fb51c7053ea761752b0fed90566d4a622f5e556ed3c7b90db852f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2031,
+      "completion_tokens": 412,
+      "reasoning_tokens": 105,
+      "latency_seconds": 2.991,
+      "dropped_history_messages": 0,
+      "output_sha256": "c9c4cba2167dfdd49005103656cf11148bbd60d7ec08ece75216564ca4eb7f47"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2368,
+      "completion_tokens": 73,
+      "reasoning_tokens": 36,
+      "latency_seconds": 1.22,
+      "dropped_history_messages": 0,
+      "output_sha256": "e5180a470c05e04b70a074e5f0a78c5369dbc1bdc614fce32c4f32ec35b3ea4a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4895,
+      "completion_tokens": 1743,
+      "reasoning_tokens": 48,
+      "latency_seconds": 9.002,
+      "dropped_history_messages": 0,
+      "output_sha256": "b1ffdbaa873858dd756b794651e626f99361be9bb391131fd76417f15d96bdac"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "invalid_json",
+      "prior_protocol_error": "Protocol validation error: Extra data: line 3 column 1 (char 106). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/parser/grammar/sequence.py",
+      "prior_protocol_error": "Protocol validation error: Extra data: line 3 column 1 (char 121). Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "src/sqlfluff/core/linter/linter.py",
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/core/parser/segments/base.py",
+    "src/sqlfluff/api/simple.py",
+    "setup.py",
+    "src/sqlfluff/core/parser/helpers.py",
+    "src/sqlfluff/core/parser/parser.py",
+    "src/sqlfluff/core/dialects/base.py",
+    "src/sqlfluff/core/parser/grammar/sequence.py",
+    "src/sqlfluff/core/parser/segments/ephemeral.py"
+  ],
+  "failed_stage": "real_planner_localization",
+  "error": "RuntimeError: QWEN_TRUNCATED_OUTPUT:planner",
+  "prompt_tokens": 11147,
+  "completion_tokens": 2486,
+  "reasoning_tokens": 259,
+  "duration_seconds": 18.05,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

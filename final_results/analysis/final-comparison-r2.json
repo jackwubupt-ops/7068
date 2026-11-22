@@ -1,0 +1,802 @@
+{
+  "batches": {
+    "ds-pcr": {
+      "label": "ds-pcr",
+      "dir": "/data/runs/final-ds-r2-pcr",
+      "backend": "deepseek",
+      "model": "deepseek-flash",
+      "agent": "pcr",
+      "reasoning_effort": "none",
+      "settings": {
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "max_calls_per_task": 20,
+        "context_chars": 48000,
+        "stage_max_tokens": {
+          "preflight": 32,
+          "planner": 1500,
+          "coder": 3500,
+          "reviewer": 900,
+          "agent": 3500
+        },
+        "max_candidates": 2,
+        "temperature": 0,
+        "dataset": "princeton-nlp/SWE-bench_Lite",
+        "split": "dev"
+      },
+      "patchloop_commit": "35a992adbc2e7bec2831d8554d91910dd872ffb9",
+      "eval_run_id": "final-ds-r2-pcr-eval",
+      "eval_complete": true,
+      "tasks": 23,
+      "applicable": 23,
+      "resolved": 12,
+      "resolved_rate": 0.5217,
+      "harness_errors": 0,
+      "prompt_tokens": 895522,
+      "completion_tokens": 28976,
+      "reasoning_tokens": 0,
+      "seconds_per_task": 12.7,
+      "status_counts": {
+        "prediction_ready": 23
+      }
+    },
+    "ds-single": {
+      "label": "ds-single",
+      "dir": "/data/runs/final-ds-r2-single",
+      "backend": "deepseek",
+      "model": "deepseek-flash",
+      "agent": "single",
+      "reasoning_effort": "none",
+      "settings": {
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "max_calls_per_task": 20,
+        "context_chars": 48000,
+        "stage_max_tokens": {
+          "preflight": 32,
+          "planner": 1500,
+          "coder": 3500,
+          "reviewer": 900,
+          "agent": 3500
+        },
+        "max_candidates": 2,
+        "temperature": 0,
+        "dataset": "princeton-nlp/SWE-bench_Lite",
+        "split": "dev"
+      },
+      "patchloop_commit": "35a992adbc2e7bec2831d8554d91910dd872ffb9",
+      "eval_run_id": "final-ds-r2-single-eval",
+      "eval_complete": true,
+      "tasks": 23,
+      "applicable": 19,
+      "resolved": 10,
+      "resolved_rate": 0.4348,
+      "harness_errors": 0,
+      "prompt_tokens": 873798,
+      "completion_tokens": 8552,
+      "reasoning_tokens": 0,
+      "seconds_per_task": 7.2,
+      "status_counts": {
+        "no_submission": 4,
+        "prediction_ready": 19
+      }
+    },
+    "ds-pcr-low": {
+      "label": "ds-pcr-low",
+      "dir": "/data/runs/final-ds-r2-pcr-low",
+      "backend": "deepseek",
+      "model": "deepseek-flash",
+      "agent": "pcr",
+      "reasoning_effort": "low",
+      "settings": {
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "max_calls_per_task": 20,
+        "context_chars": 48000,
+        "stage_max_tokens": {
+          "preflight": 32,
+          "planner": 1500,
+          "coder": 3500,
+          "reviewer": 900,
+          "agent": 3500
+        },
+        "max_candidates": 2,
+        "temperature": 0,
+        "dataset": "princeton-nlp/SWE-bench_Lite",
+        "split": "dev"
+      },
+      "patchloop_commit": "35a992adbc2e7bec2831d8554d91910dd872ffb9",
+      "eval_run_id": "final-ds-r2-pcr-low-eval",
+      "eval_complete": true,
+      "tasks": 23,
+      "applicable": 22,
+      "resolved": 9,
+      "resolved_rate": 0.3913,
+      "harness_errors": 0,
+      "prompt_tokens": 770774,
+      "completion_tokens": 154732,
+      "reasoning_tokens": 123961,
+      "seconds_per_task": 41.9,
+      "status_counts": {
+        "no_candidate_files": 1,
+        "prediction_ready": 22
+      }
+    },
+    "ds-pcr-high": {
+      "label": "ds-pcr-high",
+      "dir": "/data/runs/final-ds-r2-pcr-high",
+      "backend": "deepseek",
+      "model": "deepseek-flash",
+      "agent": "pcr",
+      "reasoning_effort": "high",
+      "settings": {
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "max_calls_per_task": 20,
+        "context_chars": 48000,
+        "stage_max_tokens": {
+          "preflight": 32,
+          "planner": 1500,
+          "coder": 3500,
+          "reviewer": 900,
+          "agent": 3500
+        },
+        "max_candidates": 2,
+        "temperature": 0,
+        "dataset": "princeton-nlp/SWE-bench_Lite",
+        "split": "dev"
+      },
+      "patchloop_commit": "35a992adbc2e7bec2831d8554d91910dd872ffb9",
+      "eval_run_id": "final-ds-r2-pcr-high-eval",
+      "eval_complete": true,
+      "tasks": 23,
+      "applicable": 20,
+      "resolved": 8,
+      "resolved_rate": 0.3478,
+      "harness_errors": 0,
+      "prompt_tokens": 1031353,
+      "completion_tokens": 276005,
+      "reasoning_tokens": 169564,
+      "seconds_per_task": 63.7,
+      "status_counts": {
+        "experiment_error": 3,
+        "prediction_ready": 20
+      }
+    },
+    "ds-pcr-max": {
+      "label": "ds-pcr-max",
+      "dir": "/data/runs/final-ds-r2-pcr-max",
+      "backend": "deepseek",
+      "model": "deepseek-flash",
+      "agent": "pcr",
+      "reasoning_effort": "max",
+      "settings": {
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "max_calls_per_task": 20,
+        "context_chars": 48000,
+        "stage_max_tokens": {
+          "preflight": 32,
+          "planner": 1500,
+          "coder": 3500,
+          "reviewer": 900,
+          "agent": 3500
+        },
+        "max_candidates": 2,
+        "temperature": 0,
+        "dataset": "princeton-nlp/SWE-bench_Lite",
+        "split": "dev"
+      },
+      "patchloop_commit": "35a992adbc2e7bec2831d8554d91910dd872ffb9",
+      "eval_run_id": "final-ds-r2-pcr-max-eval",
+      "eval_complete": true,
+      "tasks": 23,
+      "applicable": 19,
+      "resolved": 11,
+      "resolved_rate": 0.4783,
+      "harness_errors": 0,
+      "prompt_tokens": 956066,
+      "completion_tokens": 335089,
+      "reasoning_tokens": 291114,
+      "seconds_per_task": 89.0,
+      "status_counts": {
+        "experiment_error": 2,
+        "no_candidate_files": 2,
+        "prediction_ready": 19
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "title": "RQ3: P-C-R vs single agent (DeepSeek)",
+      "a": "ds-pcr",
+      "b": "ds-single",
+      "warnings": [],
+      "tasks": 23,
+      "resolved_a": 12,
+      "resolved_b": 10,
+      "rate_a": 0.5217,
+      "rate_b": 0.4348,
+      "diff_a_minus_b": 0.087,
+      "table": {
+        "both": 9,
+        "only_a": 3,
+        "only_b": 1,
+        "neither": 10
+      },
+      "mcnemar_exact_p": 0.625,
+      "bootstrap_95ci_diff": [
+        -0.087,
+        0.2609
+      ],
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": true,
+          "b": true
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": true,
+          "b": false
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1139": {
+          "a": false,
+          "b": false
+        },
+        "pydicom__pydicom-1256": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1413": {
+          "a": true,
+          "b": false
+        },
+        "pydicom__pydicom-1694": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-901": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1196": {
+          "a": true,
+          "b": false
+        },
+        "pylint-dev__astroid-1268": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1333": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1866": {
+          "a": true,
+          "b": true
+        },
+        "pylint-dev__astroid-1978": {
+          "a": false,
+          "b": false
+        },
+        "pyvista__pyvista-4315": {
+          "a": true,
+          "b": true
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": false,
+          "b": true
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": true,
+          "b": true
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning low vs none (DeepSeek P-C-R)",
+      "a": "ds-pcr-low",
+      "b": "ds-pcr",
+      "warnings": [],
+      "tasks": 23,
+      "resolved_a": 9,
+      "resolved_b": 12,
+      "rate_a": 0.3913,
+      "rate_b": 0.5217,
+      "diff_a_minus_b": -0.1304,
+      "table": {
+        "both": 9,
+        "only_a": 0,
+        "only_b": 3,
+        "neither": 11
+      },
+      "mcnemar_exact_p": 0.25,
+      "bootstrap_95ci_diff": [
+        -0.2609,
+        0.0
+      ],
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": true,
+          "b": true
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1139": {
+          "a": false,
+          "b": false
+        },
+        "pydicom__pydicom-1256": {
+          "a": false,
+          "b": true
+        },
+        "pydicom__pydicom-1413": {
+          "a": false,
+          "b": true
+        },
+        "pydicom__pydicom-1694": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-901": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1196": {
+          "a": false,
+          "b": true
+        },
+        "pylint-dev__astroid-1268": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1333": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1866": {
+          "a": true,
+          "b": true
+        },
+        "pylint-dev__astroid-1978": {
+          "a": false,
+          "b": false
+        },
+        "pyvista__pyvista-4315": {
+          "a": true,
+          "b": true
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": true,
+          "b": true
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning high vs none (DeepSeek P-C-R)",
+      "a": "ds-pcr-high",
+      "b": "ds-pcr",
+      "warnings": [],
+      "tasks": 23,
+      "resolved_a": 8,
+      "resolved_b": 12,
+      "rate_a": 0.3478,
+      "rate_b": 0.5217,
+      "diff_a_minus_b": -0.1739,
+      "table": {
+        "both": 8,
+        "only_a": 0,
+        "only_b": 4,
+        "neither": 11
+      },
+      "mcnemar_exact_p": 0.125,
+      "bootstrap_95ci_diff": [
+        -0.3478,
+        -0.0435
+      ],
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": false,
+          "b": true
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": false,
+          "b": true
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1139": {
+          "a": false,
+          "b": false
+        },
+        "pydicom__pydicom-1256": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1413": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1694": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-901": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1196": {
+          "a": false,
+          "b": true
+        },
+        "pylint-dev__astroid-1268": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1333": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1866": {
+          "a": false,
+          "b": true
+        },
+        "pylint-dev__astroid-1978": {
+          "a": false,
+          "b": false
+        },
+        "pyvista__pyvista-4315": {
+          "a": true,
+          "b": true
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": true,
+          "b": true
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning max vs none (DeepSeek P-C-R)",
+      "a": "ds-pcr-max",
+      "b": "ds-pcr",
+      "warnings": [],
+      "tasks": 23,
+      "resolved_a": 11,
+      "resolved_b": 12,
+      "rate_a": 0.4783,
+      "rate_b": 0.5217,
+      "diff_a_minus_b": -0.0435,
+      "table": {
+        "both": 10,
+        "only_a": 1,
+        "only_b": 2,
+        "neither": 10
+      },
+      "mcnemar_exact_p": 1.0,
+      "bootstrap_95ci_diff": [
+        -0.1739,
+        0.087
+      ],
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": true,
+          "b": true
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": true,
+          "b": false
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1139": {
+          "a": false,
+          "b": false
+        },
+        "pydicom__pydicom-1256": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1413": {
+          "a": false,
+          "b": true
+        },
+        "pydicom__pydicom-1694": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-901": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1196": {
+          "a": false,
+          "b": true
+        },
+        "pylint-dev__astroid-1268": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1333": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1866": {
+          "a": true,
+          "b": true
+        },
+        "pylint-dev__astroid-1978": {
+          "a": false,
+          "b": false
+        },
+        "pyvista__pyvista-4315": {
+          "a": true,
+          "b": true
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": true,
+          "b": true
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning high vs low (DeepSeek P-C-R)",
+      "a": "ds-pcr-high",
+      "b": "ds-pcr-low",
+      "warnings": [],
+      "tasks": 23,
+      "resolved_a": 8,
+      "resolved_b": 9,
+      "rate_a": 0.3478,
+      "rate_b": 0.3913,
+      "diff_a_minus_b": -0.0435,
+      "table": {
+        "both": 6,
+        "only_a": 2,
+        "only_b": 3,
+        "neither": 12
+      },
+      "mcnemar_exact_p": 1.0,
+      "bootstrap_95ci_diff": [
+        -0.2174,
+        0.1304
+      ],
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": false,
+          "b": true
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": true,
+          "b": true
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": false,
+          "b": true
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": false,
+          "b": false
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-1139": {
+          "a": false,
+          "b": false
+        },
+        "pydicom__pydicom-1256": {
+          "a": true,
+          "b": false
+        },
+        "pydicom__pydicom-1413": {
+          "a": true,
+          "b": false
+        },
+        "pydicom__pydicom-1694": {
+          "a": true,
+          "b": true
+        },
+        "pydicom__pydicom-901": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1196": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1268": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1333": {
+          "a": false,
+          "b": false
+        },
+        "pylint-dev__astroid-1866": {
+          "a": false,
+          "b": true
+        },
+        "pylint-dev__astroid-1978": {
+          "a": false,
+          "b": false
+        },
+        "pyvista__pyvista-4315": {
+          "a": true,
+          "b": true
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": false,
+          "b": false
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": true,
+          "b": true
+        }
+      }
+    }
+  ],
+  "bootstrap": {
+    "iterations": 10000,
+    "seed": 7608
+  },
+  "note": "resolved = official SWE-bench harness verdict; applicable = Git-applicable candidate only. Small task counts: treat p-values and CIs as indicative.",
+  "tasks_file": "/data/analysis/final-comparison-r2.gold-tasks.txt"
+}

@@ -1,0 +1,19 @@
+{
+  "experiment": "patchloop-lite-dev-batch-v1",
+  "tasks_total": 23,
+  "tasks_finished": 23,
+  "status_counts": {
+    "no_submission": 3,
+    "prediction_ready": 20
+  },
+  "prediction_ready": 20,
+  "prediction_ready_rate": 0.8696,
+  "localized_any_file": 20,
+  "prompt_tokens": 854523,
+  "completion_tokens": 8530,
+  "reasoning_tokens": 0,
+  "model_seconds_total": 179.7,
+  "this_session_seconds": 49.0,
+  "official_evaluated": false,
+  "note": "prediction_ready = Git-applicable candidate, not an official resolution."
+}

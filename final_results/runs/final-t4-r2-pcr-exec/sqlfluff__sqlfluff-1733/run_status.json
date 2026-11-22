@@ -1,0 +1,322 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1733",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "a1579a16b1d8913d9d7c7d12add374a290bcc78c",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "c113413d06bf6eab2e9d5ee03cdc4a18189de992f2e2cb5a3b6287360d92ced7",
+      "raw_model_patch_sha256": "3be8b1778434b69eb4234374dfda78ecb84b853a218dbd0c91f28f90c593a438",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "src/sqlfluff/rules/L003.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/rules/L003.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "test_check": {
+        "targets": [
+          "test/rules/std_L003_test.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 10
+          },
+          "failing": [],
+          "seconds": 1.93
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 10
+          },
+          "failing": [],
+          "seconds": 1.92
+        },
+        "seconds": 3.85,
+        "status": "passed",
+        "regressions": [],
+        "newly_passing": []
+      }
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "84a8f56e46536e033b22fbe0b1d79c4f9cfbc7d048f9ac7471ee8f3fa0c637b6",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11,
+      "completion_tokens": 2,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.6,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1228,
+      "completion_tokens": 24,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.816,
+      "dropped_history_messages": 0,
+      "output_sha256": "44916a68add788940404098d0cc9ec5037c1062c024082602406897f66d3cc42"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2178,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.474,
+      "dropped_history_messages": 0,
+      "output_sha256": "96d829172df7ac979192c3c8a554a16249b23eafc63d90d481b251f334f1b1e6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4651,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.86,
+      "dropped_history_messages": 0,
+      "output_sha256": "07cfcb342faa5c6f93e2bc18fa6a74d9585fdadf0009e41a8b56464e828b1182"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8839,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.613,
+      "dropped_history_messages": 0,
+      "output_sha256": "9bf3936f5c5e36efaf0c02557e61867d27b478cce52d15279dc609b41bef2195"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 13309,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.781,
+      "dropped_history_messages": 0,
+      "output_sha256": "08d64430b306a27e0af3741fe5728f6090721b5f946581b8191f2fa51650accd"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 12833,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.049,
+      "dropped_history_messages": 4,
+      "output_sha256": "96d829172df7ac979192c3c8a554a16249b23eafc63d90d481b251f334f1b1e6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 12201,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.792,
+      "dropped_history_messages": 1,
+      "output_sha256": "07cfcb342faa5c6f93e2bc18fa6a74d9585fdadf0009e41a8b56464e828b1182"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 12291,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.095,
+      "dropped_history_messages": 1,
+      "output_sha256": "d0536211ad32b1b05f4d669ae1ad5e9d32b3bc2f9511e37a17874925248d2e43"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 13170,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.019,
+      "dropped_history_messages": 1,
+      "output_sha256": "07cfcb342faa5c6f93e2bc18fa6a74d9585fdadf0009e41a8b56464e828b1182"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 12589,
+      "completion_tokens": 682,
+      "reasoning_tokens": 0,
+      "latency_seconds": 5.389,
+      "dropped_history_messages": 2,
+      "output_sha256": "9788fe0b355856cb27be752ac80e05a4048d0d96ee08e8c160a99ca4455a5cac"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2461,
+      "completion_tokens": 246,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.541,
+      "dropped_history_messages": 0,
+      "output_sha256": "3be8b1778434b69eb4234374dfda78ecb84b853a218dbd0c91f28f90c593a438"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "L003"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2
+    }
+  ],
+  "retrieval_candidates": [
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/rules/L003.py",
+    "src/sqlfluff/dialects/dialect_ansi.py",
+    "plugins/sqlfluff-templater-dbt/sqlfluff_templater_dbt/templater.py",
+    "src/sqlfluff/core/rules/base.py",
+    "src/sqlfluff/rules/L044.py",
+    "src/sqlfluff/core/templaters/python.py",
+    "src/sqlfluff/core/parser/segments/base.py",
+    "src/sqlfluff/dialects/dialect_tsql.py",
+    "src/sqlfluff/core/linter/runner.py"
+  ],
+  "test_env_available": true,
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "src/sqlfluff/rules/L003.py",
+    "src/sqlfluff/rules/L003.py"
+  ],
+  "patch_size_bytes": 1124,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "test/rules/std_L003_test.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 10
+        },
+        "failing": [],
+        "seconds": 1.93
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 10
+        },
+        "failing": [],
+        "seconds": 1.92
+      },
+      "seconds": 3.85,
+      "status": "passed",
+      "regressions": [],
+      "newly_passing": []
+    }
+  ],
+  "prompt_tokens": 95761,
+  "completion_tokens": 1210,
+  "reasoning_tokens": 0,
+  "duration_seconds": 20.79,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Callable
 
 from utils.repo_tools import (
-    action_key, is_tracked, read_file, repeated_action_message, search_repo, validate_repository,
+    AGENT_TOOLS, TOOL_ARGUMENTS, action_key, is_tracked, repeated_action_message, validate_repository,
 )
 
 from .coder import CoderError, extract_diff
@@ -49,6 +49,10 @@ base commit and fix it with a minimal edit to existing files.
 To use a tool, reply with exactly one JSON object, no markdown:
 {{"action":"search_repo","arguments":{{"query":"literal keyword"}}}}
 {{"action":"read_file","arguments":{{"relative_path":"src/file.py","start_line":1,"end_line":120}}}}
+{{"action":"find_definition","arguments":{{"name":"ClassOrFunctionName"}}}}
+{{"action":"list_directory","arguments":{{"relative_path":"src/package"}}}}
+Use find_definition when the issue names a class, function or method, search_repo
+for other text, and list_directory to see the layout of a package.
 When you have read the code you will change, stop investigating and reply
 {{"action":"edit"}}
 You will then be asked for the edit itself.
@@ -81,7 +85,8 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                      max_steps: int = 16, max_submissions: int = 2,
                      search_result_limit: int = 5, search_context_limit: int = 1,
                      export_path: str | Path | None = None,
-                     candidate_files: list[dict] | None = None) -> SingleAgentResult:
+                     candidate_files: list[dict] | None = None,
+                     test_tool=None) -> SingleAgentResult:
     if edit_format not in EDIT_INSTRUCTIONS:
         raise ValueError(f"edit_format must be one of {tuple(EDIT_INSTRUCTIONS)}")
     if not isinstance(issue, str) or not issue.strip() or len(issue) > 20000:
@@ -89,15 +94,22 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
     repository = validate_repository(checkout, base_commit)
     root = repository["repo_root"]
     base = repository["base_commit"]
+    system = SYSTEM.format(edit=EDIT_INSTRUCTIONS[edit_format], steps=max_steps,
+                           submissions=max_submissions)
+    if test_tool is not None and test_tool.available:
+        from prompt_agent import RUN_TESTS_HELP
+        system += RUN_TESTS_HELP.replace("After the fix is written", "After an edit applies")
     messages = [
-        {"role": "system", "content": SYSTEM.format(
-            edit=EDIT_INSTRUCTIONS[edit_format], steps=max_steps, submissions=max_submissions)},
+        {"role": "system", "content": system},
         {"role": "user", "content": json.dumps(_first_message(issue, base, candidate_files))},
     ]
     result = SingleAgentResult(status="no_submission")
     read_paths: set[str] = set()
-    tools = {"search_repo": search_repo, "read_file": read_file}
+    tools = dict(AGENT_TOOLS)
+    if test_tool is not None:
+        tools["run_tests"] = test_tool.run_tool
     seen_actions: dict[str, int] = {}
+    fallback: str | None = None  # an applicable candidate that failed existing tests
 
     for step in range(1, max_steps + 1):
         try:
@@ -127,8 +139,21 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
             event["patch_status"] = submission["patch_status"]
             result.submissions.append(submission)
             if submission["patch_status"] == "applied":
+                patch = submission.pop("_patch")
+                check = test_tool.check_patch(patch, submission["changed_files"]) if test_tool else None
+                if check is not None:
+                    submission["test_check"] = {k: v for k, v in check.items() if k != "log_tail"}
+                    event["test_check"] = check["status"]
+                if (check is not None and check["status"] == "regressions"
+                        and len(result.submissions) < max_submissions):
+                    from .test_exec import regression_message
+                    fallback = patch
+                    messages.append({"role": "user", "content": regression_message(check) + (
+                        "\nYou may investigate further or submit a COMPLETE REPLACEMENT edit "
+                        "against the ORIGINAL base commit.")})
+                    continue
                 result.status = "prediction_ready"
-                result.patch = submission.pop("_patch")
+                result.patch = patch
                 break
             submission.pop("_patch", None)
             if submission["patch_status"] == "workspace_failed":
@@ -158,10 +183,11 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                 messages.append({"role": "user", "content": _edit_request(edit_format, read_paths)})
                 continue
             if name not in tools:
-                raise ValueError("Unknown action; use search_repo, read_file, or submit an edit")
+                raise ValueError("Unknown action; use search_repo, read_file, find_definition, "
+                                 "list_directory" + (", run_tests" if "run_tests" in tools else "")
+                                 + ", or submit an edit")
             arguments = action.get("arguments")
-            allowed = ({"query", "max_results", "context_lines"} if name == "search_repo"
-                       else {"relative_path", "start_line", "end_line"})
+            allowed = TOOL_ARGUMENTS[name]
             if not isinstance(arguments, dict) or not set(arguments) <= allowed:
                 raise ValueError("Invalid tool arguments")
             arguments = dict(arguments)
@@ -169,6 +195,12 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                 arguments["max_results"] = min(arguments.get("max_results", 20), search_result_limit)
                 arguments["context_lines"] = min(arguments.get("context_lines", 3), search_context_limit)
                 event["search_query"] = str(arguments.get("query"))[:80]
+            elif name == "find_definition":
+                event["definition_name"] = str(arguments.get("name"))[:80]
+            elif name == "list_directory":
+                event["list_path"] = str(arguments.get("relative_path", "."))[:160]
+            elif name == "run_tests":
+                event["test_path"] = str(arguments.get("test_path"))[:160]
             else:
                 event["read_path"] = str(arguments.get("relative_path"))[:160]
             key = action_key(name, arguments)
@@ -196,6 +228,13 @@ def run_single_agent(issue: str, checkout: str | Path, base_commit: str, *,
                              + ". Reply with one JSON tool action or an edit submission."})
     else:
         result.stop_reason = "step_budget_exhausted"
+    if fallback is not None and result.status in ("patch_failed", "no_submission"):
+        # The later attempt did not produce anything better: keep the earlier
+        # applicable candidate (it applies; it only failed existing tests).
+        result.status, result.patch = "prediction_ready", fallback
+        result.stop_reason = (result.stop_reason or "") + "|kept_earlier_candidate_with_test_regressions"
+        if export_path is not None:
+            Path(export_path).write_text(fallback, encoding="utf-8")
     result.read_files = sorted(read_paths)
     return result
 

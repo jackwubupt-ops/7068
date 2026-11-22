@@ -1,0 +1,153 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pydicom__pydicom-901",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "3746878d8edf1cbda6fbcf35eec69f9ba79301ca",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": false,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "8fd8344cbf7bbb3812f4076c30465aaf5cd7124245ba03616435db60142eab56",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 2,
+      "edited_files": [
+        "pydicom/config.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "8dced02240390fe2a55687ca1a4c90c7252faae51dbc9c6e9c374660512bc978",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pydicom/config.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "step": 2,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\":{\"relative_path\":\"pydicom/con"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pydicom/config.py",
+    "pydicom/filereader.py",
+    "pydicom/dataset.py",
+    "pydicom/pixel_data_handlers/pillow_handler.py",
+    "pydicom/dataelem.py",
+    "pydicom/dicomdir.py",
+    "pydicom/encaps.py",
+    "pydicom/pixel_data_handlers/jpeg_ls_handler.py",
+    "pydicom/pixel_data_handlers/numpy_handler.py",
+    "pydicom/pixel_data_handlers/rle_handler.py"
+  ],
+  "read_files": [
+    "pydicom/config.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pydicom/config.py"
+  ],
+  "patch_size_bytes": 752,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 927,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.532,
+      "dropped_history_messages": 0,
+      "output_sha256": "629cbeb5eae2631881fe826a8e968cfb27d96448d6b37ca8726861bf34879049"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3431,
+      "completion_tokens": 39,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.974,
+      "dropped_history_messages": 0,
+      "output_sha256": "a7f385c905f63ae649382777fb45ba02f137006e68066d1f6eef260ae23b448c"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3518,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.487,
+      "dropped_history_messages": 0,
+      "output_sha256": "ca1154ed645ea5c225a165ba03595afce2563bb8d61f5bd305f2a535dc2b032a"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3982,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.959,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4112,
+      "completion_tokens": 240,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.008,
+      "dropped_history_messages": 0,
+      "output_sha256": "8fd8344cbf7bbb3812f4076c30465aaf5cd7124245ba03616435db60142eab56"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 15970,
+  "completion_tokens": 338,
+  "reasoning_tokens": 0,
+  "duration_seconds": 6.03,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

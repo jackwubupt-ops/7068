@@ -1,0 +1,266 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1154",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "0b8f24c265d76320067a5ee908a57d475cd1bb24",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "741aa1c24f18a6144da7080aaa519b26af1ff1f35735ea2d4c772087892b88d9",
+      "raw_model_patch_sha256": "bba929c405ffd8f82600d1ac7b141cc9cdfe41366c2c6c9394c6290f17891fec",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/irradiance.py",
+        "pvlib/tests/test_irradiance.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pvlib/irradiance.py",
+        "pvlib/tests/test_irradiance.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "cf83e398e1b3e3ba5a682f5b310c60a6ffe5d5ee757920754c33044bee5121a3",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 22,
+      "reasoning_tokens": 19,
+      "latency_seconds": 0.561,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 802,
+      "completion_tokens": 86,
+      "reasoning_tokens": 59,
+      "latency_seconds": 0.864,
+      "dropped_history_messages": 0,
+      "output_sha256": "ac4aece588a62adcc0110b03182e0f944388bc46bb02d0acf06477d033dad30f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 987,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.943,
+      "dropped_history_messages": 0,
+      "output_sha256": "825adaf9bb0f2b9637b43bb2f8599a3c1c0040bd246f20ca15b76c57fcb311c5"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3827,
+      "completion_tokens": 201,
+      "reasoning_tokens": 175,
+      "latency_seconds": 1.58,
+      "dropped_history_messages": 0,
+      "output_sha256": "513d8762f601f44d919ba2098495b68cbdcab7f616a182dc9b4d5706af072d73"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4295,
+      "completion_tokens": 68,
+      "reasoning_tokens": 38,
+      "latency_seconds": 1.071,
+      "dropped_history_messages": 0,
+      "output_sha256": "29acc3adada457026aabcfcd4dbde9766746ed41e4a4911bc7f3631383e27743"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5606,
+      "completion_tokens": 211,
+      "reasoning_tokens": 185,
+      "latency_seconds": 2.011,
+      "dropped_history_messages": 0,
+      "output_sha256": "0d34f4fc1de29859a8978e22b39ade273972cea62e1ddfa998307e3f12d6f317"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5690,
+      "completion_tokens": 50,
+      "reasoning_tokens": 23,
+      "latency_seconds": 0.915,
+      "dropped_history_messages": 0,
+      "output_sha256": "84cbd4cae641b24aff51287d2501c0fbe4e37046ca8518d13ccb935a350766fc"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5869,
+      "completion_tokens": 33,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.909,
+      "dropped_history_messages": 0,
+      "output_sha256": "c186cf75d5548e42c9b173be90eada9c5815449aaf66e121892fbc0e364624b6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6937,
+      "completion_tokens": 74,
+      "reasoning_tokens": 41,
+      "latency_seconds": 0.994,
+      "dropped_history_messages": 0,
+      "output_sha256": "404e35e24526ddd6a0d32d36475d3077f8854c845ab44788fac7fe574cce3f78"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7011,
+      "completion_tokens": 84,
+      "reasoning_tokens": 54,
+      "latency_seconds": 1.063,
+      "dropped_history_messages": 0,
+      "output_sha256": "9098f6d786b75bca92151961e30d474a1bad914e1a3b0f1610224ef8cc048222"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9361,
+      "completion_tokens": 959,
+      "reasoning_tokens": 375,
+      "latency_seconds": 6.222,
+      "dropped_history_messages": 0,
+      "output_sha256": "dd9c34a17248e9fbf6da6ce15caeb7a71865e6c2e2a964f4de2c4f3cb27ea780"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1784,
+      "completion_tokens": 242,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.283,
+      "dropped_history_messages": 0,
+      "output_sha256": "bba929c405ffd8f82600d1ac7b141cc9cdfe41366c2c6c9394c6290f17891fec"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "def reindl"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "reindl"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "reindl"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "test_reindl"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_irradiance.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/irradiance.py",
+    "pvlib/shading.py",
+    "pvlib/iam.py",
+    "pvlib/clearsky.py",
+    "docs/examples/plot_diffuse_aoi_correction.py",
+    "pvlib/pvsystem.py",
+    "docs/examples/plot_transposition_gain.py",
+    "versioneer.py",
+    "pvlib/ivtools/sdm.py",
+    "pvlib/singlediode.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "pvlib/irradiance.py",
+    "pvlib/tests/test_irradiance.py"
+  ],
+  "patch_size_bytes": 1416,
+  "prompt_tokens": 52206,
+  "completion_tokens": 2060,
+  "reasoning_tokens": 969,
+  "duration_seconds": 20.59,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

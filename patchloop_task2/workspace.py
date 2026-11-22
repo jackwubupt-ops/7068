@@ -7,6 +7,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from contextlib import contextmanager
+import ast
 import hashlib
 import os
 import re
@@ -94,6 +95,36 @@ def _regular_tracked_paths(worktree: Path) -> set[str]:
     return allowed
 
 
+def _parses(source: bytes) -> str | None:
+    """None if the Python source parses, else the SyntaxError text (ast only)."""
+    try:
+        ast.parse(source)
+        return None
+    except SyntaxError as exc:
+        return f"line {exc.lineno}: {exc.msg}"
+    except (ValueError, RecursionError, MemoryError) as exc:
+        return str(exc)[:200]
+
+
+def _syntax_regressions(worktree: Path, base_commit: str, changed: list[str]) -> list[str]:
+    """Changed .py files that parsed at the base commit but no longer parse."""
+    broken = []
+    for path in changed:
+        if not path.endswith(".py"):
+            continue
+        before = _run_git(worktree, "show", f"{base_commit}:{path}")
+        if before.returncode or _parses(before.stdout) is not None:
+            continue  # new file, or already unparsable at base: not this edit's fault
+        try:
+            after = (worktree / path).read_bytes()
+        except OSError:
+            continue
+        problem = _parses(after)
+        if problem:
+            broken.append(f"{path} {problem}")
+    return broken
+
+
 def apply_candidate(
     repo_path: str | Path, base_commit: str, patch: str,
     export_path: str | Path | None = None, *, allowed_paths: set[str] | None = None,
@@ -134,6 +165,14 @@ def apply_candidate(
                 result.status = "apply_failed"
                 result.error_code = "no_effect"
                 result.error_message = "Patch had no resulting staged changes"
+                return result
+            broken = _syntax_regressions(wt, sha, result.changed_files)
+            if broken:
+                # Harness check, no code executed: an edit that turns a parsable
+                # Python file into an unparsable one is a failed attempt.
+                result.status = "syntax_invalid"
+                result.error_code = "python_syntax_error"
+                result.error_message = "; ".join(broken)[:1200]
                 return result
             if export_path is not None:
                 target = Path(export_path).expanduser().resolve()

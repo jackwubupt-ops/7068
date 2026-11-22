@@ -1,0 +1,283 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1072",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "04a523fafbd61bc2e49420963b84ed8e2bd1b3cf",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": false,
+  "live_api_preflight": true,
+  "planner_calls": 11,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "37eadf08399a8bfb2ac326dc064f31aedfa6df8fbc07d356dacc80011383fdbe",
+      "raw_model_patch_sha256": "4e1339fb626eecb63d23f9e2751d3ef4762b5692256a70ada64254ffcffe2243",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/temperature.py",
+        "pvlib/tests/test_temperature.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pvlib/temperature.py",
+        "pvlib/tests/test_temperature.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "26164be194e7eec4afb38c795f2f8ec6b5d376a077d1c65e825301d47aafffca",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 20,
+      "reasoning_tokens": 17,
+      "latency_seconds": 0.506,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1544,
+      "completion_tokens": 101,
+      "reasoning_tokens": 85,
+      "latency_seconds": 1.047,
+      "dropped_history_messages": 0,
+      "output_sha256": "9a6a1bc680b7cdc7a7cf1f9f9be0d760f5a486c1a54b9152a2d98cbee4c03e7c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1695,
+      "completion_tokens": 39,
+      "reasoning_tokens": 10,
+      "latency_seconds": 0.58,
+      "dropped_history_messages": 0,
+      "output_sha256": "909e741920d6384442648b80adc5318c461235bd2c6406aa66e0cfee4b72414c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6080,
+      "completion_tokens": 107,
+      "reasoning_tokens": 78,
+      "latency_seconds": 1.464,
+      "dropped_history_messages": 0,
+      "output_sha256": "aa0f0da7342788a0e877c1c3b0f7bc974c3193a9214286d1bad01fbacf3c9376"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6471,
+      "completion_tokens": 137,
+      "reasoning_tokens": 105,
+      "latency_seconds": 1.8,
+      "dropped_history_messages": 0,
+      "output_sha256": "1602bb3ae8a1e10b94a9706d426df4b1c3b1128283b3df44cb34122b016b5ae2"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6544,
+      "completion_tokens": 84,
+      "reasoning_tokens": 57,
+      "latency_seconds": 1.35,
+      "dropped_history_messages": 0,
+      "output_sha256": "d134708211278e4dbe179f6d38ea00ad921826d6381355dc462299d97f176bf4"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7148,
+      "completion_tokens": 237,
+      "reasoning_tokens": 206,
+      "latency_seconds": 2.296,
+      "dropped_history_messages": 0,
+      "output_sha256": "67d0b1ecc4e2cb6e4304973c965dbef8503631ca0bf7cc9aa9b4afbada791e19"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7639,
+      "completion_tokens": 161,
+      "reasoning_tokens": 129,
+      "latency_seconds": 1.784,
+      "dropped_history_messages": 0,
+      "output_sha256": "f654cd40b95cc5406902e0dfc13c7b59652c820bd0ff75f1b04e7f88d23f275a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7712,
+      "completion_tokens": 49,
+      "reasoning_tokens": 20,
+      "latency_seconds": 0.81,
+      "dropped_history_messages": 0,
+      "output_sha256": "0bc7374cc224af71c4ccbd33e9a234603f53b017604a892da68c32114af44d34"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7891,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.596,
+      "dropped_history_messages": 0,
+      "output_sha256": "6f12405ff0ccd0c543bac9ada2a183606e8cccdfde95f6c3472391cd38c9c954"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9530,
+      "completion_tokens": 793,
+      "reasoning_tokens": 355,
+      "latency_seconds": 6.363,
+      "dropped_history_messages": 0,
+      "output_sha256": "f7cce40d9c79d3ea598df9d69987b3d62af11222d2610289b5d44907544e1d2b"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9987,
+      "completion_tokens": 516,
+      "reasoning_tokens": 0,
+      "latency_seconds": 3.152,
+      "dropped_history_messages": 0,
+      "output_sha256": "b70d7f19b3a60eb142295bd43c4c0c7b89e947c632f0dfba2ea7fdbb11889e03"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2562,
+      "completion_tokens": 3446,
+      "reasoning_tokens": 2930,
+      "latency_seconds": 21.085,
+      "dropped_history_messages": 0,
+      "output_sha256": "4e1339fb626eecb63d23f9e2751d3ef4762b5692256a70ada64254ffcffe2243"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "find_definition"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "timedelta_hours"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "np.diff(",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/clearsky.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "def test_fuentes",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_temperature.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "unknown"
+    },
+    {
+      "round": 11,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Unknown action. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/temperature.py",
+    "pvlib/solarposition.py",
+    "pvlib/pvsystem.py",
+    "pvlib/iotools/epw.py",
+    "versioneer.py",
+    "pvlib/forecast.py",
+    "pvlib/iotools/tmy.py",
+    "pvlib/iotools/srml.py",
+    "pvlib/iotools/crn.py",
+    "pvlib/irradiance.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "pvlib/temperature.py",
+    "pvlib/tests/test_temperature.py"
+  ],
+  "patch_size_bytes": 1528,
+  "prompt_tokens": 74840,
+  "completion_tokens": 5722,
+  "reasoning_tokens": 3992,
+  "duration_seconds": 45.56,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

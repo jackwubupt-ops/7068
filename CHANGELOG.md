@@ -4,6 +4,97 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Web app redesign (2026-11-22)
+
+### Changed
+- New layout: a session sidebar (issue title and status dot per session, "New request"), a composer page ("What should PatchLoop fix?": source tabs, the bug description, four option selects in one row, a test-execution switch, Run), and a run page that reads top to bottom: title and status, settings, a five-step progress bar, the request as a message, the agent's work as collapsible phases (Prepare, Locate the code, Repair plan, Edit, Check, Reviewer diagnosis; repeated attempts are numbered) each with a one-line summary, the result (patch with Accept/Reject, questions, or failure reason), and a follow-up box docked at the bottom. `/api/sessions` returns the issue title and source.
+
+## Free-form code in the app (2026-11-22)
+
+### Added
+- "Paste code" source: a file name and its code typed in the page become a private Git repository under the runs directory; the agent works on it exactly as on a local repository.
+- Local repositories with commit `HEAD` now include uncommitted and untracked (non-ignored) edits: a snapshot commit is built with a temporary index (no ref, index, branch or file of the user changes). Previously such edits were silently ignored. An accepted patch is committed on a new branch on top of that snapshot.
+
+## Readable session view (2026-11-22)
+
+### Changed
+- Web app session page: a status banner that says what happened and what to do next; settings as chips; a five-step progress bar; the request and every follow-up shown as message bubbles; the trace as one card per step, labelled by role (Planner, Coder, Reviewer, Harness), with each tool call merged with its result, the repair plan rendered as hypothesis and planned changes, edits as original/replacement code, retrieval and search results as file chips, and harness notices in plain words; follow-ups can change the reasoning effort. Test execution is disabled with an explanation when Docker is unavailable.
+- Attempt numbers are shown for single-agent submissions too.
+
+## Guideline gaps closed (2026-11-22)
+
+### Added
+- Web app: per-request **reasoning effort** (DeepSeek thinking none/low/high/max, the RQ1 variable) next to the execution-feedback switch (RQ2), so every studied improvement is usable in the working agent; the timeline and run statistics show the choice; Qwen requests reject thinking.
+- README: a Scope row (what the demo accepts and refuses), section 6.1 (nine failure situations with detection, bounded recovery or safe stop, user feedback and evidence; risks of repeated external API calls), section 6.2 (non-functional targets vs measured latency, cost, workload, privacy, safety, reproducibility), checklist rows for both.
+- `AI_DECLARATION.md` skeleton (tools, what they helped with, prompts in `ai_prompts/`, missing records).
+
+## Repository cleanup for submission (2026-11-22)
+
+### Removed
+- The original CodeNexus code-generation demo and its Task 1-3 CLIs, which are not part of the final agent: `app.py`, `templates/`, `static/`, `start.ps1`, `code_agent.py`, `test_agent.py`, `evaluator.py`, `manual_generate.py`, `Visualization*.py`, `experiment_results_extreme.csv`, `demo_localization.py`, `localize.py`, `repair.py`, `repair_loop.py`, `requirements.txt`, `.env.example`, `.env.qwen.example`, `examples/`, and their tests.
+- SWE-bench 3.0.0-era evaluation helpers (`experiments/swebench_eval_compat.py`, `experiments/swebench_report.py`, `scripts/evaluate_saved_swebench.sh`), superseded by `experiments/official_eval.py` with swebench 4.1.0.
+- Superseded docs (`docs/task1-3.md`, AutoDL and CPU-only runbooks, small-Qwen notes, live-smoke notes, code review notes) and `TODO.md` (unfinished work is listed in README section 7).
+
+### Changed
+- `pipeline_agent.py` is only the Planner handoff; `prompt_agent.py` no longer contains the demo's prompt refiner. CI (`regression.yml`) runs the offline suite on Linux and Windows for `main` and `feat/**`; workflows of retired experiments are removed. README gains a course submission checklist; CONTRIBUTING describes the current layout.
+
+## Final results with the current agent (2026-11-22)
+
+### Changed
+- README section 5 now reports the final experiment with the current agent (4 tools, syntax check, optional execution feedback), 7 configurations x 3 runs (`final-t4*`): RQ2 execution feedback +7.2 pt for P-C-R (3 tasks better, 0 worse) and -8.7 pt for the single agent; RQ1 no effort level better than thinking off; RQ3 no difference. The earlier 2-tool runs are kept as the previous version, compared per config with `repeat_report --vs-tag`.
+- `lite_batch --resume` reruns tasks that failed on the model API (billing, auth, rate limit, network: `API/network operation failed`) instead of keeping them as results; model-side errors stay. Used once when the DeepSeek balance ran out mid-run.
+
+### Added
+- `repeat_report --vs-tag`: compares each configuration with earlier runs of another agent version.
+- `scripts/setup_eval_server.sh`: rerunnable one-shot setup of a fresh CPU evaluation server.
+
+## Python syntax check after apply (2026-11-22)
+
+### Added
+- `apply_candidate` parses every changed `.py` file with `ast` after `git apply` (nothing is imported or executed). If a file that parsed at the base commit no longer parses, the candidate fails as `syntax_invalid` / `python_syntax_error` with file and line, is not exported, and follows the normal failed-attempt path (P-C-R: Reviewer stage `syntax` -> Coder retry; single agent: rejected submission). New files and files already unparsable at the base commit are not blocked. Manifests list `harness_checks`.
+
+## Execution feedback (RQ2) and a redesigned web app (2026-11-22)
+
+### Added
+- `patchloop_task2/test_exec.py`: the repository's EXISTING tests run in a Docker sandbox (no network, all capabilities dropped, no new privileges, memory/CPU/pid limits, timeout that kills the container). SWE-bench tasks use their prebuilt evaluation image (patch applied inside a throw-away container); local repositories use `PATCHLOOP_TEST_IMAGE` with the worktree mounted read-only. Hidden `test_patch` / FAIL_TO_PASS tests are never used.
+- `run_tests(test_path)` agent tool (Planner and single agent; tracked test files only, at most 3 runs per task, at the base commit) and a harness regression check after every applied candidate: tests that passed before and fail with the patch go back to the agent (P-C-R: Reviewer -> Coder retry; single agent: replacement submission). If the replacement does not apply, the earlier applicable candidate is kept.
+- `lite_batch --exec-feedback`, `EXEC_AGENTS="pcr single"` in `run_final_deepseek.sh` (batches `*-pcr-exec`, `*-single-exec`), RQ2 pairs in `final_report`, manifests record `exec_feedback`.
+- Web app: "Run existing tests" switch (states when Docker or a test image is unavailable), test results in the timeline, and a redesigned page (progress steps, run statistics, readable diff, light and dark themes).
+
+## Two more agent tools: find_definition and list_directory (2026-11-22)
+
+### Added
+- `find_definition(name)`: locates Python classes, functions and methods by name (qualified name, kind, line span, signature) with `ast` over tracked files; nothing is imported or executed. `list_directory(relative_path)`: tracked sub-directories (with file counts) and files under a directory.
+- Both are offered to the Planner and the single agent alike (RQ3 parity), validated like the existing tools (`TOOL_ARGUMENTS`), shown in the web timeline, and recorded in every batch manifest (`agent_tools`). `final_report` treats `agent_tools` as a studied variable; batches without the field are the earlier 2-tool agent.
+
+### Changed
+- `find_definition` counts as localization evidence for the Planner like `search_repo`. Final experiments are rerun with the 4-tool agent; the earlier 2-tool runs are kept as a tool ablation.
+
+## Final experiment results recorded (2026-11-21)
+
+### Added
+- `experiments/repeat_report.py`: combines repeated runs of the final experiment (one tag per run): per-config resolved per run, mean and range; task-level paired comparisons (sign test over tasks, task bootstrap CI) so repeated runs of a task are not counted as independent.
+
+### Changed
+- README section 5 now holds the final results over 3 runs (official harness, 23 Lite dev tasks): mean resolution none 46.4%, single 42.0%, low 44.9%, high 34.8%, max 40.6%. Higher reasoning effort did not improve resolution; RQ3 shows no significant difference. Run 1 alone (high 6/23) overstated the high-effort drop.
+
+## Final experiment on DeepSeek Flash; RQ1 becomes reasoning effort (2026-11-21)
+
+### Added
+- DeepSeek reasoning effort (`DEEPSEEK_REASONING_EFFORT` / `lite_batch --reasoning-effort`: none, low, high, max). `none` keeps thinking disabled (previous behavior, still the default). With thinking on, answer caps and the answer-token budget are unchanged; each call gets extra `max_tokens` room for hidden reasoning, and reasoning tokens are recorded per call/task (`reasoning_tokens`) and capped per task (`REASONING_TOKEN_BUDGET_EXHAUSTED`). An answer longer than the stage cap counts as truncated, exactly as without thinking.
+- `experiments/final_report.py`: per-configuration table and paired comparisons (RQ1 effort pairs, RQ3 P-C-R vs single, DeepSeek vs Qwen-7B), optional restriction to gold-resolvable tasks, comparability warnings for settings that differ inside a pair.
+- `scripts/run_final_deepseek.sh`: end-to-end, resumable final experiment (preflight, generation, official evaluation, re-evaluation of the Qwen-7B batches on the repaired images with the old verdicts kept, report).
+- `docs/qwen7b-limits.md`: the evidence that the 7B model cannot carry the system, and how RQ1 continues the proposal.
+
+### Changed
+- `lite_batch` manifests record `reasoning_effort`, `reasoning_tokens_per_call` and `reasoning_budget_per_task`; summaries add `reasoning_tokens`.
+- DeepSeek request timeout may be up to 900 s (default 120 s for none, 600/600/900 s for low/high/max).
+- Per-call reasoning room raised from 8K/24K/48K to DeepSeek's default thinking-mode `max_tokens` (64K for low/high, 128K for max); per-task reasoning budgets 400k/600k/1.2M. The first live run with the smaller room cut off the reasoning of some Coder calls (empty answers), which biased RQ1 against higher effort. Such calls are now reported as `REASONING_EXHAUSTED_CALL`.
+- DeepSeek batch runs are labelled `deepseek-...` instead of `qwen-...` in `run_status.json`.
+
+### Verified and not verified
+- Offline tests only (scripted fake clients) plus a dry run of the script with simulated batches. A live single-task check (high effort) confirmed that `completion_tokens` includes `reasoning_tokens` and that `max_tokens` covers both.
+
 ## Alibaba Cloud server and local official evaluation (2026-11-20)
 
 ### Added

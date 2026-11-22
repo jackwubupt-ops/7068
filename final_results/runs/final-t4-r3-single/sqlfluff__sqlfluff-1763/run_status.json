@@ -1,0 +1,311 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "sqlfluff__sqlfluff-1763",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "a10057635e5b2559293a676486f0b730981f037a",
+  "status": "no_submission",
+  "edit_format": "search_replace",
+  "exec_feedback": false,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "not_attempted",
+  "attempt_count": 0,
+  "candidate_attempts": [],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "UnicodeEncodeError"
+    },
+    {
+      "step": 2,
+      "action": "search_repo",
+      "search_query": "open("
+    },
+    {
+      "step": 3,
+      "action": "search_repo",
+      "search_query": "write("
+    },
+    {
+      "step": 4,
+      "action": "search_repo",
+      "search_query": "persist_tree"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/linter/linted_file.py"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/linter/linted_file.py"
+    },
+    {
+      "step": 7,
+      "action": "search_repo",
+      "search_query": "encoding"
+    },
+    {
+      "step": 8,
+      "action": "search_repo",
+      "search_query": "autodetect"
+    },
+    {
+      "step": 9,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\" string=\"false\">{\"relative_pat"
+    },
+    {
+      "step": 10,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/file_helpers.py"
+    },
+    {
+      "step": 11,
+      "action": "search_repo",
+      "search_query": "get_encoding"
+    },
+    {
+      "step": 12,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/linter/linter.py"
+    },
+    {
+      "step": 13,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/linter/linted_dir.py"
+    },
+    {
+      "step": 14,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/cli/commands.py"
+    },
+    {
+      "step": 15,
+      "action": "search_repo",
+      "search_query": "stdout"
+    },
+    {
+      "step": 16,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/cli/commands.py"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/core/parser/segments/base.py",
+    "src/sqlfluff/api/simple.py",
+    "src/sqlfluff/core/rules/config_info.py",
+    "src/sqlfluff/core/linter/linter.py",
+    "plugins/sqlfluff-templater-dbt/sqlfluff_templater_dbt/templater.py",
+    "src/sqlfluff/core/parser/grammar/base.py",
+    "src/sqlfluff/core/parser/context.py",
+    "test/rules/std_test.py",
+    "src/sqlfluff/dialects/dialect_ansi.py"
+  ],
+  "read_files": [
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/core/file_helpers.py",
+    "src/sqlfluff/core/linter/linted_dir.py",
+    "src/sqlfluff/core/linter/linted_file.py",
+    "src/sqlfluff/core/linter/linter.py"
+  ],
+  "stop_reason": "step_budget_exhausted",
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2861,
+      "completion_tokens": 18,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.864,
+      "dropped_history_messages": 0,
+      "output_sha256": "c81e120c95bc08256b9cc6e07811d5b56c433895759f911e91129095fcdf3241"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2924,
+      "completion_tokens": 14,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.46,
+      "dropped_history_messages": 0,
+      "output_sha256": "be83001346944a6b12c1da1d6ad448185eed6eb273db29d9c84a30840c4205e0"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3412,
+      "completion_tokens": 14,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.729,
+      "dropped_history_messages": 0,
+      "output_sha256": "085adead00cc53c78bd6314f76f91e576c3dfb8c3584f726cce0bddbec5af0e3"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3839,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.161,
+      "dropped_history_messages": 0,
+      "output_sha256": "c082dbfec8fb6677d7661b0c3461ab9f1a087a2dfea41cedf6d6061c95db1ae2"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4074,
+      "completion_tokens": 34,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.224,
+      "dropped_history_messages": 0,
+      "output_sha256": "53de1a53d1b118b9091618f382c0d947dbbd0af36f79c1f35ef67091c354eaec"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4980,
+      "completion_tokens": 34,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.991,
+      "dropped_history_messages": 0,
+      "output_sha256": "dbd7f5bc3b8ffb9073ca12fefc9659be54e6e46decc85566737b0aee8ab9a219"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7398,
+      "completion_tokens": 14,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.568,
+      "dropped_history_messages": 0,
+      "output_sha256": "0e3f9716491f2f43ddfe016e96e2fcaf1b448f46b51647c3e172a797c0a9188b"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7864,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.826,
+      "dropped_history_messages": 0,
+      "output_sha256": "fed3744dc9cd111df2e5d8da2b79d293e0c77e5444d18ca9633d8b8d85607b78"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8323,
+      "completion_tokens": 65,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.94,
+      "dropped_history_messages": 0,
+      "output_sha256": "cad3e0f85dbd6bc75efc92700f43d01613349c4bba35a88d5c0d7b397c42a692"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8451,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.648,
+      "dropped_history_messages": 0,
+      "output_sha256": "79791b4a0731ac1d14f4506f138dcaadaa94a7d48f4cad99ada45956b8f75427"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8871,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.241,
+      "dropped_history_messages": 0,
+      "output_sha256": "f2f5a81440502d36472fc5037ad634a352421ec9d59179103130cdab211123fc"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9332,
+      "completion_tokens": 33,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.77,
+      "dropped_history_messages": 0,
+      "output_sha256": "43a6c7ebe4870c24038752f2441a3df9c3cae493cb49649b5e5a6de0fcd98644"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 10195,
+      "completion_tokens": 34,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.673,
+      "dropped_history_messages": 0,
+      "output_sha256": "5193c4f54f726ed34aef84b5e078fb6aeab0d289fe613c78aaeb72ad414957dd"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11070,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.339,
+      "dropped_history_messages": 0,
+      "output_sha256": "95ba30f2f89f93632cdf20ba75773d4e071725e75af56828968a14f556db41d8"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 12193,
+      "completion_tokens": 15,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.365,
+      "dropped_history_messages": 0,
+      "output_sha256": "689a04238b42d2653507847af8c258190fe23546ab764ac365ef37383c8abec6"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 12668,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.745,
+      "dropped_history_messages": 0,
+      "output_sha256": "84a05a649b358c90ba8163af58c3af03bc10efc81b1bceb6d6907192238a7a5c"
+    }
+  ],
+  "agent_calls": 16,
+  "prompt_tokens": 118455,
+  "completion_tokens": 419,
+  "reasoning_tokens": 0,
+  "duration_seconds": 16.99,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

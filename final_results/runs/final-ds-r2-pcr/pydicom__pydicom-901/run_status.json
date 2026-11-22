@@ -1,0 +1,197 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pydicom__pydicom-901",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "3746878d8edf1cbda6fbcf35eec69f9ba79301ca",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "9ff824c9fc022481e518d2227bc59efccf958abb0bbd40c2df2546d31d366456",
+      "raw_model_patch_sha256": "0b2ed71aafdbc5197c3af9a8a66753c61e0bc503f7cfb7b3fdcb64b527540856",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pydicom/config.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pydicom/config.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "996b1799fd31f4b9179153cae4b39d6872af67100c1ce15e96d0d1aaa636bbae",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11,
+      "completion_tokens": 2,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.604,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 824,
+      "completion_tokens": 23,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.57,
+      "dropped_history_messages": 0,
+      "output_sha256": "8f043b1e2763baaf874529f69555ceb4c06fc66d21d15b275e81e8c7e6d33e6e"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1245,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.508,
+      "dropped_history_messages": 0,
+      "output_sha256": "629cbeb5eae2631881fe826a8e968cfb27d96448d6b37ca8726861bf34879049"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3784,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.558,
+      "dropped_history_messages": 0,
+      "output_sha256": "ca1154ed645ea5c225a165ba03595afce2563bb8d61f5bd305f2a535dc2b032a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4283,
+      "completion_tokens": 24,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.967,
+      "dropped_history_messages": 0,
+      "output_sha256": "5ef56f1564429575ebefd9b0ac5b36e66245d2ac63b4c7f469a959a89208bc50"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4601,
+      "completion_tokens": 669,
+      "reasoning_tokens": 0,
+      "latency_seconds": 4.207,
+      "dropped_history_messages": 0,
+      "output_sha256": "54e97402036e0ee75c89032f41eae2a716d02e1babae5a659c4e30c441af2469"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5298,
+      "completion_tokens": 593,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.381,
+      "dropped_history_messages": 0,
+      "output_sha256": "52db34467a2495c9099c5de64c14db86853e90e0fac2b38492c27c70508ca2bb"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1674,
+      "completion_tokens": 231,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.032,
+      "dropped_history_messages": 0,
+      "output_sha256": "0b2ed71aafdbc5197c3af9a8a66753c61e0bc503f7cfb7b3fdcb64b527540856"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "logging"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "config.debug"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 3
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pydicom/config.py",
+    "pydicom/filereader.py",
+    "pydicom/dataset.py",
+    "pydicom/pixel_data_handlers/pillow_handler.py",
+    "pydicom/dataelem.py",
+    "pydicom/dicomdir.py",
+    "pydicom/encaps.py",
+    "pydicom/pixel_data_handlers/jpeg_ls_handler.py",
+    "pydicom/pixel_data_handlers/numpy_handler.py",
+    "pydicom/pixel_data_handlers/rle_handler.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "pydicom/config.py",
+    "pydicom/config.py"
+  ],
+  "patch_size_bytes": 710,
+  "prompt_tokens": 21720,
+  "completion_tokens": 1596,
+  "reasoning_tokens": 0,
+  "duration_seconds": 11.94,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

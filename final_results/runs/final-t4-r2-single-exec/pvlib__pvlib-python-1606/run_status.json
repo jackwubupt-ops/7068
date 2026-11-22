@@ -1,0 +1,211 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1606",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "c78b50f4337ecbe536a961336ca91a1176efc0e8",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "5d8bcdbad3724070a8889f244e5c7f1557c0f8940716276b09f82fbc9c653041",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/tools.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "dd1af5cacecce5638f67a9ce40fca87143079e97c3a1a1450d0e12a2aec12e58",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/tools.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_tools.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 11
+          },
+          "failing": [],
+          "seconds": 2.23
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 11
+          },
+          "failing": [],
+          "seconds": 2.3
+        },
+        "seconds": 4.53,
+        "status": "passed",
+        "regressions": [],
+        "newly_passing": []
+      }
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "step": 3,
+      "action": "invalid",
+      "protocol_error": "Extra data: line 3 column 1 (char 19)",
+      "raw_head": "{\"action\":\"edit\"}\n\nThe bug: when `upper == lower`, `df['VH'] - df['VL']` is 0, so `log(atol/0)` = inf, making `iterlimit"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "passed"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/modelchain.py",
+    "pvlib/pvsystem.py",
+    "pvlib/temperature.py",
+    "pvlib/bifacial/pvfactors.py",
+    "pvlib/location.py",
+    "pvlib/tools.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/singlediode.py",
+    "pvlib/iam.py",
+    "pvlib/forecast.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_tools.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 11
+        },
+        "failing": [],
+        "seconds": 2.23
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 11
+        },
+        "failing": [],
+        "seconds": 2.3
+      },
+      "seconds": 4.53,
+      "status": "passed",
+      "regressions": [],
+      "newly_passing": []
+    }
+  ],
+  "read_files": [
+    "pvlib/tools.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/tools.py"
+  ],
+  "patch_size_bytes": 1178,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3058,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.833,
+      "dropped_history_messages": 0,
+      "output_sha256": "4f7399b19d3eaa54a7363a5a42589454c669f99d57f8af05397c51ab6f26e2fe"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5120,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.576,
+      "dropped_history_messages": 0,
+      "output_sha256": "dcea4c8f31ecd6e88d3e86c950e2d390887e15a0ddc794590e5d1766b61d34a7"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5623,
+      "completion_tokens": 245,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.142,
+      "dropped_history_messages": 0,
+      "output_sha256": "ce5ee9ea2fa59e66138df99fff916b61cabe79397b6770b6a6bb48fa0abfd0c3"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5899,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.557,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6030,
+      "completion_tokens": 303,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.8,
+      "dropped_history_messages": 0,
+      "output_sha256": "5d8bcdbad3724070a8889f244e5c7f1557c0f8940716276b09f82fbc9c653041"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 25730,
+  "completion_tokens": 607,
+  "reasoning_tokens": 0,
+  "duration_seconds": 12.61,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

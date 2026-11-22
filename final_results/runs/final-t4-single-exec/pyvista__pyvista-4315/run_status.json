@@ -1,0 +1,225 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pyvista__pyvista-4315",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pyvista/pyvista",
+  "base_commit": "db6ee8dd4a747b8864caae36c5d05883976a3ae5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "e50abba40069d813ef53ea3b3268bf1e64a117119a1b7d37239111c74ca427ff",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 2,
+      "edited_files": [
+        "pyvista/core/grid.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "963d475b40540a440e9c64942cbcb288d7b9367a90088989de7c695b675f1512",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pyvista/core/grid.py"
+      ],
+      "test_check": {
+        "targets": [
+          "tests/test_grid.py",
+          "tests/filters/test_rectilinear_grid.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "ERROR": 1,
+            "PASSED": 121
+          },
+          "failing": [
+            "root:errors.py:118"
+          ],
+          "seconds": 4.93
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "ERROR": 1,
+            "PASSED": 121
+          },
+          "failing": [
+            "root:errors.py:118"
+          ],
+          "seconds": 4.55
+        },
+        "seconds": 9.48,
+        "status": "passed",
+        "regressions": [],
+        "newly_passing": []
+      }
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "find_definition",
+      "definition_name": "RectilinearGrid"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "passed"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pyvista/utilities/errors.py",
+    "pyvista/core/grid.py",
+    "pyvista/plotting/charts.py",
+    "pyvista/plotting/renderer.py",
+    "pyvista/plotting/plotting.py",
+    "doc/source/conf.py",
+    "pyvista/core/dataobject.py",
+    "pyvista/utilities/helpers.py",
+    "tests/test_dataset.py",
+    "pyvista/core/filters/data_set.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "tests/test_grid.py",
+        "tests/filters/test_rectilinear_grid.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "ERROR": 1,
+          "PASSED": 121
+        },
+        "failing": [
+          "root:errors.py:118"
+        ],
+        "seconds": 4.93
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "ERROR": 1,
+          "PASSED": 121
+        },
+        "failing": [
+          "root:errors.py:118"
+        ],
+        "seconds": 4.55
+      },
+      "seconds": 9.48,
+      "status": "passed",
+      "regressions": [],
+      "newly_passing": []
+    }
+  ],
+  "read_files": [
+    "pyvista/core/grid.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pyvista/core/grid.py"
+  ],
+  "patch_size_bytes": 2087,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1275,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.973,
+      "dropped_history_messages": 0,
+      "output_sha256": "5c85d1940b9638f486d64310126875ca037f431b94065c136cf6756da9075a8a"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1407,
+      "completion_tokens": 29,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.535,
+      "dropped_history_messages": 0,
+      "output_sha256": "a0b1e41434d7faf675f218d1c4ee177b529df62528b04a89c9cc7f457874c414"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5690,
+      "completion_tokens": 29,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.051,
+      "dropped_history_messages": 0,
+      "output_sha256": "51088d1e007e9913f8e0f1138566f13f1e7d11b210ce4b2c57da46f9aae26dbd"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7008,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.622,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7140,
+      "completion_tokens": 522,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.437,
+      "dropped_history_messages": 0,
+      "output_sha256": "e50abba40069d813ef53ea3b3268bf1e64a117119a1b7d37239111c74ca427ff"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 22520,
+  "completion_tokens": 601,
+  "reasoning_tokens": 0,
+  "duration_seconds": 19.15,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

@@ -1,0 +1,262 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1707",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "40e9e978c170bdde4eeee1547729417665dbc34c",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "edit_invalid",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "844f29bece67441c7749b8db0bdeb7179ce0fb2914b41c0c5baba5c9be89d8e1",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/iam.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "89579e3714d09b32d8f19fe512ce76fb295cbd8848bf33ee28a05653b899904e",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/iam.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_iam.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 30
+          },
+          "failing": [],
+          "seconds": 2.54
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 29,
+            "FAILED": 1
+          },
+          "failing": [
+            "pvlib/tests/test_iam.py::test_physical"
+          ],
+          "seconds": 2.82
+        },
+        "seconds": 5.36,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_iam.py::test_physical"
+        ],
+        "newly_passing": []
+      }
+    },
+    {
+      "raw_model_output_sha256": "82f5145c0860a51a3978fe21bb771eba8e2ccf9c3f13497098e999ee8731129d",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "82f5145c0860a51a3978fe21bb771eba8e2ccf9c3f13497098e999ee8731129d",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for pvlib/iam.py does not match the original file. First SEARCH line: '    # incidence angle modifier'",
+      "changed_files": []
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "find_definition",
+      "definition_name": "physical"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/iam.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "regressions"
+    },
+    {
+      "step": 5,
+      "action": "search_repo",
+      "search_query": "def test_physical"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_iam.py"
+    },
+    {
+      "step": 7,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/iam.py",
+    "docs/examples/reflections/plot_diffuse_aoi_correction.py",
+    "pvlib/pvsystem.py",
+    "pvlib/modelchain.py",
+    "pvlib/iotools/psm3.py",
+    "pvlib/irradiance.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/_deprecation.py",
+    "pvlib/bifacial/infinite_sheds.py",
+    "pvlib/iotools/crn.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_iam.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 30
+        },
+        "failing": [],
+        "seconds": 2.54
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 29,
+          "FAILED": 1
+        },
+        "failing": [
+          "pvlib/tests/test_iam.py::test_physical"
+        ],
+        "seconds": 2.82
+      },
+      "seconds": 5.36,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_iam.py::test_physical"
+      ],
+      "newly_passing": []
+    }
+  ],
+  "read_files": [
+    "pvlib/iam.py",
+    "pvlib/tests/test_iam.py"
+  ],
+  "stop_reason": "|kept_earlier_candidate_with_test_regressions",
+  "suspected_files": [
+    "pvlib/iam.py"
+  ],
+  "patch_size_bytes": 383,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 997,
+      "completion_tokens": 14,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.468,
+      "dropped_history_messages": 0,
+      "output_sha256": "b6d5560c511a6c8e78eb36f913137d63461540b60a5b31f7059e8bb65cd4c2bc"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1130,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.685,
+      "dropped_history_messages": 0,
+      "output_sha256": "68601bbd5ecdfc8dd5c5d35130f0852969982a1d6d3849c52dd472d43b39a661"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4053,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.831,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4184,
+      "completion_tokens": 121,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.151,
+      "dropped_history_messages": 0,
+      "output_sha256": "844f29bece67441c7749b8db0bdeb7179ce0fb2914b41c0c5baba5c9be89d8e1"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4955,
+      "completion_tokens": 17,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.653,
+      "dropped_history_messages": 0,
+      "output_sha256": "d9b723d7eaf701ad36b135b534ac5eaf4cd83303bc43454a8366a2cfeaca9714"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5342,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.911,
+      "dropped_history_messages": 0,
+      "output_sha256": "e360fb38cc7523e55de1f31f95786d62bac7861800743e6d1076ad0723325f0f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6496,
+      "completion_tokens": 185,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.497,
+      "dropped_history_messages": 0,
+      "output_sha256": "82f5145c0860a51a3978fe21bb771eba8e2ccf9c3f13497098e999ee8731129d"
+    }
+  ],
+  "agent_calls": 7,
+  "prompt_tokens": 27157,
+  "completion_tokens": 399,
+  "reasoning_tokens": 0,
+  "duration_seconds": 13.76,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

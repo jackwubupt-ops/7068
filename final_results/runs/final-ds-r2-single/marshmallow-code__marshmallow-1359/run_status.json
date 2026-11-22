@@ -1,0 +1,182 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "marshmallow-code__marshmallow-1359",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "b40a0f4e33823e6d0f341f7e8684e359a99060d1",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "5c2ff04c9fb54fe4619b5c791e02100dfab9e1bd68a8d7a50ea9b30396daf54f",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/marshmallow/fields.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "47ec58eb91308c084f94d9001ca7317b172d0a55d0b83cc8c29304e0a1effff0",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "src/marshmallow/fields.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "step": 4,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "step": 6,
+      "action": "edit"
+    },
+    {
+      "step": 7,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "src/marshmallow/fields.py",
+    "src/marshmallow/schema.py",
+    "tests/test_schema.py",
+    "performance/benchmark.py",
+    "src/marshmallow/validate.py",
+    "src/marshmallow/orderedset.py",
+    "src/marshmallow/exceptions.py",
+    "tests/test_serialization.py",
+    "src/marshmallow/error_store.py",
+    "tests/test_utils.py"
+  ],
+  "read_files": [
+    "src/marshmallow/fields.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "src/marshmallow/fields.py"
+  ],
+  "patch_size_bytes": 512,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1287,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.65,
+      "dropped_history_messages": 0,
+      "output_sha256": "4b7160d3130c37b9bf423a4efed6993e69c6c89f8f8f051e2010bd618dc1da47"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2701,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.675,
+      "dropped_history_messages": 0,
+      "output_sha256": "7b601e567cb6d56d9215e47e90d131eb7639c71e862fed07bdb69782ffdfb8df"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4060,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.739,
+      "dropped_history_messages": 0,
+      "output_sha256": "0a58d431f2cbfd653d7865a9fba14be14af3eda584e3b03c668f4db2035f29aa"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5428,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.831,
+      "dropped_history_messages": 0,
+      "output_sha256": "e1fc5440247009678eb128b5d8693c482b4ccf34ea20d804f868250c0e1d0291"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6790,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.059,
+      "dropped_history_messages": 0,
+      "output_sha256": "a571278ccce7de63211a8c183580af50b5e4d19e86df455a4605f4e105da342e"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8177,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.981,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8310,
+      "completion_tokens": 167,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.935,
+      "dropped_history_messages": 0,
+      "output_sha256": "5c2ff04c9fb54fe4619b5c791e02100dfab9e1bd68a8d7a50ea9b30396daf54f"
+    }
+  ],
+  "agent_calls": 7,
+  "prompt_tokens": 36753,
+  "completion_tokens": 330,
+  "reasoning_tokens": 0,
+  "duration_seconds": 6.11,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

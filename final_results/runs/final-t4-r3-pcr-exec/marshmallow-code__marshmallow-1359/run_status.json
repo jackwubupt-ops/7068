@@ -1,0 +1,323 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "marshmallow-code__marshmallow-1359",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "b40a0f4e33823e6d0f341f7e8684e359a99060d1",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "47ec58eb91308c084f94d9001ca7317b172d0a55d0b83cc8c29304e0a1effff0",
+      "raw_model_patch_sha256": "5c2ff04c9fb54fe4619b5c791e02100dfab9e1bd68a8d7a50ea9b30396daf54f",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "src/marshmallow/fields.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/marshmallow/fields.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "test_check": {
+        "targets": [
+          "tests/test_fields.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 76
+          },
+          "failing": [],
+          "seconds": 0.82
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 76
+          },
+          "failing": [],
+          "seconds": 0.82
+        },
+        "seconds": 1.64,
+        "status": "passed",
+        "regressions": [],
+        "newly_passing": []
+      }
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "cf347673de918377dd7e4f9d8dd537dc56e0c771694b3040c6eafbdce5d2bcf0",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11,
+      "completion_tokens": 2,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.551,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1425,
+      "completion_tokens": 31,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.789,
+      "dropped_history_messages": 0,
+      "output_sha256": "c2686ebb69aaf57c66477ee59384190625c9485594a3f888a98adba39277da95"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1740,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.086,
+      "dropped_history_messages": 0,
+      "output_sha256": "4b7160d3130c37b9bf423a4efed6993e69c6c89f8f8f051e2010bd618dc1da47"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3194,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.57,
+      "dropped_history_messages": 0,
+      "output_sha256": "8ad8457af30d0b3b517e42b6620bdec481eb7d28a83f5789f9eda8fb37e703c7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4311,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.022,
+      "dropped_history_messages": 0,
+      "output_sha256": "83a46f736f9545e1f85fc1b34c794df29a41ef1a5c402091132f7508958c09be"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4797,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.808,
+      "dropped_history_messages": 0,
+      "output_sha256": "0ecfe9edca7cd9dca995d9d2e18de940809cf05801004253dbf9401bc699da64"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5547,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.543,
+      "dropped_history_messages": 0,
+      "output_sha256": "2884162d82308f0d099c1b1bba96b5bca3f0ea99c207770d365f60112c6c9ce3"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6244,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.994,
+      "dropped_history_messages": 0,
+      "output_sha256": "b074662e33c4561377ebc91f2a6e1b0ba5fbbda82f474a1d285f1c837082c5ac"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6962,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.609,
+      "dropped_history_messages": 0,
+      "output_sha256": "69b44047c196ab991e816c5c5dc24c3935138b3a84facbf2c5277ab68506dfd7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9524,
+      "completion_tokens": 638,
+      "reasoning_tokens": 0,
+      "latency_seconds": 4.121,
+      "dropped_history_messages": 0,
+      "output_sha256": "47ffe057d50c83fe177e2d16c341c781b60456013547cd40cfda0aa5e1f4f5e9"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 10455,
+      "completion_tokens": 602,
+      "reasoning_tokens": 0,
+      "latency_seconds": 3.422,
+      "dropped_history_messages": 0,
+      "output_sha256": "d18ce0add8fce5f83f8a14a75f2362246e7eb8765766bd3b22e056abe91c1cad"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1956,
+      "completion_tokens": 167,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.51,
+      "dropped_history_messages": 0,
+      "output_sha256": "5c2ff04c9fb54fe4619b5c791e02100dfab9e1bd68a8d7a50ea9b30396daf54f"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "SCHEMA_OPTS_VAR_NAME"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "_bind_to_schema"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 3
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "src/marshmallow/fields.py",
+    "src/marshmallow/schema.py",
+    "tests/test_schema.py",
+    "performance/benchmark.py",
+    "src/marshmallow/validate.py",
+    "src/marshmallow/orderedset.py",
+    "src/marshmallow/exceptions.py",
+    "tests/test_serialization.py",
+    "src/marshmallow/error_store.py",
+    "tests/test_utils.py"
+  ],
+  "test_env_available": true,
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "src/marshmallow/fields.py",
+    "src/marshmallow/fields.py"
+  ],
+  "patch_size_bytes": 512,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "tests/test_fields.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 76
+        },
+        "failing": [],
+        "seconds": 0.82
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 76
+        },
+        "failing": [],
+        "seconds": 0.82
+      },
+      "seconds": 1.64,
+      "status": "passed",
+      "regressions": [],
+      "newly_passing": []
+    }
+  ],
+  "prompt_tokens": 56166,
+  "completion_tokens": 1653,
+  "reasoning_tokens": 0,
+  "duration_seconds": 18.22,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

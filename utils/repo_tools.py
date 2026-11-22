@@ -190,6 +190,130 @@ def search_repo(repo_root, query, *, max_results=20, context_lines=3):
         return _error(exc)
 
 
+# Arguments each agent tool accepts (shared by the Planner and the single agent).
+TOOL_ARGUMENTS = {
+    'search_repo': {'query', 'max_results', 'context_lines'},
+    'read_file': {'relative_path', 'start_line', 'end_line'},
+    'list_directory': {'relative_path'},
+    'find_definition': {'name', 'max_results'},
+    'run_tests': {'test_path'},           # only with execution feedback (patchloop_task2.test_exec)
+}
+MAX_LISTING = 100
+MAX_DEFINITION_FILES = 5000
+IDENTIFIER = re.compile(r'[A-Za-z_][A-Za-z0-9_]{0,99}')
+
+
+def _tracked_files(root):
+    proc = subprocess.run(['git', '-c', 'core.fsmonitor=false', '-C', str(root), 'ls-files', '-z'],
+                          capture_output=True, timeout=10)
+    if proc.returncode:
+        raise ValueError('Could not list tracked files')
+    names = [n for n in proc.stdout.decode('utf-8', 'replace').split('\0') if n]
+    return [n for n in names if _allowed(n.split('/'))]
+
+
+def list_directory(repo_root, relative_path='.'):
+    """Tracked entries directly under a directory: sub-directories with their file
+    counts, then files. Shows the layout of the repository without reading code."""
+    try:
+        root = _root(repo_root)
+        if not isinstance(relative_path, str) or '\x00' in relative_path:
+            raise ValueError('Expected a relative directory path')
+        prefix = relative_path.replace('\\', '/').strip('/')
+        if prefix in ('', '.'):
+            prefix = ''
+        else:
+            parts = prefix.split('/')
+            win = PureWindowsPath(relative_path)
+            if Path(relative_path).is_absolute() or win.drive or win.root or '..' in parts or ':' in relative_path:
+                raise ValueError('Absolute paths and traversal are forbidden')
+            if not _allowed(parts):
+                raise ValueError('Excluded directory')
+        dirs, files = {}, []
+        for name in _tracked_files(root):
+            if prefix:
+                if not name.startswith(prefix + '/'):
+                    continue
+                rest = name[len(prefix) + 1:]
+            else:
+                rest = name
+            head, sep, _ = rest.partition('/')
+            if sep:
+                dirs[head] = dirs.get(head, 0) + 1
+            else:
+                files.append(head)
+        if not dirs and not files:
+            raise ValueError('No tracked files under this directory')
+        entries = ([{'name': d + '/', 'type': 'directory', 'tracked_files': n} for d, n in sorted(dirs.items())]
+                   + [{'name': f, 'type': 'file'} for f in sorted(files)])
+        return {'ok': True, 'directory': prefix or '.', 'entries': entries[:MAX_LISTING],
+                'truncated': len(entries) > MAX_LISTING}
+    except (OSError, ValueError, TypeError, subprocess.TimeoutExpired) as exc:
+        return _error(exc)
+
+
+def _definitions(text, name):
+    """(qualified name, kind, start, end, signature line) for every def/class called name."""
+    out = []
+    lines = text.split('\n')
+
+    def visit(node, scope, in_class):
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                is_class = isinstance(child, ast.ClassDef)
+                if child.name == name:
+                    kind = 'class' if is_class else ('method' if in_class else 'function')
+                    signature = lines[child.lineno - 1].strip()[:200] if child.lineno <= len(lines) else ''
+                    out.append(('.'.join([*scope, child.name]), kind, child.lineno, child.end_lineno, signature))
+                visit(child, [*scope, child.name], is_class)
+            else:
+                visit(child, scope, in_class)
+    visit(ast.parse(text), [], False)
+    return out
+
+
+def find_definition(repo_root, name, *, max_results=10):
+    """Where a Python class, function or method called `name` is defined
+    (tracked .py files, parsed with ast; nothing is imported or executed)."""
+    try:
+        if not isinstance(name, str) or not IDENTIFIER.fullmatch(name):
+            raise ValueError('name must be a single Python identifier, e.g. "Field" or "deserialize"')
+        _integer(max_results, 1, 20, 'max_results')
+        root = _root(repo_root)
+        pattern = re.compile(r'^\s*(?:async\s+def|def|class)\s+' + re.escape(name) + r'\b', re.M)
+        found, scanned, truncated = [], 0, False
+        deadline = time.monotonic() + 15
+        for relative in _tracked_files(root):
+            if not relative.endswith('.py'):
+                continue
+            scanned += 1
+            if scanned > MAX_DEFINITION_FILES or time.monotonic() > deadline:
+                truncated = True
+                break
+            try:
+                text = _text(_path(root, relative))
+            except (OSError, ValueError):
+                continue
+            if not pattern.search(text):
+                continue
+            try:
+                hits = _definitions(text, name)
+            except (SyntaxError, RecursionError, ValueError):
+                continue
+            for qualified, kind, start, end, signature in hits:
+                found.append({'file_path': relative, 'qualified_name': qualified, 'kind': kind,
+                              'start_line': start, 'end_line': end, 'signature': signature})
+        found.sort(key=lambda d: (d['file_path'].count('/') if 'test' not in d['file_path'] else 99, d['file_path'], d['start_line']))
+        return {'ok': True, 'name': name, 'definitions': found[:max_results],
+                'truncated': truncated or len(found) > max_results}
+    except (OSError, ValueError, TypeError, subprocess.TimeoutExpired) as exc:
+        return _error(exc)
+
+
+AGENT_TOOLS = {'search_repo': search_repo, 'read_file': read_file,
+               'list_directory': list_directory, 'find_definition': find_definition}
+
+
 def validate_repository(repo_root, base_commit):
     root = _root(repo_root)
     if not isinstance(base_commit, str) or not re.fullmatch(r'[0-9a-fA-F]{7,40}', base_commit):

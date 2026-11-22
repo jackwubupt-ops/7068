@@ -1,0 +1,162 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pydicom__pydicom-901",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "3746878d8edf1cbda6fbcf35eec69f9ba79301ca",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 4,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "4a5d6f596364e9e1e66f80ff03a59ad2f05232ae862e7e26a182e268e7970f42",
+      "raw_model_patch_sha256": "aec079a684cdd9f78d564ea00213d417258d8608756937f9d764b10842f58a4e",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pydicom/config.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pydicom/config.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "3491478bc67ca1576f4f06b24a023d10d8efa114aa0a7e0fab03419b5a8147d2",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 3,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.402,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 849,
+      "completion_tokens": 41,
+      "reasoning_tokens": 12,
+      "latency_seconds": 0.598,
+      "dropped_history_messages": 0,
+      "output_sha256": "8aaeee298b90d758943f882a63f66306d09d82ea66de17a198ee5d60f219fd7d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3389,
+      "completion_tokens": 46,
+      "reasoning_tokens": 17,
+      "latency_seconds": 0.751,
+      "dropped_history_messages": 0,
+      "output_sha256": "b880a603cc99aabc43b44733fd5b660a15573b76a80a16aee6efd05f5826455e"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3889,
+      "completion_tokens": 99,
+      "reasoning_tokens": 73,
+      "latency_seconds": 1.21,
+      "dropped_history_messages": 0,
+      "output_sha256": "2d986977362012c1edf3a2803a4ccb8a6fb37747a9e39599457a956c06cd9d97"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4113,
+      "completion_tokens": 664,
+      "reasoning_tokens": 50,
+      "latency_seconds": 4.57,
+      "dropped_history_messages": 0,
+      "output_sha256": "02c742bd7ff468eb8689658232493340569bc969e942108880386f1b1ca86389"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1730,
+      "completion_tokens": 117,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.099,
+      "dropped_history_messages": 0,
+      "output_sha256": "aec079a684cdd9f78d564ea00213d417258d8608756937f9d764b10842f58a4e"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "logging.getLogger"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2
+    }
+  ],
+  "retrieval_candidates": [
+    "pydicom/config.py",
+    "pydicom/filereader.py",
+    "pydicom/dataset.py",
+    "pydicom/pixel_data_handlers/pillow_handler.py",
+    "pydicom/dataelem.py",
+    "pydicom/dicomdir.py",
+    "pydicom/encaps.py",
+    "pydicom/pixel_data_handlers/jpeg_ls_handler.py",
+    "pydicom/pixel_data_handlers/numpy_handler.py",
+    "pydicom/pixel_data_handlers/rle_handler.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "pydicom/config.py",
+    "pydicom/config.py"
+  ],
+  "patch_size_bytes": 691,
+  "prompt_tokens": 14007,
+  "completion_tokens": 970,
+  "reasoning_tokens": 152,
+  "duration_seconds": 9.72,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

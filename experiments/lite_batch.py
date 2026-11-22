@@ -34,13 +34,14 @@ import time
 from typing import Callable, Iterable
 
 from swebench_dev import DEVELOPMENT_SPLIT, LITE_DATASET_ID, DevelopmentTask, load_dev_tasks
+from utils.repo_tools import AGENT_TOOLS
 
 EXPERIMENT = "patchloop-lite-dev-batch-v1"
 MAX_WORKERS = 16
 SUMMARY_FIELDS = (
     "instance_id", "repo", "agent", "status", "patch_status", "suspected_files",
     "planner_calls", "coder_calls", "reviewer_calls", "agent_calls", "attempt_count",
-    "prompt_tokens", "completion_tokens", "duration_seconds",
+    "prompt_tokens", "completion_tokens", "reasoning_tokens", "duration_seconds",
     "prediction_available", "failed_stage", "error",
 )
 
@@ -86,10 +87,20 @@ def build_manifest(tasks: list[DevelopmentTask], *, dataset_id: str,
         "instance_ids": [task.instance_id for task in tasks],
         "task_count": len(tasks),
         "patchloop_commit": _patchloop_commit(),
+        "agent_tools": sorted(AGENT_TOOLS),
         "python": platform.python_version(),
         "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         **settings,
     }
+
+
+INFRA_ERROR_MARK = "API/network operation failed"   # experiments.live_deepseek._safe_error
+
+
+def is_infra_failure(line: dict) -> bool:
+    """A task that stopped because the model API failed (no balance, auth, rate limit, network)."""
+    return (line.get("status") in ("experiment_error", "batch_error")
+            and INFRA_ERROR_MARK in str(line.get("error") or ""))
 
 
 def _summary_line(report: dict) -> dict:
@@ -124,7 +135,17 @@ def run_batch(tasks: list[DevelopmentTask], out_dir: Path, *,
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     results_path = out_dir / "results.jsonl"
-    done = {line["instance_id"] for line in _read_jsonl(results_path)}
+    lines = _read_jsonl(results_path)
+    retry = [line for line in lines if is_infra_failure(line)]
+    if retry:
+        # API/billing/network failures say nothing about the agent: run those tasks again.
+        kept = [line for line in lines if not is_infra_failure(line)]
+        results_path.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in kept),
+                                encoding="utf-8")
+        log(f"Resume: retrying {len(retry)} task(s) that failed on the API/network, not on the agent: "
+            + ", ".join(line["instance_id"] for line in retry))
+        lines = kept
+    done = {line["instance_id"] for line in lines}
     began = time.monotonic()
     lock = threading.Lock()  # guards results.jsonl appends and log lines
 
@@ -205,6 +226,7 @@ def write_summary(out_dir: Path, tasks: list[DevelopmentTask], *, elapsed: float
         "localized_any_file": sum(1 for line in lines.values() if line.get("suspected_files")),
         "prompt_tokens": sum(int(line.get("prompt_tokens") or 0) for line in lines.values()),
         "completion_tokens": sum(int(line.get("completion_tokens") or 0) for line in lines.values()),
+        "reasoning_tokens": sum(int(line.get("reasoning_tokens") or 0) for line in lines.values()),
         "model_seconds_total": round(sum(float(line.get("duration_seconds") or 0) for line in lines.values()), 1),
         "this_session_seconds": round(elapsed, 1),
         "official_evaluated": False,
@@ -230,9 +252,15 @@ def main() -> int:
                         help=f"Tasks run concurrently against vLLM (1..{MAX_WORKERS}; 4 suits 7B on a 24 GiB GPU)")
     parser.add_argument("--backend", choices=("qwen", "deepseek"), default="qwen",
                         help="qwen = local vLLM (default); deepseek = DeepSeek API (DEEPSEEK_API_KEY)")
+    parser.add_argument("--reasoning-effort", choices=("none", "low", "high", "max"),
+                        help="deepseek only (RQ1): thinking effort; default DEEPSEEK_REASONING_EFFORT "
+                             "or none (= thinking disabled)")
     parser.add_argument("--retrieval-k", type=int, default=0,
                         help="Give both agents the top-K files from BM25 + issue-hint retrieval "
                              "(utils.retrieval) in their first message; 0 = off (default)")
+    parser.add_argument("--exec-feedback", action="store_true",
+                        help="RQ2: offer the run_tests tool and re-run existing repository tests after "
+                             "a candidate applies (Docker + the task's SWE-bench eval image)")
     parser.add_argument("--list-repos", action="store_true",
                         help="Print the GitHub repos of the selected tasks and exit (for mirroring)")
     args = parser.parse_args()
@@ -255,7 +283,9 @@ def main() -> int:
     from patchloop_task2.backends import load_settings, make_backend
     from patchloop_task2.qwen_small import STAGE_TOKENS
 
-    settings = load_settings(args.backend)
+    if args.reasoning_effort not in (None, "none") and args.backend != "deepseek":
+        parser.error("--reasoning-effort low/high/max needs --backend deepseek")
+    settings = load_settings(args.backend, reasoning_effort=args.reasoning_effort)
     make_backend(args.backend, settings).verify()  # fail fast before any task if the model is down
     by_id = {task.instance_id: task for task in tasks}
 
@@ -268,6 +298,7 @@ def main() -> int:
             task_loader=lambda instance_id: by_id[instance_id],
             edit_format=args.edit_format,
             **({"retrieval_k": args.retrieval_k} if args.retrieval_k else {}),
+            **({"exec_feedback": True} if args.exec_feedback else {}),
         )
 
     manifest = build_manifest(tasks, dataset_id=args.dataset, settings={
@@ -278,10 +309,16 @@ def main() -> int:
         "context_chars": settings.context_chars,
         "timeout_seconds": settings.timeout_seconds,
         "stage_max_tokens": STAGE_TOKENS,
+        # Ignored by DeepSeek in thinking mode (low/high/max): those runs are sampled.
         "temperature": 0,
+        "reasoning_effort": getattr(settings, "reasoning_effort", "none"),
+        "reasoning_tokens_per_call": getattr(settings, "reasoning_tokens_per_call", 0),
+        "reasoning_budget_per_task": getattr(settings, "reasoning_budget", 0),
         "agent": args.agent,
         "max_candidates": 2,
-        "docker_tests": False,
+        "docker_tests": bool(args.exec_feedback),
+        "exec_feedback": bool(args.exec_feedback),
+        "harness_checks": ["git_apply", "python_syntax"] + (["existing_tests"] if args.exec_feedback else []),
         "edit_format": args.edit_format,
         "retrieval_k": args.retrieval_k,
         # Greedy decoding can still differ slightly between batch sizes in vLLM.

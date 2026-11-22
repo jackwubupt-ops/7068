@@ -26,7 +26,6 @@ next to the gold patch, for reading by humans).
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 import json
 from pathlib import Path
 import re

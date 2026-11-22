@@ -1,0 +1,134 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "marshmallow-code__marshmallow-1343",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "2be2d83a1a9a6d3d9b85804f3ab545cecc409bb0",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "4925e3363db4f89d3679b78b2ca0e4a010099f1f1f0e6173dab1bc340255a1c8",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/marshmallow/schema.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "4f7950710cdff45082bbbbab7e96a7ae0812fa14cd7bf8bdf474a35804d6e7f4",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "src/marshmallow/schema.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "src/marshmallow/schema.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "src/marshmallow/schema.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "src/marshmallow/schema.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/marshalling.py",
+    "src/marshmallow/base.py",
+    "src/marshmallow/decorators.py",
+    "tests/test_fields.py",
+    "tests/test_schema.py",
+    "tests/test_marshalling.py",
+    "src/marshmallow/utils.py",
+    "src/marshmallow/validate.py"
+  ],
+  "read_files": [
+    "src/marshmallow/schema.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "src/marshmallow/schema.py"
+  ],
+  "patch_size_bytes": 686,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1424,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.046,
+      "dropped_history_messages": 0,
+      "output_sha256": "20ca6587a544bd0ed37677484395880039842ea8500f9e16c538e4a89e17e78f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2753,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.524,
+      "dropped_history_messages": 0,
+      "output_sha256": "7b1a9b5dfd3f2eb7decc6cfcebae19def2e816bc1c4e0eb24b32443d22790dd8"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4084,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.497,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4217,
+      "completion_tokens": 109,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.386,
+      "dropped_history_messages": 0,
+      "output_sha256": "4925e3363db4f89d3679b78b2ca0e4a010099f1f1f0e6173dab1bc340255a1c8"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 12478,
+  "completion_tokens": 174,
+  "reasoning_tokens": 0,
+  "duration_seconds": 3.65,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

@@ -26,7 +26,8 @@ def run_single_dev(output_dir: str | Path, *, api, instance_id: str,
                    task_loader=select_dev_task, checkout_fn=checkout_dev_task,
                    expected_repo: str | None = None, expected_base: str | None = None,
                    dataset_id: str = DATASET_ID, split: str = DEVELOPMENT_SPLIT,
-                   edit_format: str = "diff", retrieval_k: int = 0) -> dict:
+                   edit_format: str = "diff", retrieval_k: int = 0,
+                   exec_feedback: bool = False, test_env_fn=None) -> dict:
     target = Path(output_dir).expanduser().resolve()
     if target.exists() and any(target.iterdir()):
         raise ValueError("Output directory must be new or empty to avoid stale predictions")
@@ -41,6 +42,7 @@ def run_single_dev(output_dir: str | Path, *, api, instance_id: str,
         "base_commit": expected_base,
         "status": "not_started",
         "edit_format": edit_format,
+        "exec_feedback": exec_feedback,
         "agent_max_steps": AGENT_MAX_STEPS,
         "agent_max_submissions": AGENT_MAX_SUBMISSIONS,
         "patch_status": "not_attempted",
@@ -71,14 +73,23 @@ def run_single_dev(output_dir: str | Path, *, api, instance_id: str,
                 from utils.retrieval import rank_files
                 candidates = rank_files(checkout, task.problem_statement, retrieval_k)
                 report["retrieval_candidates"] = [c["file_path"] for c in candidates]
+            test_tool = None
+            if exec_feedback:
+                stage = "test_environment"
+                from patchloop_task2.test_exec import TestTool, env_for_swebench
+                env = (test_env_fn or env_for_swebench)(task.instance_id)
+                test_tool = TestTool(env, checkout, task.base_commit)
+                report["test_env_available"] = test_tool.available
             stage = "single_agent"
             patch_path = target / "candidate.patch"
             result = run_single_agent(
                 task.problem_statement, checkout, task.base_commit,
                 completion=api.callback("agent"), edit_format=edit_format,
                 max_steps=AGENT_MAX_STEPS, max_submissions=AGENT_MAX_SUBMISSIONS,
-                export_path=patch_path, candidate_files=candidates,
+                export_path=patch_path, candidate_files=candidates, test_tool=test_tool,
             )
+            if test_tool is not None:
+                report["test_runs"] = test_tool.records
             report["agent_action_trace"] = result.trace
             report["read_files"] = result.read_files
             report["candidate_attempts"] = result.submissions
@@ -113,6 +124,7 @@ def run_single_dev(output_dir: str | Path, *, api, instance_id: str,
         report["agent_calls"] = sum(call.get("stage") == "agent" for call in calls)
         report["prompt_tokens"] = sum(int(call.get("prompt_tokens") or 0) for call in calls)
         report["completion_tokens"] = sum(int(call.get("completion_tokens") or 0) for call in calls)
+        report["reasoning_tokens"] = sum(int(call.get("reasoning_tokens") or 0) for call in calls)
         report["duration_seconds"] = round(time.monotonic() - began, 2)
         (target / "run_status.json").write_text(
             json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
