@@ -157,9 +157,11 @@ and working tree are untouched). *Follow-up* appends guidance and may switch age
 | [`samples/02_changed_request.json`](samples/02_changed_request.json) | changed request | round 2 carries the follow-up guidance and switches to the single agent |
 | [`samples/03_failure_vague.json`](samples/03_failure_vague.json) | failure: vague request | stops with questions, zero model calls |
 | [`samples/04_failure_bad_repo.json`](samples/04_failure_bad_repo.json) | failure: invalid repository | fails with a clear message, nothing exported |
+| [`samples/05_exec_feedback.json`](samples/05_exec_feedback.json) | ordinary task, tests on | existing tests run before/after the edit in Docker; regressions go back to the Reviewer |
 
 ```bash
 python -m patchloop_app.samples --backend deepseek --out results/samples   # writes <name>.json + <name>.md
+bash scripts/export_results.sh   # server: bundle reports, batch results and traces -> final_results/
 ```
 
 ## 5. Evaluation
