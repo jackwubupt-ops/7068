@@ -161,6 +161,10 @@
   .result.ask .card { border-color:color-mix(in srgb, var(--warn) 45%, var(--line)); background:color-mix(in srgb, var(--warn-soft) 55%, var(--surface)); }
   .result.fail .card { border-color:color-mix(in srgb, var(--bad) 40%, var(--line)); }
   .result ul { margin:10px 0 0; padding-left:20px; color:var(--ink-2); }
+  .result.unsafe .card { border-color:color-mix(in srgb, var(--bad) 45%, var(--line)); }
+  .result.unsafe h3 { color:var(--bad); }
+  .result.unsafe ul code { font-size:12px; }
+  .dock .hint { font-size:12px; color:var(--muted); margin:0 0 6px; }
   .diff { margin-top:14px; border-radius:12px; overflow:auto; max-height:52vh; border:1px solid var(--line); background:var(--surface-2); font:12px/1.65 var(--mono); }
   .diff span { display:block; padding:0 14px; white-space:pre; }
   .diff .add { background:color-mix(in srgb, var(--ok) 13%, transparent); color:var(--ok); }
@@ -462,7 +466,7 @@ function phases(list, busy) {
     const name = PHASE[g.key].name + (['edit', 'check'].includes(g.key) && counts[g.key] > 1 ? ` · attempt ${counts[g.key]}` : '');
     const id = `${g.key}-${i}`, open = openPhases.has(id) || live || g.key === 'plan';
     return `<details class="phase ${live ? 'live' : ''} ${warn ? 'bad' : ''}" ${open ? 'open' : ''} ontoggle="togglePhase('${id}', this.open)">
-      <summary><span class="pi" style="background:${PHASE[g.key].color}">${PHASE[g.key].icon}</span><span class="pn">${esc(name)}</span>
+      <summary><span class="pi" style="background:${warn && g.key === 'check' ? 'var(--bad)' : PHASE[g.key].color}">${warn && g.key === 'check' ? '!' : PHASE[g.key].icon}</span><span class="pn">${esc(name)}</span>
         <span class="ps">${esc(sum)}</span><span class="pst">${live ? '<span class="spinner" style="width:14px;height:14px;display:inline-block;vertical-align:-2px"></span>' : `${g.events[g.events.length - 1].t}s`}</span><span class="chev">›</span></summary>
       <div class="inner">${ls.map(l => `<div class="ln ${l.cls}"><span class="ic">${l.icon}</span>
         <div class="tx"><div class="a">${esc(l.a)}</div>${l.r ? `<div class="r">→ ${esc(l.r)}</div>` : ''}${l.d || ''}</div><span class="t">${l.t}s</span></div>`).join('')}
@@ -496,11 +500,18 @@ function render(s) {
   const parts = String(q.issue || '').split(/\n\nMaintainer follow-up \(round \d+\): /);
   const title = (parts[0].trim().split('\n')[0] || 'Repair request').slice(0, 120);
   const where = q.source === 'snippet' ? `pasted ${q.snippet_name}` : q.instance_id || q.repo_path || '';
-  const tested = events.some(e => /existing tests after the edit: passed/.test(e.title));
+  const tested = r.verification === 'tests_passed', unsafe = r.verification === 'regressions';
   const stopEv = [...events].reverse().find(e => e.kind === 'stop' || e.kind === 'error');
   let result = '';
   if (busy) result = `<div class="result"><div class="card working"><span class="spinner"></span><div style="flex:1"><b>The agent is working</b><div class="note">Each phase above updates as it happens.</div></div>
       <button class="btn danger small" onclick="act('cancel')">Cancel</button></div></div>`;
+  else if (s.status === 'awaiting_confirmation' && unsafe) result = `<div class="result unsafe"><div class="card"><h3>⚠ Candidate patch: it breaks existing tests</h3>
+      <div class="note">It applies cleanly, but these tests passed before the edit and fail with it. The retry did not fix them, so the agent stopped here instead of calling it ready.</div>
+      <ul>${(r.regressions || []).map(t => `<li><code>${esc(t)}</code></li>`).join('') || '<li>see the Check phase above</li>'}</ul>
+      <div class="diff">${diffHtml(s.patch)}</div>
+      <div class="actions"><button class="btn danger" onclick="act('reject')">Reject</button>
+      <button class="btn small" onclick="acceptAnyway()">Accept anyway…</button></div>
+      <div class="note">Or describe what to change below and start a new round.</div></div></div>`;
   else if (s.status === 'awaiting_confirmation') result = `<div class="result ok"><div class="card"><h3>✓ Proposed patch</h3>
       <div class="note">Applies cleanly to the original code${tested ? ', and the existing tests it touches still pass' : '; not confirmed by tests, so review it as a candidate'}.</div>
       <div class="diff">${diffHtml(s.patch)}</div>
@@ -512,18 +523,20 @@ function render(s) {
   else if (s.status === 'needs_clarification') result = `<div class="result ask"><div class="card"><h3>? The agent needs more information</h3>
       <div class="note">It stopped instead of guessing. Answer in the box below.</div><ul>${(s.questions || []).map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div>`;
   else if (s.status === 'rejected') result = `<div class="result"><div class="card"><h3>Patch rejected</h3><div class="note">Nothing was exported. Add guidance below to try again.</div></div></div>`;
-  else if (s.status === 'cancelled') result = `<div class="result"><div class="card"><h3>Cancelled</h3><div class="note">Stopped after the current model call.</div></div></div>`;
+  else if (s.status === 'cancelled') result = `<div class="result"><div class="card"><h3>Cancelled</h3><div class="note">Stopped by the user; nothing was exported.</div></div></div>`;
   else if (s.status === 'failed') result = `<div class="result fail"><div class="card"><h3>! The run failed</h3><div class="note">${esc(stopEv ? stopEv.title : 'See the phases above.')}</div>
       ${stopEv && stopEv.detail ? `<pre>${esc(stopEv.detail)}</pre>` : ''}</div></div>`;
   const tok = r.prompt_tokens ? `${(r.prompt_tokens / 1000).toFixed(1)}k in · ${(r.completion_tokens / 1000).toFixed(1)}k out` : '';
-  const dock = busy || s.status === 'awaiting_confirmation' ? '' : `<div class="dock">
+  const dock = busy || (s.status === 'awaiting_confirmation' && !unsafe) ? '' : `<div class="dock">
+      <div class="hint">A follow-up starts a new linked round (round ${s.round + 1}) with your guidance; this run stays as it is.</div>
       <textarea id="guidance" placeholder="${s.status === 'needs_clarification' ? 'Answer the agent: which file or function, what should happen…' : 'Follow-up: more guidance, or a changed request…'}"></textarea>
       <div class="bar">
         <select id="f-agent"><option value="">agent: same</option><option value="pcr">Planner–Coder–Reviewer</option><option value="single">Single agent</option></select>
         <select id="f-backend"><option value="">model: same</option>${Object.keys(backends).map(n => `<option value="${n}">${esc(LABEL[n] || n)}</option>`).join('')}</select>
         <select id="f-effort"><option value="">reasoning: same</option><option value="none">none</option><option value="low">low</option><option value="high">high</option><option value="max">max</option></select>
+        <select id="f-tests"><option value="">tests: same</option><option value="on">tests: on</option><option value="off">tests: off</option></select>
         ${s.status === 'needs_clarification' && !r.status ? `<button class="btn small" onclick="followUp(true)">Run anyway</button>` : ''}
-        <button class="btn primary" onclick="followUp()">Send follow-up ↑</button></div></div>`;
+        <button class="btn primary" onclick="followUp()">Start round ${s.round + 1} ↑</button></div></div>`;
   const keep = document.querySelector('#guidance')?.value || '';
   $('run').innerHTML = `
     <div class="runhead"><div style="min-width:0"><h1>${esc(title)}</h1>
@@ -545,10 +558,18 @@ function render(s) {
     ${dock}`;
   if (keep && $('guidance')) $('guidance').value = keep;
 }
-async function act(a) { try { await api(`/api/sessions/${current}/${a}`, {method:'POST'}); poll(); } catch (e) { alert(e.message); } }
+async function act(a, body) {
+  try { await api(`/api/sessions/${current}/${a}`, {method:'POST', ...(body ? {body:JSON.stringify(body)} : {})}); poll(); }
+  catch (e) { alert(e.message); }
+}
+function acceptAnyway() {
+  if (confirm('This patch makes existing tests fail. Accept it anyway?')) act('accept', {override:true});
+}
 async function followUp(anyway=false) {
   const g = anyway ? '' : ($('guidance')?.value || '');
-  const body = {guidance:g, agent:$('f-agent')?.value || null, backend:$('f-backend')?.value || null, reasoning_effort:$('f-effort')?.value || null};
+  const t = $('f-tests')?.value || '';
+  const body = {guidance:g, agent:$('f-agent')?.value || null, backend:$('f-backend')?.value || null, reasoning_effort:$('f-effort')?.value || null,
+                exec_feedback: t ? t === 'on' : null};
   try { const s = await api(`/api/sessions/${current}/followup`, {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
   catch (e) { alert(e.message); }
 }

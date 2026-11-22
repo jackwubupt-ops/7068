@@ -5,8 +5,11 @@ import subprocess
 import tempfile
 import unittest
 
+from unittest import mock
+
 from patchloop_app.session import (
-    Request, SessionManager, clarification_questions, describe_feedback, describe_output,
+    Request, SessionManager, clarification_questions, delivered_check, describe_feedback,
+    describe_output,
 )
 from patchloop_app.web import create_app
 from tests.test_edit_blocks import ORIGINAL, make_repo
@@ -131,6 +134,55 @@ class AppSessionTests(unittest.TestCase):
         self.assertEqual(s.status, "cancelled", s.events)
         self.assertEqual(s.patch, "")
 
+    def test_cancel_while_queued_stops_without_waiting_for_the_running_session(self):
+        import time
+        mgr = self.manager([READ, GOOD])
+        mgr.gpu.acquire()  # another repair holds the execution lock
+        try:
+            s = mgr.start(self.local())
+            for _ in range(200):
+                if s.status == "queued":
+                    break
+                time.sleep(0.02)
+            self.assertEqual(s.status, "queued", s.events)
+            mgr.cancel(s.id)
+            for _ in range(100):
+                if s.status == "cancelled":
+                    break
+                time.sleep(0.02)
+            self.assertEqual(s.status, "cancelled", s.events)  # the lock is still held
+            self.assertEqual(mgr.backends, [])  # the model was never called
+        finally:
+            mgr.gpu.release()
+
+    def test_patch_that_breaks_existing_tests_needs_an_explicit_override(self):
+        other = self.repo / "pkg/other.py"
+        other.write_text("B = 3\n")
+        patch = subprocess.check_output(["git", "-C", str(self.repo), "diff"], text=True)
+        other.write_text("B = 2\n")
+        def fake_run(backend, out, **kw):
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "predictions.jsonl").write_text(json.dumps({"model_patch": patch}) + "\n")
+            return {"status": "prediction_ready", "stop_reason": "x|kept_earlier_candidate_with_test_regressions",
+                    "candidate_attempts": [
+                        {"patch_status": "applied", "test_check": {"status": "regressions",
+                                                                   "regressions": ["tests/test_mod.py::test_g"]}},
+                        {"patch_status": "apply_failed"}]}
+        mgr = self.manager([])
+        with mock.patch("experiments.qwen_small_dev.run_qwen_dev", fake_run):
+            s = mgr.start(self.local(), run_async=False)
+        self.assertEqual(s.status, "awaiting_confirmation", s.events)
+        view = s.view()
+        self.assertEqual(view["result"]["verification"], "regressions")
+        self.assertEqual(view["result"]["regressions"], ["tests/test_mod.py::test_g"])
+        self.assertTrue(any(e["title"].startswith("Unsafe candidate") for e in s.events))
+        with self.assertRaisesRegex(ValueError, "breaks existing tests"):
+            mgr.accept(s.id)
+        self.assertEqual(s.status, "awaiting_confirmation")
+        view = mgr.accept(s.id, override=True)
+        self.assertEqual(view["status"], "accepted")
+        self.assertIn("despite failing existing tests", s.events[-1]["title"])
+
     def test_bad_requests_are_rejected(self):
         mgr = self.manager([])
         for req in (self.local(agent="x"), self.local(retrieval_k=99),
@@ -219,6 +271,18 @@ class DescribeTests(unittest.TestCase):
         self.assertEqual(clarification_questions("a long enough issue text naming a.py clearly here", hinted), [])
         weak = [{"file_path": "a.py", "score": 0.1, "why": ["keyword match"]}]
         self.assertTrue(clarification_questions("a long enough issue text without any concrete pointers", weak))
+
+
+class DeliveredCheckTests(unittest.TestCase):
+    def test_the_last_applied_attempt_is_the_delivered_patch(self):
+        reg = {"patch_status": "applied", "test_check": {"status": "regressions", "regressions": ["t::a"]}}
+        ok = {"patch_status": "applied", "test_check": {"status": "passed"}}
+        self.assertEqual(delivered_check({"candidate_attempts": [reg, {"patch_status": "apply_failed"}]}),
+                         ("regressions", ["t::a"]))
+        self.assertEqual(delivered_check({"candidate_attempts": [reg, ok]}), ("tests_passed", []))
+        self.assertEqual(delivered_check({"candidate_attempts": [{"patch_status": "applied"}]}),
+                         ("unverified", []))
+        self.assertEqual(delivered_check({}), ("unverified", []))
 
 
 class WebRouteTests(unittest.TestCase):

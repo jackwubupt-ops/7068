@@ -36,6 +36,7 @@ STATUSES = ("queued", "checking", "running", "awaiting_confirmation", "needs_cla
             "accepted", "rejected", "failed", "cancelled")
 MIN_ISSUE_WORDS = 8
 MAX_FOLLOWUPS = 5
+QUEUE_POLL_SECONDS = 0.5  # how often a queued run checks for Cancel
 
 
 class Cancelled(RuntimeError):
@@ -91,7 +92,7 @@ class Session:
                         "status", "failed_stage", "error", "attempt_count", "suspected_files",
                         "retrieval_candidates", "prompt_tokens", "completion_tokens",
                         "duration_seconds", "patch_status", "stop_reason", "branch",
-                        "patch_file")}}
+                        "patch_file", "verification", "regressions")}}
 
 
 # --------------------------------------------------------------------------- events
@@ -99,6 +100,20 @@ class Session:
 def _short(value, limit=300) -> str:
     text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
     return text if len(text) <= limit else text[:limit] + " …"
+
+
+def delivered_check(result: dict) -> tuple[str, list[str]]:
+    """How the patch that is offered to the user fared on the existing tests.
+
+    The delivered patch is always the last attempt that applied: a later attempt that applies
+    replaces it, and one that does not apply leaves it in place (kept earlier candidate).
+    Returns ("tests_passed" | "regressions" | "unverified", failing test ids).
+    """
+    applied = [a for a in result.get("candidate_attempts") or [] if a.get("patch_status") == "applied"]
+    check = (applied[-1].get("test_check") or {}) if applied else {}
+    if check.get("status") == "regressions":
+        return "regressions", [str(t) for t in check.get("regressions") or []]
+    return ("tests_passed" if check.get("status") == "passed" else "unverified"), []
 
 
 def _json(text: str):
@@ -465,8 +480,11 @@ class SessionManager:
                     return
             session.status = "queued"
             if not self.gpu.acquire(blocking=False):
-                session.emit("info", "Another repair is running on the GPU; waiting for it to finish")
-                self.gpu.acquire()
+                session.emit("info", "Another repair is running; waiting in the queue")
+                # Wake up regularly so Cancel works while waiting, not only once the lock is free.
+                while not self.gpu.acquire(timeout=QUEUE_POLL_SECONDS):
+                    if session.cancel.is_set():
+                        raise Cancelled("USER_CANCELLED")
             try:
                 if session.cancel.is_set():
                     raise Cancelled("USER_CANCELLED")
@@ -533,11 +551,18 @@ class SessionManager:
             pred = json.loads((out / "predictions.jsonl").read_text(encoding="utf-8").splitlines()[0])
             session.patch = pred["model_patch"]
             session.status = "awaiting_confirmation"
-            tested = any(a.get("test_check", {}).get("status") == "passed"
-                         for a in result.get("candidate_attempts", []))
-            session.emit("stop", "A Git-applicable patch is ready. Review it, then accept or reject.",
-                         "It was applied in an isolated checkout; the existing tests it touches still pass."
-                         if tested else "It was applied in an isolated checkout only; no tests confirmed it.")
+            verification, failing = delivered_check(result)
+            session.result["verification"], session.result["regressions"] = verification, failing
+            if verification == "regressions":
+                session.emit("stop", "Unsafe candidate: the patch breaks existing tests",
+                             "No retry fixed it. Tests that passed before the edit and fail with it:\n"
+                             + "\n".join(failing)
+                             + "\nAccepting it needs an explicit override; a follow-up can try again.")
+            else:
+                session.emit("stop", "A Git-applicable patch is ready. Review it, then accept or reject.",
+                             "It was applied in an isolated checkout; the existing tests it touches still pass."
+                             if verification == "tests_passed"
+                             else "It was applied in an isolated checkout only; no tests confirmed it.")
         elif status == "experiment_error":
             session.status = "failed"
             session.emit("error", f"Agent error at {result.get('failed_stage')}", str(result.get("error")))
@@ -547,10 +572,13 @@ class SessionManager:
             session.emit("stop", f"Stopped: {status}", "\n".join(session.questions))
 
     # ----------------------------------------------------------------- user decisions
-    def accept(self, sid: str) -> dict:
+    def accept(self, sid: str, override: bool = False) -> dict:
         session = self.get(sid)
         if session.status != "awaiting_confirmation" or not session.patch:
             raise ValueError("Nothing to accept")
+        if session.result.get("verification") == "regressions" and not override:
+            raise ValueError("This patch breaks existing tests; accept it explicitly (override) "
+                             "or send a follow-up")
         out = self.runs_dir / sid
         patch_file = out / "accepted.patch"
         patch_file.write_text(session.patch, encoding="utf-8")
@@ -565,7 +593,9 @@ class SessionManager:
             session.emit("info", f"Committed on new branch {branch} ({commit[:10]})",
                          "Your current branch and working tree were not changed.")
         session.status = "accepted"
-        session.emit("stop", "Accepted by the user", f"Patch saved to {patch_file}")
+        session.emit("stop", "Accepted by the user"
+                     + (" despite failing existing tests"
+                        if session.result.get("verification") == "regressions" else ""), f"Patch saved to {patch_file}")
         return session.view()
 
     def reject(self, sid: str) -> dict:
@@ -580,5 +610,6 @@ class SessionManager:
     def cancel(self, sid: str) -> dict:
         session = self.get(sid)
         session.cancel.set()
-        session.emit("info", "Cancel requested; stopping after the current model call")
+        session.emit("info", "Cancel requested; stopping after the current model call"
+                     if session.status == "running" else "Cancel requested")
         return session.view()

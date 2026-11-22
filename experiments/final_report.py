@@ -118,6 +118,10 @@ def comparability(a: dict, b: dict) -> list[str]:
     differing = [key for key in VARIABLES if a[key] != b[key]]
     if len(differing) > 1:
         warnings.append(f"{' and '.join(differing)} all differ: the pair confounds several variables")
+    ca, cb = a.get("patchloop_commit"), b.get("patchloop_commit")
+    if ca and cb and ca != cb:
+        warnings.append(f"PatchLoop commit differs ({ca[:7]} vs {cb[:7]}): "
+                        f"check that `git diff {ca[:7]} {cb[:7]}` does not touch the agent")
     if a["eval_run_id"] and a["eval_run_id"] == b["eval_run_id"]:
         warnings.append("both batches report the same evaluation run id")
     for side in (a, b):

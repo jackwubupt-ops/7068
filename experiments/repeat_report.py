@@ -120,8 +120,10 @@ def build_report(runs: dict, tags: list[str], *, iterations: int = 10000, seed: 
         if label not in runs:
             continue
         # Same config, two agent versions (e.g. tools added since the earlier runs).
+        # A different commit is the point of a version comparison: not a warning here.
         warnings = sorted({w for ra, rb in zip(runs[label], earlier)
-                           for w in comparability(ra, rb) if "same evaluation run id" not in w})
+                           for w in comparability(ra, rb)
+                           if "same evaluation run id" not in w and "commit differs" not in w})
         comparisons.append({"title": f"Version: {label} current vs earlier ({', '.join(vs_tags or [])})",
                             "a": label, "b": f"{label} (earlier)", "warnings": warnings,
                             **task_level_compare(runs[label], earlier, iterations=iterations, seed=seed)})
