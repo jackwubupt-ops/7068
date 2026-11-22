@@ -1,37 +1,6 @@
 from config import get_client, OPENAI_MODEL
 
 
-def correct_and_refine_prompt(raw_input: str, language='en') -> str:
-    """
-    输入: 原始任务描述（可能有错别字、不清晰）
-    输出: 修正、标准化后的任务描述
-    """
-    if language == 'zh':
-        correction_prompt = (
-            "请帮我检查并纠正以下任务描述，修复其中的错别字、语法错误，并优化表述使其更清晰、专业。"
-            "不要改变原本的意图，只是让表达更准确自然。\n\n"
-            f"任务描述:\n{raw_input}\n\n"
-            "返回：修正后的完整任务描述。"
-        )
-    else:
-        # 英文版
-        correction_prompt = (
-            "Please proofread and refine the following task description. "
-            "Fix any typos, grammatical errors, and unclear expressions. "
-            "Ensure the description is clear, precise, and professional without changing the original meaning.\n\n"
-            f"Task description:\n{raw_input}\n\n"
-            "Return the corrected and improved task description in English."
-        )
-
-    response = get_client().chat.completions.create(
-        model=OPENAI_MODEL,
-        messages=[{"role": "user", "content": correction_prompt}],
-        temperature=0.0
-    )
-
-    return response.choices[0].message.content.strip()
-
-
 RUN_TESTS_HELP = """
 {"action":"run_tests","arguments":{"test_path":"tests/test_module.py"}}
 run_tests runs one EXISTING tracked test file (or file::Class::test) at the base

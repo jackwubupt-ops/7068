@@ -1,4 +1,4 @@
-"""Offline-only contract tests for small-Qwen backend and evaluation override."""
+"""Offline-only contract tests for the local Qwen backend."""
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -10,7 +10,6 @@ from patchloop_task2.qwen_small import (
     DEFAULT_MODEL, QwenSettings, QwenSmallBackend,
     trim_planner_history, clean_json_fence,
 )
-from experiments.swebench_eval_compat import replace_legacy_stub
 from experiments.qwen_small_dev import run_qwen_dev
 
 
@@ -111,19 +110,6 @@ class SettingsTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "QWEN_MODEL_ID_MISMATCH"):
             QwenSmallBackend(QwenSettings(), client=client).verify()
 
-    def test_swebench_compat_patch_does_not_change_other_packages(self):
-        reqs = (
-            "types-pkg_resources\n"
-            "types-pkg_resources # old stubs\n"
-            "types-pkg_resources-extra\n"
-            "pytest\n"
-        )
-        updated, n = replace_legacy_stub(reqs)
-        self.assertEqual(n, 2)
-        self.assertEqual(updated.splitlines()[0], "types-setuptools")
-        self.assertIn("types-pkg_resources-extra", updated)
-        self.assertEqual(updated.splitlines()[-1], "pytest")
-
     def test_dev_wrapper_never_claims_official_resolution(self):
         fake_backend = SimpleNamespace(model=DEFAULT_MODEL)
         with tempfile.TemporaryDirectory() as directory:
@@ -151,30 +137,6 @@ class SettingsTests(unittest.TestCase):
                 json.loads((path / "run_status.json").read_text())["experiment"],
                 "qwen-small-real-swebench-full-dev-v1",
             )
-
-
-    def test_official_report_distinguishes_build_error_from_unresolved(self):
-        from experiments.swebench_report import classify_official_report
-        issue = "sqlfluff__sqlfluff-4764"
-        error = classify_official_report({
-            "submitted_instances": 1, "completed_instances": 0,
-            "error_instances": 1, "error_ids": [issue],
-        }, issue)
-        self.assertEqual(error["status"], "infrastructure_error")
-        self.assertIsNone(error["official_resolved"])
-        good = classify_official_report({
-            "submitted_instances": 1, "completed_instances": 1,
-            "resolved_instances": 1, "error_instances": 0,
-            "resolved_ids": [issue],
-        }, issue)
-        self.assertEqual(good["status"], "resolved")
-        bad = classify_official_report({
-            "submitted_instances": 1, "completed_instances": 1,
-            "unresolved_instances": 1, "error_instances": 0,
-            "unresolved_ids": [issue],
-        }, issue)
-        self.assertEqual(bad["status"], "unresolved")
-        self.assertFalse(bad["official_resolved"])
 
 
     def test_original_demo_shared_client_can_be_switched_to_local_qwen(self):

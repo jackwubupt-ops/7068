@@ -326,15 +326,30 @@ repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md]
 
 | Path | Purpose |
 |---|---|
-| `patchloop_app/` | **web app** (`web.py`), session logic and stop rules (`session.py`), sample runner (`samples.py`) |
-| `samples/` | sample requests (ordinary, changed request, failures) |
-| `patchloop_task2/` | backends (`backends.py`, `qwen_small.py`), single agent, Coder, edit blocks, Reviewer, apply/validate |
-| `prompt_agent.py`, `utils/repo_tools.py`, `utils/retrieval.py` | Planner, read-only tools, retrieval |
-| `experiments/` | batch runner, P-C-R and single pipelines, official eval, paired stats, diagnosis, recall |
-| `scripts/` | vLLM setup/start, repository mirroring, eval-image repair |
-| `tests/` | offline unit and integration tests |
-| `docs/` | runbooks and design notes; `docs/aliyun-gpu-runbook.md` is the main server guide |
-| `app.py`, `templates/`, `static/`, `localize.py`, `repair*.py` | earlier course demo and Tasks 1–3 (kept; not part of the final app) |
+| `patchloop_app/` | **web app** (`web.py`, entry point), session logic and stop rules (`session.py`), sample runner (`samples.py`), page (`templates/patchloop.html`) |
+| `prompt_agent.py`, `pipeline_agent.py` | Planner (prompt and tool loop) and its handoff |
+| `utils/repo_tools.py`, `utils/retrieval.py` | read-only agent tools (`search_repo`, `read_file`, `find_definition`, `list_directory`), retrieval |
+| `patchloop_task2/` | model backends (`backends.py`, `qwen_small.py`), Coder (`coder.py`, `edit_blocks.py`), single agent, Reviewer, patch validation and isolated apply with syntax check (`validator.py`, `workspace.py`), execution feedback (`test_exec.py`); `loop.py`/`execution.py` are the earlier Task 3 execution loop, still used by the live smoke in `experiments/live_deepseek.py` |
+| `experiments/` | batch runner (`lite_batch.py`), P-C-R and single pipelines, official evaluation, reports (`final_report.py`, `repeat_report.py`), paired statistics, failure diagnosis, retrieval recall |
+| `scripts/` | server setup (`setup_eval_server.sh`), final experiment (`run_final_deepseek.sh`), eval-image repair, repository mirroring, result export; vLLM setup/start for the local 7B baseline |
+| `samples/` | sample requests: ordinary, changed request, two failures, execution feedback |
+| `final_results/` | exported results of the final experiment and the recorded sample traces |
+| `tests/` | offline unit and integration tests (scripted model replies, real temporary Git repositories) |
+| `docs/` | server runbook (`aliyun-gpu-runbook.md`) and the 7B evidence (`qwen7b-limits.md`) |
+
+### Course submission checklist
+
+| Requirement (guideline) | Where |
+|---|---|
+| Runnable application, entry point and run command (no notebooks) | section 4: `python -m patchloop_app.web` |
+| Setup, run and evaluation commands; dependency versions; model settings; services, paid access, hardware | sections 2, 3, 5; `requirements-lock.txt`, `requirements-swebench-eval.txt`, `.env.qwen-small.example` |
+| Source code, prompts and configuration | prompts: `prompt_agent.py` (Planner), `patchloop_task2/edit_blocks.py` and `coder.py` (Coder), `reviewer.py`, `single_agent.py`; settings: `patchloop_task2/backends.py`, `.env` keys in section 3 |
+| Sample inputs: ordinary task, changed request, failure case | `samples/01`-`05` |
+| Evaluation scripts, results, success/failure traces | `experiments/`, `scripts/run_final_deepseek.sh`; `final_results/` (results, `samples/` traces) |
+| Settings recorded, variable outputs accounted for | every batch `manifest.json`; 3 runs per configuration, task-level paired tests (section 5) |
+| Credentials kept out; mocks and unavailable parts labelled | section 6; `.env` is git-ignored; offline tests are labelled as scripted |
+| Submitted version identified | section 9 |
+| AI-use declaration and prompts | section 9 |
 
 ## 9. Submitted version, AI use, attribution
 

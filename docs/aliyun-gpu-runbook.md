@@ -1,7 +1,7 @@
 # 阿里云 GPU 单机流程（推理 + 官方评测 + 网页 agent，一台机器全包）
 
 > **这是现在的主流程。** 它取代了"AutoDL 推理 + 阿里云 CPU 机评测"的双机方案。
-> 旧文档 [full-test-runbook.md](full-test-runbook.md)（AutoDL）和 [aliyun-runbook.md](aliyun-runbook.md)（CPU 评测机）先保留作参考。
+> 只跑最终实验（DeepSeek，不需要 GPU）时，在全新的 CPU 服务器上可以直接用 `bash scripts/setup_eval_server.sh` 一次完成阶段 1、2、7、8、14 的准备工作。
 
 ## 为什么换成一台机器
 
@@ -396,7 +396,7 @@ cd /data/7068 && for run in lite-pilot-pcr lite-pilot-single; do /data/py311/bin
 
 输出包括：逐题配对表、精确 McNemar p 值、解决率差值的 bootstrap 95% CI。23 道题只能作参考，正式结论要用 Lite test 的 300 题。
 
-**检查点：** 如果两个配置的解决率都接近 0，先停下来分析失败分布，不要扩大规模（见 [TODO.md](../TODO.md) 的 P1 检查点）。
+**检查点：** 如果两个配置的解决率都接近 0，先停下来分析失败分布，不要扩大规模。
 
 ## 阶段 12：备份和停机
 

@@ -229,55 +229,5 @@ class RepositoryTests(unittest.TestCase):
         self.assertEqual(result['suspected_files'], [])
 
 
-class DemoRegression(unittest.TestCase):
-    def test_save_code_utf8(self):
-        from code_agent import save_code
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'nested' / 'example.py'
-            save_code('# Unicode: \u03bb', path)
-            self.assertEqual(path.read_text(encoding='utf8'), '# Unicode: \u03bb')
-
-    def test_all_pages_are_english(self):
-        import re
-        import app as web
-        for route in ('/', '/localize'):
-            html = web.app.test_client().get(route).get_data(as_text=True)
-            self.assertIn('lang="en"', html)
-            self.assertIsNone(re.search(r'[\u3400-\u9fff]', html))
-
-    def test_review_returns_report(self):
-        from test_agent import test_and_improve_code
-        with patch('test_agent.score_code', return_value=dict.fromkeys(('correctness', 'readability', 'efficiency', 'style'), 9)):
-            report = test_and_improve_code('def f(): return 1', 'example')
-        self.assertIsInstance(report, str)
-        self.assertIn('no improvement', report)
-
-    def test_invalid_score_is_reported(self):
-        from test_agent import score_code
-        from types import SimpleNamespace
-        response = SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content='not JSON'))])
-        with patch('test_agent.get_client') as client:
-            client.return_value.chat.completions.create.return_value = response
-            with self.assertRaises(ValueError):
-                score_code('def f(): return 1')
-
-    def test_recursion_metric(self):
-        from evaluator import analyze_code_quality
-        self.assertFalse(analyze_code_quality('def f():\n    return 1')['contains_recursion'])
-        self.assertTrue(analyze_code_quality('def f(n):\n    return f(n-1)')['contains_recursion'])
-
-    def test_original_demo(self):
-        import app as web
-        c = web.app.test_client()
-        self.assertEqual(c.get('/').status_code, 200)
-        self.assertEqual(c.get('/localize').status_code, 200)
-        self.assertEqual(c.post('/localize', data={}).status_code, 400)
-        with patch.object(web, 'correct_and_refine_prompt', return_value='refined'), patch.object(web, 'classify_prompt', return_value='other'), patch.object(web, 'generate_code', return_value='def f(): return 1'), patch.object(web, 'test_and_improve_code', return_value='review'):
-            r = c.post('/', data={'prompt': 'demo'})
-            self.assertEqual(r.status_code, 200)
-            self.assertIn(b'def f()', r.data)
-            self.assertIn(b'review', r.data)
-
-
 if __name__ == '__main__':
     unittest.main()
