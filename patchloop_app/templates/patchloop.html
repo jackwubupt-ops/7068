@@ -184,7 +184,7 @@
 <body>
 <div class="top">
   <div class="logo">P</div>
-  <div class="brand"><b>PatchLoop</b><span>bug report → reviewed, Git-applicable patch</span></div>
+  <div class="brand"><b>PatchLoop</b></div>
   <div id="health" class="status-dot"><i></i><span id="health-text">checking model…</span></div>
 </div>
 <div class="app">
@@ -270,6 +270,15 @@ function setSource(s) {
   for (const k of ['swebench', 'local', 'snippet']) { $('tab-' + k).classList.toggle('on', s === k); $('src-' + k).style.display = s === k ? '' : 'none'; }
   testsNote();
 }
+function resetForm() {
+  setSource('swebench');
+  for (const id of ['task', 'repo_path', 'issue', 'snippet_code']) $(id).value = '';
+  $('commit').value = 'HEAD'; $('snippet_name').value = 'calc.py';
+  $('agent').value = 'pcr'; $('retrieval_k').value = '10'; $('reasoning_effort').value = 'none';
+  $('exec_feedback').checked = false; $('form-err').textContent = '';
+  if ($('backend').options.length) $('backend').selectedIndex = 0;
+  modelNote(); effortNote(); testsNote();
+}
 function newRequest() { current = null; clearInterval(timer); $('run').style.display = 'none'; $('compose').style.display = ''; history(); }
 async function loadTasks() {
   try {
@@ -313,7 +322,7 @@ async function startRun() {
                 exec_feedback:$('exec_feedback').checked, reasoning_effort:$('reasoning_effort').value,
                 instance_id:$('task').value || null, repo_path:$('repo_path').value, commit:$('commit').value,
                 snippet_name:$('snippet_name').value, snippet_code:$('snippet_code').value};
-  try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
+  try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); resetForm(); openSession(s.id); }
   catch (e) { $('form-err').textContent = e.message; }
 }
 /* ---------------- sessions ---------------- */
