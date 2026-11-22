@@ -150,8 +150,11 @@ reasoning effort and test execution, and press *Run agent*. The
 timeline shows every decision, tool result, edit, apply result and recovery step. A patch is shown
 as a diff and waits for **Accept / Reject**. Accept saves the patch and, for a local repository,
 commits it on a new branch `patchloop/<session>` through a temporary worktree (the current branch
-and working tree are untouched). *Follow-up* appends guidance and may switch agent or model.
-*Cancel* stops after the current model call.
+and working tree are untouched). *Follow-up* starts a **new linked round** (it does not pause and resume the old run): the guidance
+is appended and the agent, model, reasoning effort or test execution may change.
+*Cancel* stops after the current model call; a request still waiting in the queue stops at once.
+If the delivered patch breaks existing tests, the result card says so, lists the failing tests
+and Accept needs an explicit "accept anyway".
 
 ### Sample inputs and traces
 
@@ -198,7 +201,12 @@ retrieval, agent, edit format, workers, git commit).
 | `ds-pcr-exec`, `ds-single-exec` | P-C-R / single | none | on | RQ2 |
 
 Everything else is identical across batches (4 read-only tools, edit format, retrieval top-10,
-call budget, answer caps, syntax check). Each configuration ran **three times** (tags `final-t4`,
+call budget, answer caps, syntax check). **Code version:** the exec batches ran at PatchLoop
+`5723b89`, the others at `ea3ce08`. The only commit between them changes `lite_batch --resume`
+(re-run tasks that hit an API billing/network error; `git diff ea3ce08 5723b89 -- '*.py'` touches
+only `experiments/lite_batch.py` and its test), and no final-t4 result contains such an error, so
+the agent code is the same on both sides. `repeat_report` now lists a commit difference as a
+comparability warning. Each configuration ran **three times** (tags `final-t4`,
 `final-t4-r2`, `final-t4-r3`):
 
 ```bash
@@ -310,11 +318,11 @@ repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md]
 | Invalid repository or commit | Git checks: repository root, commit exists, clean tree | stop, nothing exported | `failed` with the reason | `samples/04` |
 | Edit cannot be applied / bad edit format | SEARCH must match exactly once; `git apply --check` in an isolated worktree | P-C-R: Reviewer diagnoses, Coder retries (2 attempts); single agent: 2 submissions | warning per failed attempt, then a patch or questions | `tests/test_edit_blocks.py`, `tests/test_deepseek_swebench_dev.py` |
 | Edit breaks Python syntax | `ast.parse` of every changed file (nothing executed) | same retry path (`syntax_invalid`) | the file, line and error in the timeline | `tests/test_syntax_check.py` |
-| Edit breaks existing tests (with "Run existing tests") | tests that passed at the base commit fail with the patch (Docker sandbox) | Reviewer -> Coder retry; if the retry does not apply, the earlier applicable patch is kept | test check result in the timeline | `samples/05`, `tests/test_exec_feedback.py`; 18 regressions caught in the final P-C-R runs |
+| Edit breaks existing tests (with "Run existing tests") | tests that passed at the base commit fail with the patch (Docker sandbox) | Reviewer -> Coder retry; if the retry does not apply, the earlier applicable patch is kept for the benchmark, but the app marks it **"breaks existing tests"** and Accept needs an explicit override | test check result in the timeline; warning on the result card | `samples/05`, `tests/test_exec_feedback.py`; 18 regressions caught in the final P-C-R runs |
 | Model reply truncated, empty, or thinking runs out | finish reason / stage caps (`QWEN_TRUNCATED_OUTPUT`, `REASONING_EXHAUSTED_CALL`) | counted as a failed reply or attempt, never a crash; per-task budgets end the run | warning, then a stop with questions | `tests/test_reasoning_effort.py`; run errors per configuration in section 5 |
 | Agent loops or exceeds its budget | per-task caps: 20 model calls, 15k answer tokens (+ reasoning budget), 14 Planner / 16 agent steps, repeated-action guard | stop | `needs_clarification` with what was tried | `tests/test_single_agent.py`, `tests/test_reasoning_effort.py` |
 | Model API unavailable (no balance, auth, network) | API error | the run fails cleanly; `lite_batch --resume` reruns only those tasks | `failed` with a generic API error (no response text) | `tests/test_lite_batch.py`; used once in the final runs |
-| User changes their mind | Cancel / Reject / Follow-up buttons | cancel after the current model call; reject exports nothing; at most 5 follow-up rounds | session status | `tests/test_app_session.py` |
+| User changes their mind | Cancel / Reject / Follow-up buttons | cancel after the current model call (a queued request stops at once); reject exports nothing; at most 5 follow-up rounds | session status | `tests/test_app_session.py` |
 
 **Repeated external actions.** Every model call is billed and sends data to DeepSeek, so calls are
 bounded per task (calls, answer tokens, reasoning tokens, request timeout) and the SDK does not

@@ -4,6 +4,14 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Safer outcomes, queue cancel, commit check (2026-11-22)
+
+### Changed
+- App: when the delivered patch makes existing tests fail (no retry fixed it), the result is an **unsafe candidate**: the card lists the failing tests, plain Accept is refused, and "Accept anyway" (`POST /accept` with `{"override": true}`) needs a confirmation. The session view reports `verification` (`tests_passed` / `regressions` / `unverified`) and `regressions`. The benchmark path is unchanged (the earlier applicable patch is still submitted to the official harness).
+- App: Cancel on a request that is waiting in the queue stops it at once instead of after the running request finishes.
+- App: the follow-up box says it starts a new linked round, shows the round number, and can switch test execution on or off.
+- `final_report` / `repeat_report`: a different `patchloop_commit` between the two sides of a pair is a comparability warning (not for `--vs-tag` version comparisons). `final-repeats-t4` regenerated: numbers unchanged; the exec pairs now show `5723b89` vs `ea3ce08`, audited in the README (the only change between them is `lite_batch --resume`).
+
 ## Web app redesign (2026-11-22)
 
 ### Changed

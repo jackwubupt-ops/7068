@@ -116,9 +116,9 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
         except KeyError:
             return fail("unknown session", 404)
 
-    def decision(sid, action):
+    def decision(sid, action, **kwargs):
         try:
-            return jsonify(getattr(manager, action)(sid))
+            return jsonify(getattr(manager, action)(sid, **kwargs))
         except KeyError:
             return fail("unknown session", 404)
         except ValueError as exc:
@@ -126,7 +126,8 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
 
     @app.post("/api/sessions/<sid>/accept")
     def api_accept(sid):
-        return decision(sid, "accept")
+        body = request.get_json(force=True, silent=True) or {}
+        return decision(sid, "accept", override=body.get("override") is True)
 
     @app.post("/api/sessions/<sid>/reject")
     def api_reject(sid):

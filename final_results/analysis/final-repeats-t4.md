@@ -28,6 +28,7 @@ Runs (tags): final-t4, final-t4-r2, final-t4-r3
 
 ## Comparability warnings
 
-- none
+- ds-pcr-exec vs ds-pcr: PatchLoop commit differs (5723b89 vs ea3ce08): check that `git diff 5723b89 ea3ce08` does not touch the agent
+- ds-single-exec vs ds-single: PatchLoop commit differs (5723b89 vs ea3ce08): check that `git diff 5723b89 ea3ce08` does not touch the agent
 
 _Task-level tests: each task counts once (share of runs resolved), so repeated runs are not treated as independent tasks. Pooled counts are descriptive._

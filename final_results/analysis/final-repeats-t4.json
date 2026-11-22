@@ -4,6 +4,7 @@
     "final-t4-r2",
     "final-t4-r3"
   ],
+  "vs_tags": [],
   "configs": {
     "ds-pcr": {
       "runs": 3,
@@ -759,7 +760,9 @@
       "title": "RQ2: execution feedback vs none (DeepSeek P-C-R)",
       "a": "ds-pcr-exec",
       "b": "ds-pcr",
-      "warnings": [],
+      "warnings": [
+        "PatchLoop commit differs (5723b89 vs ea3ce08): check that `git diff 5723b89 ea3ce08` does not touch the agent"
+      ],
       "tasks": 23,
       "rate_a_mean": 0.4783,
       "rate_b_mean": 0.4058,
@@ -875,7 +878,9 @@
       "title": "RQ2: execution feedback vs none (DeepSeek single agent)",
       "a": "ds-single-exec",
       "b": "ds-single",
-      "warnings": [],
+      "warnings": [
+        "PatchLoop commit differs (5723b89 vs ea3ce08): check that `git diff 5723b89 ea3ce08` does not touch the agent"
+      ],
       "tasks": 23,
       "rate_a_mean": 0.3623,
       "rate_b_mean": 0.4493,
