@@ -180,8 +180,9 @@ def docker_run(env: TestEnv, checkout: Path, base_commit: str, patch: str | None
 
 def _is_test_file(path: str) -> bool:
     name = path.rsplit("/", 1)[-1]
-    return path.endswith(".py") and (name.startswith("test_") or name.endswith("_test.py")
-                                     or "/tests/" in "/" + path or "/testing/" in "/" + path)
+    return path.endswith(".py") and name != "__init__.py" and (
+        name.startswith("test_") or name.endswith("_test.py")
+        or any(d in "/" + path for d in ("/tests/", "/test/", "/testing/")))
 
 
 class TestTool:
@@ -244,8 +245,12 @@ class TestTool:
             stem = changed.rsplit("/", 1)[-1].removesuffix(".py")
             if not stem or stem.startswith("test_") or stem == "__init__":
                 continue
-            matches = sorted(p for p in tracked if p.rsplit("/", 1)[-1] in (f"test_{stem}.py", f"{stem}_test.py"))
-            targets += [m for m in matches[:2] if m not in targets]
+            names = {p: p.rsplit("/", 1)[-1] for p in tracked}
+            exact = sorted(p for p, n in names.items() if n in (f"test_{stem}.py", f"{stem}_test.py"))
+            # e.g. sqlfluff: src/sqlfluff/rules/L031.py -> test/rules/std_L031_test.py
+            near = sorted(p for p, n in names.items() if p not in exact and len(stem) >= 4
+                          and re.search(rf"(^|[_\-]){re.escape(stem)}([_\-.]|$)", n.removesuffix(".py") + "."))
+            targets += [m for m in (exact + near)[:2] if m not in targets]
         return targets[:MAX_TARGETS]
 
     def check_patch(self, patch: str, changed_files: list[str]) -> dict:

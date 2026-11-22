@@ -118,6 +118,18 @@ class TestToolTests(unittest.TestCase):
         self.assertEqual(TestTool(None, self.repo, self.sha).check_patch("P", ["pkg/mod.py"])["status"],
                          "unavailable")
 
+    def test_selection_finds_test_dir_and_embedded_module_names(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        repo, sha = make_repo(Path(temp.name), {
+            "src/pkg/rules/L031.py": "X = 1\n", "test/rules/std_L031_test.py": TEST_FILE,
+            "test/rules/std_L0310_test.py": TEST_FILE, "test/core/parser_test.py": TEST_FILE,
+            "src/pkg/core/parser.py": "Y = 1\n", "test/__init__.py": ""})
+        tool = TestTool(ENV, repo, sha, runner=fake_runner(lambda p: {}))
+        self.assertEqual(tool.select_targets(["src/pkg/rules/L031.py"]), ["test/rules/std_L031_test.py"])
+        self.assertEqual(tool.select_targets(["src/pkg/core/parser.py"]), ["test/core/parser_test.py"])
+        self.assertEqual(tool.validate_target("test/rules/std_L031_test.py"), "test/rules/std_L031_test.py")
+
     def test_regression_message_names_tests(self):
         text = regression_message({"targets": ["t.py"], "regressions": ["t.py::a"], "log_tail": "boom"})
         self.assertIn("t.py::a", text)
