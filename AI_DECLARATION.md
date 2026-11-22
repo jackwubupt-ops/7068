@@ -28,20 +28,21 @@ in the source code: `prompt_agent.py` (Planner), `patchloop_task2/edit_blocks.py
 
 ## 3. Project-related prompts
 
-The Claude Code prompts (2026-11-16 to 11-22, 214 in total) are in
-[`ai_prompts/`](ai_prompts/README.md), translated into English, grouped by function, in time order
-within each file, prompts only:
+The Claude Code prompts (2026-11-16 to 11-22) are in [`ai_prompts/`](ai_prompts/README.md),
+translated into English, grouped by function, in time order within each file, prompts only. We kept
+the 65 prompts that set a direction or asked for a change and left out routine messages (pasted
+logs, "next step", "has it finished?", merge confirmations):
 
 | File | Tool | Prompts |
 |---|---|---|
-| `ai_prompts/environment-and-servers.md` | Claude Code | 75 |
-| `ai_prompts/agent-and-tools.md` | Claude Code | 17 |
-| `ai_prompts/experiments-and-evaluation.md` | Claude Code | 63 |
-| `ai_prompts/web-app-and-demo.md` | Claude Code | 13 |
-| `ai_prompts/planning-requirements-and-repository.md` | Claude Code | 46 |
+| `ai_prompts/environment-and-servers.md` | Claude Code | 8 |
+| `ai_prompts/agent-and-tools.md` | Claude Code | 12 |
+| `ai_prompts/experiments-and-evaluation.md` | Claude Code | 13 |
+| `ai_prompts/web-app-and-demo.md` | Claude Code | 8 |
+| `ai_prompts/planning-requirements-and-repository.md` | Claude Code | 24 |
 
 Redacted: API keys, server host names and IP addresses, local user and folder names, e-mail
-addresses. Terminal output pasted only for diagnosis is replaced by a short placeholder.
+addresses.
 
 ## 4. Missing records
 
@@ -51,5 +52,5 @@ addresses. Terminal output pasted only for diagnosis is replaced by a short plac
 - **ChatGPT:** the prompts used for the proposal, the background research, the other members'
   work and the external review report (a code review of the repository at `27e8b68` against the
   course guideline) were not saved.
-- **Pasted output:** long terminal logs pasted for diagnosis are omitted (they contained no
-  instructions, and some contained server identifiers).
+- **Routine Claude Code messages** (about 150: pasted terminal logs, "next step", status questions,
+  merge confirmations) are intentionally left out; they set no direction.

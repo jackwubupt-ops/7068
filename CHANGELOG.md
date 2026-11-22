@@ -7,7 +7,7 @@ These are development milestones, not published GitHub releases.
 ## AI-use declaration and prompts (2026-11-22)
 
 ### Added
-- `ai_prompts/`: the project-related prompts given to Claude Code (2026-11-16 to 11-22), exported from the session logs, de-duplicated, translated into English, redacted, and grouped by function (environment, agent and tools, experiments, web app, planning and repository); an index in `ai_prompts/README.md`.
+- `ai_prompts/`: the project-related prompts given to Claude Code (2026-11-16 to 11-22), exported from the session logs, de-duplicated, translated into English, redacted, reduced to the 65 prompts that set a direction, and grouped by function (environment, agent and tools, experiments, web app, planning and repository); an index in `ai_prompts/README.md`.
 - `AI_DECLARATION.md` completed: tools (Claude Code / Claude Opus 5.5; ChatGPT for the proposal, research, other members' work and one external review), what they helped with, the prompt files, and missing records.
 
 ## Safer outcomes, queue cancel, commit check (2026-11-22)
