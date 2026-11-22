@@ -90,6 +90,8 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
                 skip_clarification=bool(body.get("skip_clarification", False)),
                 exec_feedback=bool(body.get("exec_feedback", False)),
                 reasoning_effort=str(body.get("reasoning_effort") or "none"),
+                snippet_name=(str(body["snippet_name"]).strip() if body.get("snippet_name") else None),
+                snippet_code=(str(body["snippet_code"]) if body.get("snippet_code") else None),
                 backend=str(body.get("backend") or default_backend()),
             )
             session = manager.start(req)
@@ -102,7 +104,9 @@ def create_app(manager: SessionManager, *, health=None, tasks=None, token: str |
         rows = sorted(manager.sessions.values(), key=lambda s: s.created, reverse=True)
         return jsonify([{"id": s.id, "status": s.status, "round": s.round, "parent": s.parent,
                          "agent": s.request.agent,
-                         "target": s.request.instance_id or s.request.repo_path} for s in rows[:30]])
+                         "target": s.request.instance_id or s.request.repo_path
+                         or (f"pasted {s.request.snippet_name}" if s.request.snippet_name else "")}
+                        for s in rows[:30]])
 
     @app.get("/api/sessions/<sid>")
     def api_get(sid):

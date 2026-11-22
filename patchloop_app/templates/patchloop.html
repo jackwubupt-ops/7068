@@ -45,7 +45,7 @@
   input:focus, select:focus, textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
   select:disabled { opacity:.55; }
   textarea { min-height:150px; resize:vertical; font:12.5px/1.5 var(--mono); }
-  .seg { display:grid; grid-template-columns:1fr 1fr; padding:3px; gap:3px; border-radius:11px; background:var(--surface-3); }
+  .seg { display:grid; grid-template-columns:1fr 1fr 1fr; padding:3px; gap:3px; border-radius:11px; background:var(--surface-3); }
   .seg button { border:0; background:transparent; padding:7px; border-radius:8px; color:var(--muted); font-weight:500; }
   .seg button.on { background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(16,24,40,.12); }
   button { padding:8px 14px; border-radius:10px; border:1px solid var(--line); background:var(--surface); color:var(--ink);
@@ -180,6 +180,7 @@
     <div class="seg">
       <button id="tab-swebench" class="on" onclick="setSource('swebench')">Example issue</button>
       <button id="tab-local" onclick="setSource('local')">My repository</button>
+      <button id="tab-snippet" onclick="setSource('snippet')">Paste code</button>
     </div>
     <div id="src-swebench">
       <label>SWE-bench Lite dev issue (repository and commit are fixed)</label>
@@ -190,6 +191,13 @@
       <input id="repo_path" placeholder="/data/demo-repos/myproject  or  C:\Users\me\demo-calc">
       <label>Commit or branch</label>
       <input id="commit" value="HEAD">
+      <div class="note">With HEAD, uncommitted edits in your working copy are included (a snapshot; your files and branch are not changed).</div>
+    </div>
+    <div id="src-snippet" style="display:none">
+      <label>File name</label>
+      <input id="snippet_name" value="calc.py" placeholder="calc.py">
+      <label>Code (the agent gets a private repository with just this file)</label>
+      <textarea id="snippet_code" style="min-height:140px" placeholder="def divide(a, b):&#10;    return a // b"></textarea>
     </div>
     <label>What is wrong? (the agent works only from this text)</label>
     <textarea id="issue" placeholder="e.g. divide(3, 2) returns 1 but it should return 1.5 — division should be true division."></textarea>
@@ -247,8 +255,9 @@ async function api(path, opts={}) {
 }
 function setSource(s) {
   source = s;
-  $('tab-swebench').classList.toggle('on', s === 'swebench'); $('tab-local').classList.toggle('on', s === 'local');
-  $('src-swebench').style.display = s === 'swebench' ? '' : 'none'; $('src-local').style.display = s === 'local' ? '' : 'none';
+  for (const k of ['swebench', 'local', 'snippet']) {
+    $('tab-' + k).classList.toggle('on', s === k); $('src-' + k).style.display = s === k ? '' : 'none';
+  }
   testsNote();
 }
 async function loadTasks() {
@@ -302,7 +311,8 @@ async function startRun(extra={}) {
   $('form-err').textContent = '';
   const body = {source, issue:$('issue').value, agent:$('agent').value, backend:$('backend').value, retrieval_k:+$('retrieval_k').value,
                 exec_feedback:$('exec_feedback').checked, reasoning_effort:$('reasoning_effort').value,
-                instance_id:$('task').value || null, repo_path:$('repo_path').value, commit:$('commit').value, ...extra};
+                instance_id:$('task').value || null, repo_path:$('repo_path').value, commit:$('commit').value,
+                snippet_name:$('snippet_name').value, snippet_code:$('snippet_code').value, ...extra};
   try { const s = await api('/api/sessions', {method:'POST', body:JSON.stringify(body)}); openSession(s.id); }
   catch (e) { $('form-err').textContent = e.message; }
 }
@@ -470,7 +480,7 @@ function render(s) {
       <div class="row" style="margin-top:10px"><button class="primary" onclick="followUp()">Send follow-up</button>
       ${s.status === 'needs_clarification' && !r.status ? `<button class="ghost" onclick="followUp(true)">Run anyway without more detail</button>` : ''}</div></div>`;
   const tok = r.prompt_tokens ? `${(r.prompt_tokens / 1000).toFixed(1)}k in · ${(r.completion_tokens / 1000).toFixed(1)}k out` : '';
-  const bubbles = `<div class="bubble ${issueOpen ? 'open' : ''}"><div class="who">Your request${req.instance_id ? ` · ${esc(req.instance_id)}` : req.repo_path ? ` · ${esc(req.repo_path)}` : ''}</div>
+  const bubbles = `<div class="bubble ${issueOpen ? 'open' : ''}"><div class="who">Your request${req.source === 'snippet' ? ` · pasted ${esc(req.snippet_name)}` : req.instance_id ? ` · ${esc(req.instance_id)}` : req.repo_path ? ` · ${esc(req.repo_path)}` : ''}</div>
       <div class="txt">${esc(issueParts[0])}</div>${issueParts[0].length > 400 ? `<button class="more" onclick="issueOpen=!issueOpen;render(lastView)">${issueOpen ? 'show less' : 'show all'}</button>` : ''}</div>
       ${issueParts.slice(1).map(g => `<div class="bubble"><div class="who">Your follow-up</div><div class="txt">${esc(g)}</div></div>`).join('')}`;
   lastView = s;

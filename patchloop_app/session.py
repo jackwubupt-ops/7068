@@ -23,9 +23,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 import threading
 import time
 import uuid
@@ -54,6 +56,8 @@ class Request:
     backend: str = "qwen"            # "qwen" (local vLLM) | "deepseek" (hosted API)
     exec_feedback: bool = False      # run existing repository tests in Docker (RQ2)
     reasoning_effort: str = "none"   # DeepSeek thinking: none | low | high | max (RQ1)
+    snippet_name: str | None = None  # source == "snippet": file name and code pasted in the page
+    snippet_code: str | None = None
 
 
 @dataclass
@@ -270,6 +274,49 @@ def resolve_local(repo_path: str, commit: str) -> tuple[Path, str, str]:
     return root, sha, f"local/{name}"
 
 
+SNIPPET_NAME = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,80}(/[A-Za-z0-9_][A-Za-z0-9_.-]{0,80}){0,4}")
+MAX_SNIPPET_CHARS = 100_000
+MAX_SNAPSHOT_FILES = 2000
+
+
+def snapshot_working_tree(root: Path) -> str | None:
+    """Commit object for the CURRENT working tree (uncommitted and untracked, non-ignored files),
+    with HEAD as parent. Uses a temporary index: the user's index, branch and files are untouched
+    and no ref is created. None when the working tree is clean."""
+    status = _git("-C", str(root), "status", "--porcelain", "--untracked-files=all")
+    if not status:
+        return None
+    if len(status.splitlines()) > MAX_SNAPSHOT_FILES:
+        raise ValueError("Too many uncommitted files to snapshot; commit or .gitignore them first")
+    with tempfile.TemporaryDirectory(prefix="patchloop-index-") as temp:
+        env = {**os.environ, "GIT_INDEX_FILE": str(Path(temp) / "index")}
+
+        def git(*args):
+            proc = subprocess.run(["git", "-c", "core.hooksPath=/dev/null", "-C", str(root), *args],
+                                  capture_output=True, text=True, timeout=120, env=env)
+            if proc.returncode:
+                raise ValueError(f"git {args[0]} failed: {proc.stderr.strip()[:300]}")
+            return proc.stdout.strip()
+        git("read-tree", "HEAD")
+        git("add", "-A")
+        tree = git("write-tree")
+        return git("-c", "user.name=PatchLoop", "-c", "user.email=patchloop@localhost", "commit-tree",
+                   tree, "-p", "HEAD", "-m", "PatchLoop snapshot of uncommitted changes")
+
+
+def make_snippet_repo(base: Path, name: str, code: str) -> Path:
+    """A private Git repository holding one pasted file (for code typed in the page)."""
+    root = base / uuid.uuid4().hex[:12]
+    target = root / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(code if code.endswith("\n") else code + "\n", encoding="utf-8")
+    _git("init", "-q", str(root))
+    _git("-C", str(root), "add", "-A")
+    _git("-C", str(root), "-c", "user.name=PatchLoop", "-c", "user.email=patchloop@localhost",
+         "commit", "-q", "-m", "pasted code")
+    return root
+
+
 def local_checkout_fn(root: Path):
     """checkout_fn for run_qwen_dev: a private clone at the base commit."""
     def checkout(task, destination: Path) -> Path:
@@ -322,6 +369,14 @@ class SessionManager:
             raise ValueError("agent must be pcr|single and edit_format search_replace|diff")
         if not 0 <= int(request.retrieval_k) <= 50:
             raise ValueError("retrieval_k must be in [0, 50]")
+        if request.source == "snippet":
+            name, code = request.snippet_name or "", request.snippet_code or ""
+            if not SNIPPET_NAME.fullmatch(name) or ".." in name.split("/"):
+                raise ValueError("File name must be a relative path such as calc.py or pkg/util.py")
+            if not code.strip() or len(code) > MAX_SNIPPET_CHARS:
+                raise ValueError(f"Paste 1-{MAX_SNIPPET_CHARS} characters of code")
+        elif request.source not in ("swebench", "local"):
+            raise ValueError("source must be swebench, local or snippet")
         if request.reasoning_effort not in ("none", "low", "high", "max"):
             raise ValueError("reasoning_effort must be none|low|high|max")
         if request.reasoning_effort != "none" and request.backend != "deepseek":
@@ -368,9 +423,22 @@ class SessionManager:
             return task, None
         if req.source == "local":
             root, sha, repo = resolve_local(req.repo_path or "", req.commit)
+            if (req.commit or "HEAD") == "HEAD":
+                snapshot = snapshot_working_tree(root)
+                if snapshot:
+                    # The agent works on what the user sees in their editor, not only on HEAD.
+                    sha = snapshot
+                    session.emit("info", "Using your uncommitted changes",
+                                 "The working tree differs from HEAD; the agent works on a snapshot of it. "
+                                 "Your files, index and branch are not changed.")
             iid = f"{repo.split('/')[1]}__local-{sha[:10]}"
             return DevelopmentTask(iid, repo, sha, req.issue), root
-        raise ValueError("source must be swebench or local")
+        if req.source == "snippet":
+            root = make_snippet_repo(self.runs_dir / "snippets", req.snippet_name, req.snippet_code)
+            sha = _git("-C", str(root), "rev-parse", "HEAD")
+            session.result["snippet_repo"] = str(root)
+            return DevelopmentTask(f"snippet__{sha[:10]}", "local/pasted-code", sha, req.issue), root
+        raise ValueError("source must be swebench, local or snippet")
 
     def _run(self, session: Session) -> None:
         req = session.request

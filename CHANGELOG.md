@@ -4,6 +4,12 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Free-form code in the app (2026-11-22)
+
+### Added
+- "Paste code" source: a file name and its code typed in the page become a private Git repository under the runs directory; the agent works on it exactly as on a local repository.
+- Local repositories with commit `HEAD` now include uncommitted and untracked (non-ignored) edits: a snapshot commit is built with a temporary index (no ref, index, branch or file of the user changes). Previously such edits were silently ignored. An accepted patch is committed on a new branch on top of that snapshot.
+
 ## Readable session view (2026-11-22)
 
 ### Changed

@@ -17,7 +17,7 @@ guessing.
 |---|---|
 | Users | maintainers/contributors of Python repositories triaging bug reports |
 | Need | a first candidate fix, localized and applicable, with a visible trace of how it was found |
-| Scope | **in:** a bug report against a Python repository (a SWE-bench Lite dev example, or any local Git repository), follow-ups that add guidance or change the agent, model, reasoning effort or test execution. **out:** new features or refactors, non-Python code, requests unrelated to the repository (these stop with clarification questions), pushing or merging (an accepted patch is only committed on a new local branch) |
+| Scope | **in:** a bug report against Python code: a SWE-bench Lite dev example, any local Git repository (uncommitted edits included), or code pasted into the page; follow-ups that add guidance or change the agent, model, reasoning effort or test execution. **out:** new features or refactors, non-Python code, requests unrelated to the repository (these stop with clarification questions), pushing or merging (an accepted patch is only committed on a new local branch) |
 | Entry point | web app: `python -m patchloop_app.web` |
 | Models | the **DeepSeek API** (`deepseek-flash`; used for the final experiments; no GPU needed; data leaves the machine) or local **Qwen2.5-Coder-7B-Instruct** on vLLM (private; the proposal's model, kept as the capability baseline) |
 | Evaluation | SWE-bench Lite **dev**, scored only by the official harness (`swebench==4.1.0`, local Docker) |
@@ -142,8 +142,11 @@ The server binds to 127.0.0.1 and starts with whichever backends respond. To lis
 interface an access token is mandatory: `--host 0.0.0.0 --token <random>` (open
 `/?token=<random>`; restrict the port to your IP).
 
-In the page, choose an **example task** (SWE-bench Lite dev issue; the text is editable) or a
-**local Git repository** on the server, then the model and the agent, and press *Run agent*. The
+In the page, choose an **example issue** (SWE-bench Lite dev; the text is editable), **my repository**
+(a local Git repository; with commit `HEAD`, uncommitted edits are included through a snapshot, and
+the user's files, index and branch are never changed) or **paste code** (a file name and its code; the
+agent gets a private repository with just that file), describe the bug, choose the model, agent,
+reasoning effort and test execution, and press *Run agent*. The
 timeline shows every decision, tool result, edit, apply result and recovery step. A patch is shown
 as a diff and waits for **Accept / Reject**. Accept saves the patch and, for a local repository,
 commits it on a new branch `patchloop/<session>` through a temporary worktree (the current branch

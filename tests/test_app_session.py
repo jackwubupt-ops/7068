@@ -161,6 +161,41 @@ class AppSessionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 mgr.start(bad, run_async=False)
 
+    def test_uncommitted_edits_are_what_the_agent_sees_and_stay_untouched(self):
+        mod = self.repo / "pkg" / "mod.py"
+        edited = ORIGINAL + "\n\ndef h():\n    return 3\n"
+        mod.write_text(edited)
+        (self.repo / "pkg" / "new.py").write_text("Z = 1\n")
+        before = subprocess.run(["git", "-C", str(self.repo), "status", "--porcelain"], capture_output=True, text=True).stdout
+        mgr = self.manager([READ, GOOD])
+        s = mgr.start(self.local(retrieval_k=0), run_async=False)
+        self.assertEqual(s.status, "awaiting_confirmation")
+        self.assertTrue(any(e["title"] == "Using your uncommitted changes" for e in s.view()["events"]))
+        self.assertNotEqual(s.result["base_commit"], self.sha)            # a snapshot commit, child of HEAD
+        self.assertEqual(mod.read_text(), edited)                         # working tree untouched
+        after = subprocess.run(["git", "-C", str(self.repo), "status", "--porcelain"], capture_output=True, text=True).stdout
+        self.assertEqual(before, after)                                   # index untouched
+        head = subprocess.run(["git", "-C", str(self.repo), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+        self.assertEqual(head, self.sha)                                  # branch untouched
+        view = mgr.accept(s.id)
+        branch = view["result"]["branch"]
+        shown = subprocess.run(["git", "-C", str(self.repo), "show", f"{branch}:pkg/mod.py"], capture_output=True, text=True).stdout
+        self.assertIn("def h():", shown)                                  # accepted on top of the snapshot
+        self.assertIn("return -1", shown)
+
+    def test_pasted_code_runs_in_a_private_repository(self):
+        mgr = self.manager([READ, GOOD])
+        req = Request(issue=ISSUE, source="snippet", snippet_name="pkg/mod.py", snippet_code=ORIGINAL,
+                      agent="single", retrieval_k=0)
+        s = mgr.start(req, run_async=False)
+        self.assertEqual(s.status, "awaiting_confirmation", s.view()["events"][-3:])
+        self.assertIn("return -1", s.patch)
+        self.assertEqual(mgr.accept(s.id)["status"], "accepted")
+        for bad in (dict(snippet_name="../x.py", snippet_code="x=1"), dict(snippet_name="a.py", snippet_code=" "),
+                    dict(snippet_name="/etc/passwd", snippet_code="x")):
+            with self.assertRaises(ValueError):
+                mgr.start(Request(issue=ISSUE, source="snippet", agent="single", **bad), run_async=False)
+
 
 class DescribeTests(unittest.TestCase):
     def test_feedback_and_output_descriptions(self):
