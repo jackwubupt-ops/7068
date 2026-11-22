@@ -1,0 +1,134 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1606",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "c78b50f4337ecbe536a961336ca91a1176efc0e8",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "5e6e5d0361e3fd52c2a947811028810614b4017fa62e76380dc9f81fa312c123",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/tools.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "269111623271dad6bcf357d0c90881f3be92659235d5d5d29b08b29ac60e6e89",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/tools.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/modelchain.py",
+    "pvlib/pvsystem.py",
+    "pvlib/temperature.py",
+    "pvlib/bifacial/pvfactors.py",
+    "pvlib/location.py",
+    "pvlib/tools.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/singlediode.py",
+    "pvlib/iam.py",
+    "pvlib/forecast.py"
+  ],
+  "read_files": [
+    "pvlib/tools.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/tools.py"
+  ],
+  "patch_size_bytes": 802,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2896,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.647,
+      "dropped_history_messages": 0,
+      "output_sha256": "4f7399b19d3eaa54a7363a5a42589454c669f99d57f8af05397c51ab6f26e2fe"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4958,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.563,
+      "dropped_history_messages": 0,
+      "output_sha256": "dcea4c8f31ecd6e88d3e86c950e2d390887e15a0ddc794590e5d1766b61d34a7"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5461,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.612,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5592,
+      "completion_tokens": 205,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.904,
+      "dropped_history_messages": 0,
+      "output_sha256": "5e6e5d0361e3fd52c2a947811028810614b4017fa62e76380dc9f81fa312c123"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 18907,
+  "completion_tokens": 264,
+  "reasoning_tokens": 0,
+  "duration_seconds": 5.84,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

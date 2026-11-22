@@ -1,0 +1,195 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1854",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "27a3a07ebc84b11014d3753e4923902adf9a38c0",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "4b1e09205e711d152c90bc353421eb88ccc670526f9271e7923deccee8ca77c3",
+      "raw_model_patch_sha256": "6bab9628a31d1f521e20023ef53c5a6779b985bffe1b3543c413d819a5eedbab",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/pvsystem.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pvlib/pvsystem.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "981b0e4b614a2588825e301b4c9b1e0ccb811e5aa96b765850ea76f9a725a900",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11,
+      "completion_tokens": 2,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.881,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1202,
+      "completion_tokens": 25,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.676,
+      "dropped_history_messages": 0,
+      "output_sha256": "20a4f68f136c801be90d874b8f15b46b580ad12f4db71cf8a0162cc05031a676"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1361,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.473,
+      "dropped_history_messages": 0,
+      "output_sha256": "262506450836beeaed2726a29a3a44e8df6627fb65c50de545fc671eebbbcbf8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5550,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.672,
+      "dropped_history_messages": 0,
+      "output_sha256": "2762fbdf17eab9b524dac689381614d884b13bcb6b81f676a66c546cfc78f0c1"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7280,
+      "completion_tokens": 24,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.195,
+      "dropped_history_messages": 0,
+      "output_sha256": "f5542b1776ab7628b761255b1e9c8414643270b02527640bc39bd726865a2b73"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7427,
+      "completion_tokens": 29,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.661,
+      "dropped_history_messages": 0,
+      "output_sha256": "19f0701764e6064cc34050db4e312d021e193a3f206534bd9e13a1c26d56faa5"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9742,
+      "completion_tokens": 423,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.67,
+      "dropped_history_messages": 0,
+      "output_sha256": "5a77ed803031b1edda43e87d3ae17f5860320aedd2c7aff0643432829a6e211a"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1933,
+      "completion_tokens": 264,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.225,
+      "dropped_history_messages": 0,
+      "output_sha256": "6bab9628a31d1f521e20023ef53c5a6779b985bffe1b3543c413d819a5eedbab"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "class PVSystem"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "class Array"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/pvsystem.py",
+    "pvlib/modelchain.py",
+    "pvlib/temperature.py",
+    "pvlib/location.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/iotools/pvgis.py",
+    "docs/examples/irradiance-transposition/plot_seasonal_tilt.py",
+    "pvlib/tests/test_pvsystem.py",
+    "pvlib/tools.py",
+    "pvlib/irradiance.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pvlib/pvsystem.py"
+  ],
+  "patch_size_bytes": 524,
+  "prompt_tokens": 34506,
+  "completion_tokens": 823,
+  "reasoning_tokens": 0,
+  "duration_seconds": 10.9,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

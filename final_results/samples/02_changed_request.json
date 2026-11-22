@@ -1,0 +1,417 @@
+{
+  "sample": {
+    "name": "02_changed_request",
+    "kind": "changed request / follow-up",
+    "description": "Same issue, then the maintainer changes the conditions: keep the fix minimal and switch to the single-agent mode. The follow-up text is appended to the issue as maintainer guidance.",
+    "request": {
+      "source": "swebench",
+      "instance_id": "sqlfluff__sqlfluff-1625",
+      "issue": "@task",
+      "agent": "pcr",
+      "retrieval_k": 10
+    },
+    "follow_up": {
+      "guidance": "Keep the change as small as possible: modify one function in one source file, and do not edit any tests.",
+      "agent": "single"
+    },
+    "expect": "Round 2 is linked to round 1, carries the guidance, runs the single agent, and again ends in a confirmation or clarification stop."
+  },
+  "backend": "deepseek",
+  "model": "deepseek-flash",
+  "sessions": [
+    {
+      "id": "1122-110437-3f6e",
+      "parent": null,
+      "round": 1,
+      "status": "rejected",
+      "request": {
+        "issue": "TSQL - L031 incorrectly triggers \"Avoid using aliases in join condition\" when no join present\n## Expected Behaviour\r\n\r\nBoth of these queries should pass, the only difference is the addition of a table alias 'a':\r\n\r\n1/ no alias\r\n\r\n```\r\nSELECT [hello]\r\nFROM\r\n    mytable\r\n```\r\n\r\n2/ same query with alias\r\n\r\n```\r\nSELECT a.[hello]\r\nFROM\r\n    mytable AS a\r\n```\r\n\r\n## Observed Behaviour\r\n\r\n1/ passes\r\n2/ fails with: L031: Avoid using aliases in join condition.\r\n\r\nBut there is no join condition :-)\r\n\r\n## Steps to Reproduce\r\n\r\nLint queries above\r\n\r\n## Dialect\r\n\r\nTSQL\r\n\r\n## Version\r\n\r\nsqlfluff 0.6.9\r\nPython 3.6.9\r\n\r\n## Configuration\r\n\r\nN/A\n",
+        "source": "swebench",
+        "instance_id": "sqlfluff__sqlfluff-1625",
+        "repo_path": null,
+        "commit": "HEAD",
+        "agent": "pcr",
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "skip_clarification": false,
+        "backend": "deepseek",
+        "exec_feedback": false
+      },
+      "events": [
+        {
+          "i": 0,
+          "t": 0.0,
+          "kind": "info",
+          "stage": "",
+          "title": "Repository sqlfluff/sqlfluff at 14e1a23a31",
+          "detail": "agent=pcr, edit_format=search_replace, retrieval_k=10"
+        },
+        {
+          "i": 1,
+          "t": 0.6,
+          "kind": "tool",
+          "stage": "",
+          "title": "retrieval -> 10 candidate files",
+          "detail": "src/sqlfluff/rules/L031.py  (keyword match)\nsrc/sqlfluff/rules/L028.py  (keyword match)\nsrc/sqlfluff/rules/L026.py  (keyword match)\nsrc/sqlfluff/rules/L044.py  (keyword match)\nsrc/sqlfluff/dialects/dialect_tsql.py  (keyword match)\nsrc/sqlfluff/core/rules/analysis/select_crawler.py  (keyword match)\nexamples/01_basic_api_usage.py  (keyword match)\nsrc/sqlfluff/core/rules/analysis/select.py  (keyword match)\nsrc/sqlfluff/dialects/dialect_ansi.py  (keyword match)\nsrc/sqlfluff/core/dialects/base.py  (defines Dialect, keyword match)"
+        },
+        {
+          "i": 2,
+          "t": 0.6,
+          "kind": "info",
+          "stage": "",
+          "title": "Model: deepseek-flash (hosted DeepSeek API: the issue and code are sent to DeepSeek)",
+          "detail": ""
+        },
+        {
+          "i": 3,
+          "t": 0.6,
+          "kind": "info",
+          "stage": "",
+          "title": "Starting the Planner-Coder-Reviewer agent",
+          "detail": ""
+        },
+        {
+          "i": 4,
+          "t": 1.7,
+          "kind": "thinking",
+          "stage": "planner",
+          "title": "planner: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 5,
+          "t": 2.5,
+          "kind": "decision",
+          "stage": "planner",
+          "title": "planner: read src/sqlfluff/rules/L031.py lines 1-200",
+          "detail": ""
+        },
+        {
+          "i": 6,
+          "t": 2.5,
+          "kind": "tool",
+          "stage": "planner",
+          "title": "read_file src/sqlfluff/rules/L031.py lines 1-200",
+          "detail": ""
+        },
+        {
+          "i": 7,
+          "t": 2.5,
+          "kind": "thinking",
+          "stage": "planner",
+          "title": "planner: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 8,
+          "t": 3.4,
+          "kind": "decision",
+          "stage": "planner",
+          "title": "planner: read src/sqlfluff/rules/L031.py lines 200-320",
+          "detail": ""
+        },
+        {
+          "i": 9,
+          "t": 3.4,
+          "kind": "tool",
+          "stage": "planner",
+          "title": "read_file src/sqlfluff/rules/L031.py lines 200-219",
+          "detail": ""
+        },
+        {
+          "i": 10,
+          "t": 3.4,
+          "kind": "thinking",
+          "stage": "planner",
+          "title": "planner: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 11,
+          "t": 8.4,
+          "kind": "decision",
+          "stage": "planner",
+          "title": "planner: final plan, candidate files ['src/sqlfluff/rules/L031.py']",
+          "detail": "{\"root_cause_hypothesis\": \"Hypothesis: `_lint_aliases_in_join` (and its caller `_eval`) does not verify that the select statement actually contains a join before reporting aliases. `_filter_table_expressions` yields every aliased from_expression_element (including the single base table in a join-less query), and the loop at lines 170-217 appends a LintResult for each such alias unconditionally. Because the alias is referenced in the select clause (`a.[hello]`), ids_refs is populated and fixes are built, but the violation is still reported. The rule needs to skip reporting when there is no join (or otherwise restrict to cases where the alias is genuinely redundant in a join context).\", \"planned_changes\": [\"In `_eval`/`_lint_aliases_in_join`, detect whether the select statement contains a join clause (e.g. via `segment.recursive_crawl('join_clause')` or checking for join keywords) and return no violations when no join is present.\", \"Alternatively/additionally, only consider aliases that are part of a join context rather than the sole base table of a join-less query.\", \"Ensure the reported description accurately reflects the situation (avoid claiming 'join condition' when none exists).\", \"Add regression coverage for the TSQL example `SELECT a.[hello] FROM mytable AS a` and the no-alias variant.\"]}"
+        },
+        {
+          "i": 12,
+          "t": 8.4,
+          "kind": "warning",
+          "stage": "planner",
+          "title": "Protocol validation error",
+          "detail": "Protocol validation error: Search evidence is required before finalizing. Correct the action; do not invent evidence."
+        },
+        {
+          "i": 13,
+          "t": 8.4,
+          "kind": "thinking",
+          "stage": "planner",
+          "title": "planner: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 14,
+          "t": 9.7,
+          "kind": "decision",
+          "stage": "planner",
+          "title": "planner: search the repository for “join_clause”",
+          "detail": ""
+        },
+        {
+          "i": 15,
+          "t": 9.9,
+          "kind": "tool",
+          "stage": "planner",
+          "title": "search_repo -> 5 matches",
+          "detail": "src/sqlfluff/core/rules/analysis/select.py, src/sqlfluff/dialects/dialect_ansi.py"
+        },
+        {
+          "i": 16,
+          "t": 9.9,
+          "kind": "thinking",
+          "stage": "planner",
+          "title": "planner: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 17,
+          "t": 13.4,
+          "kind": "decision",
+          "stage": "planner",
+          "title": "planner: final plan, candidate files ['src/sqlfluff/rules/L031.py']",
+          "detail": "{\"root_cause_hypothesis\": \"Hypothesis: `_lint_aliases_in_join` (and its caller `_eval`) does not verify that the select statement actually contains a join before reporting aliases. `_filter_table_expressions` yields every aliased from_expression_element (including the single base table in a join-less query), and the loop at lines 170-217 appends a LintResult for each such alias unconditionally. Because the alias is referenced in the select clause (`a.[hello]`), ids_refs is populated and fixes are built, but the violation is still reported. The rule needs to skip reporting when there is no join (or otherwise restrict to cases where the alias is genuinely redundant in a join context).\", \"planned_changes\": [\"In `_eval`/`_lint_aliases_in_join`, detect whether the select statement contains a join clause (e.g. via `segment.recursive_crawl('join_clause')`, consistent with how select.py and dialect_ansi.py crawl 'join_clause') and return no violations when no join is present.\", \"Alternatively/additionally, only consider aliases that are part of a join context rather than the sole base table of a join-less query.\", \"Ensure the reported description accurately reflects the situation (avoid claiming 'join condition' when none exists).\", \"Add regression coverage for the TSQL example `SELECT a.[hello] FROM mytable AS a` and the no-alias variant.\"]}"
+        },
+        {
+          "i": 18,
+          "t": 13.4,
+          "kind": "thinking",
+          "stage": "coder",
+          "title": "coder: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 19,
+          "t": 14.6,
+          "kind": "edit",
+          "stage": "coder",
+          "title": "coder: proposed edit",
+          "detail": "FILE: src/sqlfluff/rules/L031.py\n<<<<<<< SEARCH\n            if not from_clause_segment:\n                return None\n\n            from_expression = from_clause_segment.get_child(\"from_expression\")\n=======\n            if not from_clause_segment:\n                return None\n\n            # If there is no join, then there is no join condition to lint.\n            if not segment.recursive_crawl(\"join_clause\"):\n                return None\n\n            from_expression = from_clause_segment.get_child(\"from_expression\")\n>>>>>>> REPLACE"
+        },
+        {
+          "i": 20,
+          "t": 14.8,
+          "kind": "apply",
+          "stage": "",
+          "title": "attempt 1: applied",
+          "detail": "{\"error_code\": null, \"changed_files\": [\"src/sqlfluff/rules/L031.py\"], \"search_match_modes\": [\"exact\"]}"
+        },
+        {
+          "i": 21,
+          "t": 14.8,
+          "kind": "stop",
+          "stage": "",
+          "title": "A Git-applicable patch is ready. Review it, then accept or reject.",
+          "detail": "It was applied in an isolated checkout only; no tests confirmed it."
+        },
+        {
+          "i": 22,
+          "t": 14.8,
+          "kind": "stop",
+          "stage": "",
+          "title": "Rejected by the user; nothing was exported",
+          "detail": "Send a follow-up to try again with more guidance."
+        }
+      ],
+      "event_count": 23,
+      "questions": [],
+      "patch": "diff --git a/src/sqlfluff/rules/L031.py b/src/sqlfluff/rules/L031.py\nindex 838c6ce5d..d12ad9d51 100644\n--- a/src/sqlfluff/rules/L031.py\n+++ b/src/sqlfluff/rules/L031.py\n@@ -62,6 +62,10 @@ class Rule_L031(BaseRule):\n             if not from_clause_segment:\n                 return None\n \n+            # If there is no join, then there is no join condition to lint.\n+            if not segment.recursive_crawl(\"join_clause\"):\n+                return None\n+\n             from_expression = from_clause_segment.get_child(\"from_expression\")\n             from_expression_element = None\n             if from_expression:\n",
+      "result": {
+        "model": "deepseek-flash",
+        "status": "prediction_ready",
+        "failed_stage": null,
+        "error": null,
+        "attempt_count": 1,
+        "suspected_files": [
+          "src/sqlfluff/rules/L031.py"
+        ],
+        "retrieval_candidates": [
+          "src/sqlfluff/rules/L031.py",
+          "src/sqlfluff/rules/L028.py",
+          "src/sqlfluff/rules/L026.py",
+          "src/sqlfluff/rules/L044.py",
+          "src/sqlfluff/dialects/dialect_tsql.py",
+          "src/sqlfluff/core/rules/analysis/select_crawler.py",
+          "examples/01_basic_api_usage.py",
+          "src/sqlfluff/core/rules/analysis/select.py",
+          "src/sqlfluff/dialects/dialect_ansi.py",
+          "src/sqlfluff/core/dialects/base.py"
+        ],
+        "prompt_tokens": 28233,
+        "completion_tokens": 1502,
+        "duration_seconds": 14.24,
+        "patch_status": "applied",
+        "stop_reason": null,
+        "branch": null,
+        "patch_file": null
+      }
+    },
+    {
+      "id": "1122-110452-d8a4",
+      "parent": "1122-110437-3f6e",
+      "round": 2,
+      "status": "awaiting_confirmation",
+      "request": {
+        "issue": "TSQL - L031 incorrectly triggers \"Avoid using aliases in join condition\" when no join present\n## Expected Behaviour\r\n\r\nBoth of these queries should pass, the only difference is the addition of a table alias 'a':\r\n\r\n1/ no alias\r\n\r\n```\r\nSELECT [hello]\r\nFROM\r\n    mytable\r\n```\r\n\r\n2/ same query with alias\r\n\r\n```\r\nSELECT a.[hello]\r\nFROM\r\n    mytable AS a\r\n```\r\n\r\n## Observed Behaviour\r\n\r\n1/ passes\r\n2/ fails with: L031: Avoid using aliases in join condition.\r\n\r\nBut there is no join condition :-)\r\n\r\n## Steps to Reproduce\r\n\r\nLint queries above\r\n\r\n## Dialect\r\n\r\nTSQL\r\n\r\n## Version\r\n\r\nsqlfluff 0.6.9\r\nPython 3.6.9\r\n\r\n## Configuration\r\n\r\nN/A\n\n\nMaintainer follow-up (round 2): Keep the change as small as possible: modify one function in one source file, and do not edit any tests.",
+        "source": "swebench",
+        "instance_id": "sqlfluff__sqlfluff-1625",
+        "repo_path": null,
+        "commit": "HEAD",
+        "agent": "single",
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "skip_clarification": true,
+        "backend": "deepseek",
+        "exec_feedback": false
+      },
+      "events": [
+        {
+          "i": 0,
+          "t": 0.0,
+          "kind": "info",
+          "stage": "",
+          "title": "Repository sqlfluff/sqlfluff at 14e1a23a31",
+          "detail": "agent=single, edit_format=search_replace, retrieval_k=10"
+        },
+        {
+          "i": 1,
+          "t": 0.0,
+          "kind": "info",
+          "stage": "",
+          "title": "Model: deepseek-flash (hosted DeepSeek API: the issue and code are sent to DeepSeek)",
+          "detail": ""
+        },
+        {
+          "i": 2,
+          "t": 0.0,
+          "kind": "info",
+          "stage": "",
+          "title": "Starting the single agent",
+          "detail": ""
+        },
+        {
+          "i": 3,
+          "t": 0.6,
+          "kind": "thinking",
+          "stage": "agent",
+          "title": "agent: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 4,
+          "t": 1.1,
+          "kind": "decision",
+          "stage": "agent",
+          "title": "agent: read src/sqlfluff/rules/L031.py lines 1-200",
+          "detail": ""
+        },
+        {
+          "i": 5,
+          "t": 1.1,
+          "kind": "tool",
+          "stage": "agent",
+          "title": "read_file src/sqlfluff/rules/L031.py lines 1-200",
+          "detail": ""
+        },
+        {
+          "i": 6,
+          "t": 1.1,
+          "kind": "thinking",
+          "stage": "agent",
+          "title": "agent: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 7,
+          "t": 1.8,
+          "kind": "decision",
+          "stage": "agent",
+          "title": "agent: read src/sqlfluff/rules/L031.py lines 200-280",
+          "detail": ""
+        },
+        {
+          "i": 8,
+          "t": 1.8,
+          "kind": "tool",
+          "stage": "agent",
+          "title": "read_file src/sqlfluff/rules/L031.py lines 200-219",
+          "detail": ""
+        },
+        {
+          "i": 9,
+          "t": 1.8,
+          "kind": "thinking",
+          "stage": "agent",
+          "title": "agent: calling the model",
+          "detail": ""
+        },
+        {
+          "i": 10,
+          "t": 5.1,
+          "kind": "edit",
+          "stage": "agent",
+          "title": "agent: submitted an edit",
+          "detail": "{\"action\":\"edit\"}\n\nThe bug: L031 flags aliases even when there's no join. The rule should only trigger when there's a join clause. The minimal fix is in `_lint_aliases_in_join` — skip if no join present. But the maintainer says modify one function. Let me check: the `_eval` collects from_expression_elements from from_clause onward. If there's no join, there's only one from_expression_element (the base table itself). The base table's alias gets flagged.\n\nThe cleanest minimal fix: in `_lint_aliases_in_join`, return None if there's no join clause in the segment. Let me add that check.\n\nActually the simplest: check if segment has a join_clause. Let me add at the start of `_lint_aliases_in_join`:\n\n```python\nif not segment.get_child(\"from_clause\").get_child(\"from_expression\").get_child(\"join_clause\"):\n```\n\nHmm, join_clause is nested. Better use recursive_crawl. Let me just check `segment.recursive_crawl(\"join_clause\")`.\n\nI'll modify `_lint_aliases_in_join` to return None when no join clause exists.\n\nFILE: src/sqlfluff/rules/L031.py\n<<<<<<< SEARCH\n        \"\"\"Lint and fix all aliases in joins - except for self-joins.\"\"\"\n        # A buffer to keep any violations.\n        violation_buff = []\n=======\n        \"\"\"Lint and fix all aliases in joins - except for self-joins.\"\"\"\n        # A buffer to keep any violations.\n        violation_buff = []\n\n        # Only lint aliases if there is a join clause. Without a join, an\n        # alias is not redundant and should not be flagged.\n        if not any(segment.recursive_crawl(\"join_clause\")):\n            return None\n>>>>>>> REPLACE"
+        },
+        {
+          "i": 11,
+          "t": 5.3,
+          "kind": "apply",
+          "stage": "",
+          "title": "attempt : applied",
+          "detail": "{\"error_code\": null, \"changed_files\": [\"src/sqlfluff/rules/L031.py\"], \"search_match_modes\": [\"exact\"]}"
+        },
+        {
+          "i": 12,
+          "t": 5.3,
+          "kind": "stop",
+          "stage": "",
+          "title": "A Git-applicable patch is ready. Review it, then accept or reject.",
+          "detail": "It was applied in an isolated checkout only; no tests confirmed it."
+        }
+      ],
+      "event_count": 13,
+      "questions": [],
+      "patch": "diff --git a/src/sqlfluff/rules/L031.py b/src/sqlfluff/rules/L031.py\nindex 838c6ce5d..650ee9162 100644\n--- a/src/sqlfluff/rules/L031.py\n+++ b/src/sqlfluff/rules/L031.py\n@@ -153,6 +153,11 @@ class Rule_L031(BaseRule):\n         # A buffer to keep any violations.\n         violation_buff = []\n \n+        # Only lint aliases if there is a join clause. Without a join, an\n+        # alias is not redundant and should not be flagged.\n+        if not any(segment.recursive_crawl(\"join_clause\")):\n+            return None\n+\n         to_check = list(\n             self._filter_table_expressions(base_table, from_expression_elements)\n         )\n",
+      "result": {
+        "model": "deepseek-flash",
+        "status": "prediction_ready",
+        "failed_stage": null,
+        "error": null,
+        "attempt_count": 1,
+        "suspected_files": [
+          "src/sqlfluff/rules/L031.py"
+        ],
+        "retrieval_candidates": [
+          "src/sqlfluff/rules/L031.py",
+          "src/sqlfluff/rules/L028.py",
+          "src/sqlfluff/rules/L026.py",
+          "src/sqlfluff/core/parser/segments/base.py",
+          "src/sqlfluff/dialects/dialect_tsql.py",
+          "src/sqlfluff/core/parser/segments/raw.py",
+          "examples/01_basic_api_usage.py",
+          "src/sqlfluff/rules/L044.py",
+          "src/sqlfluff/rules/L016.py",
+          "src/sqlfluff/dialects/dialect_ansi.py"
+        ],
+        "prompt_tokens": 11500,
+        "completion_tokens": 472,
+        "duration_seconds": 5.33,
+        "patch_status": "applied",
+        "stop_reason": null,
+        "branch": null,
+        "patch_file": null
+      }
+    }
+  ]
+}

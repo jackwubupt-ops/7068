@@ -1,0 +1,85 @@
+{
+  "sample": {
+    "name": "03_failure_vague",
+    "kind": "failure case: under-specified request",
+    "description": "The maintainer only writes 'it is broken'. The agent must not guess.",
+    "request": {
+      "source": "swebench",
+      "instance_id": "sqlfluff__sqlfluff-1625",
+      "issue": "it is broken",
+      "agent": "pcr",
+      "retrieval_k": 10
+    },
+    "expect": "needs_clarification with questions, and ZERO model calls."
+  },
+  "backend": "deepseek",
+  "model": "deepseek-flash",
+  "sessions": [
+    {
+      "id": "1122-110458-ab28",
+      "parent": null,
+      "round": 1,
+      "status": "needs_clarification",
+      "request": {
+        "issue": "it is broken",
+        "source": "swebench",
+        "instance_id": "sqlfluff__sqlfluff-1625",
+        "repo_path": null,
+        "commit": "HEAD",
+        "agent": "pcr",
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "skip_clarification": false,
+        "backend": "deepseek",
+        "exec_feedback": false
+      },
+      "events": [
+        {
+          "i": 0,
+          "t": 0.0,
+          "kind": "info",
+          "stage": "",
+          "title": "Repository sqlfluff/sqlfluff at 14e1a23a31",
+          "detail": "agent=pcr, edit_format=search_replace, retrieval_k=10"
+        },
+        {
+          "i": 1,
+          "t": 0.6,
+          "kind": "tool",
+          "stage": "",
+          "title": "retrieval -> 10 candidate files",
+          "detail": "src/sqlfluff/core/parser/markers.py  (keyword match)\nsrc/sqlfluff/core/parser/segments/meta.py  (keyword match)\nsrc/sqlfluff/rules/L001.py  (keyword match)\nsrc/sqlfluff/rules/L026.py  (keyword match)\nsrc/sqlfluff/core/parser/segments/ephemeral.py  (keyword match)\nsrc/sqlfluff/core/config.py  (keyword match)\nsrc/sqlfluff/core/parser/grammar/anyof.py  (keyword match)\nsrc/sqlfluff/core/templaters/jinja.py  (keyword match)\nsrc/sqlfluff/core/parser/grammar/sequence.py  (keyword match)\nsrc/sqlfluff/core/parser/grammar/greedy.py  (keyword match)"
+        },
+        {
+          "i": 2,
+          "t": 0.6,
+          "kind": "stop",
+          "stage": "",
+          "title": "Stopped to ask for clarification before using the model",
+          "detail": "The issue is very short. What exactly goes wrong, and what did you expect instead?"
+        }
+      ],
+      "event_count": 3,
+      "questions": [
+        "The issue is very short. What exactly goes wrong, and what did you expect instead?"
+      ],
+      "patch": "",
+      "result": {
+        "model": null,
+        "status": null,
+        "failed_stage": null,
+        "error": null,
+        "attempt_count": null,
+        "suspected_files": null,
+        "retrieval_candidates": null,
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_seconds": null,
+        "patch_status": null,
+        "stop_reason": null,
+        "branch": null,
+        "patch_file": null
+      }
+    }
+  ]
+}

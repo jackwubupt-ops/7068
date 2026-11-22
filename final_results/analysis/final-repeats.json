@@ -1,0 +1,716 @@
+{
+  "tags": [
+    "final-ds",
+    "final-ds-r2",
+    "final-ds-r3"
+  ],
+  "configs": {
+    "ds-pcr": {
+      "runs": 3,
+      "tasks": 23,
+      "agent": "pcr",
+      "reasoning_effort": "none",
+      "resolved_per_run": [
+        10,
+        12,
+        10
+      ],
+      "resolved_mean": 10.67,
+      "resolved_rate_mean": 0.4638,
+      "resolved_min": 10,
+      "resolved_max": 12,
+      "applicable_mean": 23.0,
+      "completion_tokens_mean": 27622.0,
+      "reasoning_tokens_mean": 0.0,
+      "seconds_per_task_mean": 13.0,
+      "run_errors_per_run": [
+        0,
+        0,
+        0
+      ]
+    },
+    "ds-single": {
+      "runs": 3,
+      "tasks": 23,
+      "agent": "single",
+      "reasoning_effort": "none",
+      "resolved_per_run": [
+        9,
+        10,
+        10
+      ],
+      "resolved_mean": 9.67,
+      "resolved_rate_mean": 0.4203,
+      "resolved_min": 9,
+      "resolved_max": 10,
+      "applicable_mean": 19.0,
+      "completion_tokens_mean": 8289.3,
+      "reasoning_tokens_mean": 0.0,
+      "seconds_per_task_mean": 7.5,
+      "run_errors_per_run": [
+        0,
+        0,
+        0
+      ]
+    },
+    "ds-pcr-low": {
+      "runs": 3,
+      "tasks": 23,
+      "agent": "pcr",
+      "reasoning_effort": "low",
+      "resolved_per_run": [
+        11,
+        9,
+        11
+      ],
+      "resolved_mean": 10.33,
+      "resolved_rate_mean": 0.4493,
+      "resolved_min": 9,
+      "resolved_max": 11,
+      "applicable_mean": 21.3,
+      "completion_tokens_mean": 157603.7,
+      "reasoning_tokens_mean": 105234.7,
+      "seconds_per_task_mean": 42.5,
+      "run_errors_per_run": [
+        2,
+        0,
+        0
+      ]
+    },
+    "ds-pcr-high": {
+      "runs": 3,
+      "tasks": 23,
+      "agent": "pcr",
+      "reasoning_effort": "high",
+      "resolved_per_run": [
+        6,
+        8,
+        10
+      ],
+      "resolved_mean": 8.0,
+      "resolved_rate_mean": 0.3478,
+      "resolved_min": 6,
+      "resolved_max": 10,
+      "applicable_mean": 20.0,
+      "completion_tokens_mean": 263376.3,
+      "reasoning_tokens_mean": 172517.3,
+      "seconds_per_task_mean": 63.3,
+      "run_errors_per_run": [
+        3,
+        3,
+        0
+      ]
+    },
+    "ds-pcr-max": {
+      "runs": 3,
+      "tasks": 23,
+      "agent": "pcr",
+      "reasoning_effort": "max",
+      "resolved_per_run": [
+        9,
+        11,
+        8
+      ],
+      "resolved_mean": 9.33,
+      "resolved_rate_mean": 0.4058,
+      "resolved_min": 8,
+      "resolved_max": 11,
+      "applicable_mean": 19.7,
+      "completion_tokens_mean": 452191.0,
+      "reasoning_tokens_mean": 346629.0,
+      "seconds_per_task_mean": 106.2,
+      "run_errors_per_run": [
+        1,
+        2,
+        4
+      ]
+    }
+  },
+  "comparisons": [
+    {
+      "title": "RQ3: P-C-R vs single agent (DeepSeek)",
+      "a": "ds-pcr",
+      "b": "ds-single",
+      "warnings": [],
+      "tasks": 23,
+      "rate_a_mean": 0.4638,
+      "rate_b_mean": 0.4203,
+      "diff_mean": 0.0435,
+      "tasks_a_better": 3,
+      "tasks_b_better": 3,
+      "tasks_tied": 17,
+      "sign_test_p": 1.0,
+      "bootstrap_95ci_diff": [
+        -0.087,
+        0.1884
+      ],
+      "pooled_discordant": {
+        "only_a": 7,
+        "only_b": 4
+      },
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": 0.0,
+          "b": 0.333
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": 1.0,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-1139": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pydicom__pydicom-1256": {
+          "a": 0.333,
+          "b": 1.0
+        },
+        "pydicom__pydicom-1413": {
+          "a": 0.333,
+          "b": 0.0
+        },
+        "pydicom__pydicom-1694": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-901": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1196": {
+          "a": 1.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1268": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1333": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1866": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pylint-dev__astroid-1978": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pyvista__pyvista-4315": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": 0.0,
+          "b": 0.333
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": 1.0,
+          "b": 1.0
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning low vs none (DeepSeek P-C-R)",
+      "a": "ds-pcr-low",
+      "b": "ds-pcr",
+      "warnings": [],
+      "tasks": 23,
+      "rate_a_mean": 0.4493,
+      "rate_b_mean": 0.4638,
+      "diff_mean": -0.0145,
+      "tasks_a_better": 2,
+      "tasks_b_better": 4,
+      "tasks_tied": 17,
+      "sign_test_p": 0.6875,
+      "bootstrap_95ci_diff": [
+        -0.087,
+        0.0725
+      ],
+      "pooled_discordant": {
+        "only_a": 4,
+        "only_b": 5
+      },
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": 0.667,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-1139": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pydicom__pydicom-1256": {
+          "a": 0.667,
+          "b": 0.333
+        },
+        "pydicom__pydicom-1413": {
+          "a": 0.0,
+          "b": 0.333
+        },
+        "pydicom__pydicom-1694": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-901": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1196": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pylint-dev__astroid-1268": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1333": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1866": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pylint-dev__astroid-1978": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pyvista__pyvista-4315": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": 1.0,
+          "b": 1.0
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning high vs none (DeepSeek P-C-R)",
+      "a": "ds-pcr-high",
+      "b": "ds-pcr",
+      "warnings": [],
+      "tasks": 23,
+      "rate_a_mean": 0.3478,
+      "rate_b_mean": 0.4638,
+      "diff_mean": -0.1159,
+      "tasks_a_better": 1,
+      "tasks_b_better": 6,
+      "tasks_tied": 16,
+      "sign_test_p": 0.125,
+      "bootstrap_95ci_diff": [
+        -0.2319,
+        -0.0145
+      ],
+      "pooled_discordant": {
+        "only_a": 1,
+        "only_b": 9
+      },
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": 0.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-1139": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pydicom__pydicom-1256": {
+          "a": 0.667,
+          "b": 0.333
+        },
+        "pydicom__pydicom-1413": {
+          "a": 0.333,
+          "b": 0.333
+        },
+        "pydicom__pydicom-1694": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pydicom__pydicom-901": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1196": {
+          "a": 0.333,
+          "b": 1.0
+        },
+        "pylint-dev__astroid-1268": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1333": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1866": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pylint-dev__astroid-1978": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pyvista__pyvista-4315": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": 1.0,
+          "b": 1.0
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning max vs none (DeepSeek P-C-R)",
+      "a": "ds-pcr-max",
+      "b": "ds-pcr",
+      "warnings": [],
+      "tasks": 23,
+      "rate_a_mean": 0.4058,
+      "rate_b_mean": 0.4638,
+      "diff_mean": -0.058,
+      "tasks_a_better": 2,
+      "tasks_b_better": 5,
+      "tasks_tied": 16,
+      "sign_test_p": 0.453125,
+      "bootstrap_95ci_diff": [
+        -0.1739,
+        0.058
+      ],
+      "pooled_discordant": {
+        "only_a": 3,
+        "only_b": 7
+      },
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": 0.333,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-1139": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pydicom__pydicom-1256": {
+          "a": 1.0,
+          "b": 0.333
+        },
+        "pydicom__pydicom-1413": {
+          "a": 0.0,
+          "b": 0.333
+        },
+        "pydicom__pydicom-1694": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-901": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1196": {
+          "a": 0.0,
+          "b": 1.0
+        },
+        "pylint-dev__astroid-1268": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1333": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1866": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pylint-dev__astroid-1978": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pyvista__pyvista-4315": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": 1.0,
+          "b": 1.0
+        }
+      }
+    },
+    {
+      "title": "RQ1: reasoning high vs low (DeepSeek P-C-R)",
+      "a": "ds-pcr-high",
+      "b": "ds-pcr-low",
+      "warnings": [],
+      "tasks": 23,
+      "rate_a_mean": 0.3478,
+      "rate_b_mean": 0.4493,
+      "diff_mean": -0.1014,
+      "tasks_a_better": 1,
+      "tasks_b_better": 6,
+      "tasks_tied": 16,
+      "sign_test_p": 0.125,
+      "bootstrap_95ci_diff": [
+        -0.2029,
+        -0.0145
+      ],
+      "pooled_discordant": {
+        "only_a": 3,
+        "only_b": 10
+      },
+      "per_task": {
+        "marshmallow-code__marshmallow-1343": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "marshmallow-code__marshmallow-1359": {
+          "a": 0.0,
+          "b": 0.667
+        },
+        "pvlib__pvlib-python-1072": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1154": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pvlib__pvlib-python-1606": {
+          "a": 0.0,
+          "b": 0.667
+        },
+        "pvlib__pvlib-python-1707": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pvlib__pvlib-python-1854": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "pydicom__pydicom-1139": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pydicom__pydicom-1256": {
+          "a": 0.667,
+          "b": 0.667
+        },
+        "pydicom__pydicom-1413": {
+          "a": 0.333,
+          "b": 0.0
+        },
+        "pydicom__pydicom-1694": {
+          "a": 0.667,
+          "b": 1.0
+        },
+        "pydicom__pydicom-901": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1196": {
+          "a": 0.333,
+          "b": 0.667
+        },
+        "pylint-dev__astroid-1268": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1333": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pylint-dev__astroid-1866": {
+          "a": 0.667,
+          "b": 0.667
+        },
+        "pylint-dev__astroid-1978": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "pyvista__pyvista-4315": {
+          "a": 1.0,
+          "b": 1.0
+        },
+        "sqlfluff__sqlfluff-1517": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1625": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1733": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-1763": {
+          "a": 0.0,
+          "b": 0.0
+        },
+        "sqlfluff__sqlfluff-2419": {
+          "a": 1.0,
+          "b": 1.0
+        }
+      }
+    }
+  ],
+  "bootstrap": {
+    "iterations": 10000,
+    "seed": 7608
+  },
+  "note": "Task-level tests: each task counts once (share of runs resolved), so repeated runs are not treated as independent tasks. Pooled counts are descriptive."
+}

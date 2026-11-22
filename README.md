@@ -151,6 +151,8 @@ and working tree are untouched). *Follow-up* appends guidance and may switch age
 
 ### Sample inputs and traces
 
+Recorded traces of all five samples (DeepSeek, 2026-11-22): [`final_results/samples/`](final_results/samples/).
+
 | Sample | Kind | Expected behaviour |
 |---|---|---|
 | [`samples/01_ordinary.json`](samples/01_ordinary.json) | ordinary task | full trace; ends with a patch awaiting confirmation (or questions) |
@@ -202,6 +204,9 @@ python -m experiments.repeat_report --tag final-t4 --tag final-t4-r2 --tag final
 ```
 
 ### Final results (2026-11-22; 3 runs per configuration; official harness; 23 Lite dev tasks, all gold-resolvable after the image repair)
+
+All files behind these tables (reports, per-batch settings, official verdicts, patches, per-task
+run statuses, gold self-test, sample traces) are in [`final_results/`](final_results/README.md).
 
 | Config | Reasoning | Exec feedback | Resolved per run | Mean rate | Applicable (mean) | Completion tok (mean; reasoning) | s/task | Run errors per run |
 |---|---|---|---|---|---|---|---|---|

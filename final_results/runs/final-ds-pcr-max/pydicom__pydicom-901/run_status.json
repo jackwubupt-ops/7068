@@ -1,0 +1,263 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pydicom__pydicom-901",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "3746878d8edf1cbda6fbcf35eec69f9ba79301ca",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "9f4de29f71d47f23194574eb66f57129c6e3c71c14900ddf02553cd018eea2c1",
+      "raw_model_patch_sha256": "63857ae2fa3e000a6d072e886fd9b624d74f349fcb63654fc5de032ffa84c4e6",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pydicom/config.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pydicom/config.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "71a4b66b579680b28687fe2d8f08df173243d8dc68907dab7017c724eea03348",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 30,
+      "reasoning_tokens": 27,
+      "latency_seconds": 0.975,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 849,
+      "completion_tokens": 122,
+      "reasoning_tokens": 98,
+      "latency_seconds": 1.1,
+      "dropped_history_messages": 0,
+      "output_sha256": "8f043b1e2763baaf874529f69555ceb4c06fc66d21d15b275e81e8c7e6d33e6e"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1270,
+      "completion_tokens": 56,
+      "reasoning_tokens": 28,
+      "latency_seconds": 0.733,
+      "dropped_history_messages": 0,
+      "output_sha256": "4d2373114d5f2e57cbc89529d99467486a5f63480fefa2d84181fa851540f69f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4020,
+      "completion_tokens": 165,
+      "reasoning_tokens": 139,
+      "latency_seconds": 1.655,
+      "dropped_history_messages": 0,
+      "output_sha256": "df12691901c693bad270915c1363fda407a63c6c88d4c7a37db15d2a0ab01c2c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4339,
+      "completion_tokens": 117,
+      "reasoning_tokens": 86,
+      "latency_seconds": 1.397,
+      "dropped_history_messages": 0,
+      "output_sha256": "70cf77c869da7156b1791fb384230af81b0200e84b32020faa1b17269dad044e"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4411,
+      "completion_tokens": 25,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.631,
+      "dropped_history_messages": 0,
+      "output_sha256": "c84a6bd697b61285fdd1eddfdb7eccd367045ce4d249ad8cdc39eed2c37066ac"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4687,
+      "completion_tokens": 89,
+      "reasoning_tokens": 57,
+      "latency_seconds": 1.01,
+      "dropped_history_messages": 0,
+      "output_sha256": "e9310fd706aa4b5494c7a82937814defd4ecaca956f2761a06856361a7ebff3f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4760,
+      "completion_tokens": 49,
+      "reasoning_tokens": 24,
+      "latency_seconds": 0.833,
+      "dropped_history_messages": 0,
+      "output_sha256": "40268289da16712937f85148d166abccf3d7cc6fdd89a2a7ce73086e50d037e9"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4910,
+      "completion_tokens": 87,
+      "reasoning_tokens": 54,
+      "latency_seconds": 1.395,
+      "dropped_history_messages": 0,
+      "output_sha256": "3fc313ad55aa5ced3afa78d1cf95b3278e9bf0eba7cb5c59924b3860fa8e58c8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4984,
+      "completion_tokens": 42,
+      "reasoning_tokens": 16,
+      "latency_seconds": 0.784,
+      "dropped_history_messages": 0,
+      "output_sha256": "39196eb6d1cee3282ea8624ea778941ed69a6ab742c4c5af12ea2eae54e6d5e1"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5248,
+      "completion_tokens": 1153,
+      "reasoning_tokens": 351,
+      "latency_seconds": 7.083,
+      "dropped_history_messages": 0,
+      "output_sha256": "1d6d2c4cd74043982ea6e8b979f41644bf27aae05c29e6088b34772ed6b7e82c"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2347,
+      "completion_tokens": 3947,
+      "reasoning_tokens": 3781,
+      "latency_seconds": 20.406,
+      "dropped_history_messages": 0,
+      "output_sha256": "63857ae2fa3e000a6d072e886fd9b624d74f349fcb63654fc5de032ffa84c4e6"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "logging"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "config.debug"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "logger =",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "addHandler",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "Could not import",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "retrieval_candidates": [
+    "pydicom/config.py",
+    "pydicom/filereader.py",
+    "pydicom/dataset.py",
+    "pydicom/pixel_data_handlers/pillow_handler.py",
+    "pydicom/dataelem.py",
+    "pydicom/dicomdir.py",
+    "pydicom/encaps.py",
+    "pydicom/pixel_data_handlers/jpeg_ls_handler.py",
+    "pydicom/pixel_data_handlers/numpy_handler.py",
+    "pydicom/pixel_data_handlers/rle_handler.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pydicom/config.py"
+  ],
+  "patch_size_bytes": 816,
+  "prompt_tokens": 41862,
+  "completion_tokens": 5882,
+  "reasoning_tokens": 4661,
+  "duration_seconds": 39.41,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

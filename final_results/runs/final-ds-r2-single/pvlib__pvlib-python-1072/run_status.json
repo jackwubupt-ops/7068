@@ -1,0 +1,118 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1072",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "04a523fafbd61bc2e49420963b84ed8e2bd1b3cf",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "9daea8f410a1a4feb3c7642397004d0ed0f496172bd1ea80463a2abcc439e963",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/temperature.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "3b672b5a84e2c3f2b6ee32907d67f590865b75b62635395347ae791ee7c5dbc0",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/temperature.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "step": 2,
+      "action": "edit"
+    },
+    {
+      "step": 3,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/temperature.py",
+    "pvlib/solarposition.py",
+    "pvlib/pvsystem.py",
+    "pvlib/iotools/epw.py",
+    "versioneer.py",
+    "pvlib/forecast.py",
+    "pvlib/iotools/tmy.py",
+    "pvlib/iotools/srml.py",
+    "pvlib/iotools/crn.py",
+    "pvlib/irradiance.py"
+  ],
+  "read_files": [
+    "pvlib/temperature.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/temperature.py"
+  ],
+  "patch_size_bytes": 716,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1477,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.472,
+      "dropped_history_messages": 0,
+      "output_sha256": "4650caeef17e0161812aed7531c88df03aec7ca26051cdae99be79adae8cd1b6"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3639,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.613,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3770,
+      "completion_tokens": 89,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.714,
+      "dropped_history_messages": 0,
+      "output_sha256": "9daea8f410a1a4feb3c7642397004d0ed0f496172bd1ea80463a2abcc439e963"
+    }
+  ],
+  "agent_calls": 3,
+  "prompt_tokens": 8886,
+  "completion_tokens": 121,
+  "reasoning_tokens": 0,
+  "duration_seconds": 3.71,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

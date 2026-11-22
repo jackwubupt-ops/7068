@@ -1,0 +1,86 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "marshmallow-code__marshmallow-1343",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "2be2d83a1a9a6d3d9b85804f3ab545cecc409bb0",
+  "status": "experiment_error",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 2,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_started",
+  "patch_sha256": null,
+  "source_checkout_clean": null,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 15,
+      "reasoning_tokens": 12,
+      "latency_seconds": 0.409,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1413,
+      "completion_tokens": 345,
+      "reasoning_tokens": 61,
+      "latency_seconds": 2.275,
+      "dropped_history_messages": 0,
+      "output_sha256": "ef37dd2f04b015eb017a322fdcff3003132efd389d5ec777afc9b555fb950087"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1727,
+      "completion_tokens": 4939,
+      "reasoning_tokens": 103,
+      "latency_seconds": 23.257,
+      "dropped_history_messages": 0,
+      "output_sha256": "2d3f4585730a26abd76c6cd4b540d4430c5242e689d692dcbeacb257e6c1a0e7"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    }
+  ],
+  "retrieval_candidates": [
+    "src/marshmallow/schema.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/marshalling.py",
+    "src/marshmallow/base.py",
+    "src/marshmallow/decorators.py",
+    "tests/test_fields.py",
+    "tests/test_schema.py",
+    "tests/test_marshalling.py",
+    "src/marshmallow/utils.py",
+    "src/marshmallow/validate.py"
+  ],
+  "failed_stage": "real_planner_localization",
+  "error": "RuntimeError: QWEN_TRUNCATED_OUTPUT:planner",
+  "prompt_tokens": 3177,
+  "completion_tokens": 5299,
+  "reasoning_tokens": 176,
+  "duration_seconds": 26.08,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

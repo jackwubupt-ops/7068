@@ -1,0 +1,67 @@
+{
+  "sample": {
+    "name": "04_failure_bad_repo",
+    "kind": "failure case: invalid repository",
+    "description": "The maintainer points the agent at a path that is not a Git repository.",
+    "request": {
+      "source": "local",
+      "repo_path": "/tmp/patchloop-not-a-repo",
+      "issue": "Parsing a config file with an empty section raises KeyError in load_config; it should return an empty dict for that section.",
+      "agent": "pcr",
+      "retrieval_k": 10
+    },
+    "expect": "failed with a clear message that the path is not a Git repository; no model calls, nothing exported."
+  },
+  "backend": "deepseek",
+  "model": "deepseek-flash",
+  "sessions": [
+    {
+      "id": "1122-110458-5ef9",
+      "parent": null,
+      "round": 1,
+      "status": "failed",
+      "request": {
+        "issue": "Parsing a config file with an empty section raises KeyError in load_config; it should return an empty dict for that section.",
+        "source": "local",
+        "instance_id": null,
+        "repo_path": "/tmp/patchloop-not-a-repo",
+        "commit": "HEAD",
+        "agent": "pcr",
+        "edit_format": "search_replace",
+        "retrieval_k": 10,
+        "skip_clarification": false,
+        "backend": "deepseek",
+        "exec_feedback": false
+      },
+      "events": [
+        {
+          "i": 0,
+          "t": 0.0,
+          "kind": "error",
+          "stage": "",
+          "title": "Run failed",
+          "detail": "ValueError: /tmp/patchloop-not-a-repo is not the root of a Git repository"
+        }
+      ],
+      "event_count": 1,
+      "questions": [],
+      "patch": "",
+      "result": {
+        "model": null,
+        "status": null,
+        "failed_stage": null,
+        "error": "ValueError: /tmp/patchloop-not-a-repo is not the root of a Git repository",
+        "attempt_count": null,
+        "suspected_files": null,
+        "retrieval_candidates": null,
+        "prompt_tokens": null,
+        "completion_tokens": null,
+        "duration_seconds": null,
+        "patch_status": null,
+        "stop_reason": null,
+        "branch": null,
+        "patch_file": null
+      }
+    }
+  ]
+}

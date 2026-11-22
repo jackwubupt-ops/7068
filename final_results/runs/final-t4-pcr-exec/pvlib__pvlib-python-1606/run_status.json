@@ -1,0 +1,421 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1606",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "c78b50f4337ecbe536a961336ca91a1176efc0e8",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "live_api_preflight": true,
+  "planner_calls": 7,
+  "coder_calls": 2,
+  "attempt_count": 2,
+  "reviewer_calls": 1,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "72c157def22ab414197df04c3c40b8f98c41ba6ab73666eca179145073e6224c",
+      "raw_model_patch_sha256": "5311a0df7e1dc0cd644058d1e0da99943a5870cd74771b6f3659226490b7bfc2",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/tools.py",
+        "pvlib/tests/test_tools.py"
+      ],
+      "edit_blocks": 3,
+      "edited_files": [
+        "pvlib/tools.py",
+        "pvlib/tests/test_tools.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact",
+        "exact"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_tools.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 11
+          },
+          "failing": [],
+          "seconds": 2.58
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 10,
+            "FAILED": 2
+          },
+          "failing": [
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_equal_bounds",
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+          ],
+          "seconds": 2.82
+        },
+        "seconds": 5.4,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+        ],
+        "newly_passing": []
+      },
+      "reviewer_failure_type": "test_failure"
+    },
+    {
+      "attempt": 2,
+      "patch_sha256": "d84474554f3c1aac25e0c411ccd870231b9e52393cc7a8fefa507230b2927342",
+      "raw_model_patch_sha256": "e79e09a36eed4a9d8f96f972fc30a55f89a890b7358754add151cf781303536f",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/tools.py",
+        "pvlib/tests/test_tools.py"
+      ],
+      "edit_blocks": 3,
+      "edited_files": [
+        "pvlib/tools.py",
+        "pvlib/tests/test_tools.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact",
+        "exact"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_tools.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 11
+          },
+          "failing": [],
+          "seconds": 2.58
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 5,
+            "FAILED": 7
+          },
+          "failing": [
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params0-0.0-1.0-0.5-_obj_test_golden_sect]",
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params1-0.0-1.0-0.07230200263994839-_obj_test_golden_sect]",
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params2-0.0-100.0-89.14332727531685-_obj_test_golden_sect]",
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_atol",
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_vector",
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_equal_bounds",
+            "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+          ],
+          "seconds": 2.52
+        },
+        "seconds": 5.1,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params0-0.0-1.0-0.5-_obj_test_golden_sect]",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params1-0.0-1.0-0.07230200263994839-_obj_test_golden_sect]",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params2-0.0-100.0-89.14332727531685-_obj_test_golden_sect]",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_atol",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_vector"
+        ],
+        "newly_passing": []
+      }
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "42dd1e4f6d18fa706817d03e929a7cbd0a19c259b4a7b97333ccd7342c5dff6d",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11,
+      "completion_tokens": 2,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.409,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3034,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.804,
+      "dropped_history_messages": 0,
+      "output_sha256": "22fdccd621df44c878eb898fb1c7439bb5d5e5807e6c0320d0f87520e6c8626f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5541,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.663,
+      "dropped_history_messages": 0,
+      "output_sha256": "1fc9b4b916650e55cd30a39d14425c3cdd8930bebbffa250010cc10907be6f74"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7759,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.954,
+      "dropped_history_messages": 0,
+      "output_sha256": "061304c40982ad43c0afa75b36440ce5222ab80b77ca13557d1216f627501c67"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8305,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.013,
+      "dropped_history_messages": 0,
+      "output_sha256": "7fe57a18311510574eda56b8a23c67156ff6b67c0e1fa2e8d292abbf6948c854"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9978,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.683,
+      "dropped_history_messages": 0,
+      "output_sha256": "5b8005da377d905457c83348fab3cb58f754ecd81966df68947002b82e5c8ab9"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 10727,
+      "completion_tokens": 691,
+      "reasoning_tokens": 0,
+      "latency_seconds": 5.399,
+      "dropped_history_messages": 0,
+      "output_sha256": "5bb913f07738ae90c5d94d410cb30fb2ab5b202dbdcf56f6df04738ba396b5e2"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11446,
+      "completion_tokens": 688,
+      "reasoning_tokens": 0,
+      "latency_seconds": 3.574,
+      "dropped_history_messages": 0,
+      "output_sha256": "a730fea901ee073cddd02ded2062146c6e8727a1add173f653585c2583e147bd"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6603,
+      "completion_tokens": 901,
+      "reasoning_tokens": 0,
+      "latency_seconds": 4.77,
+      "dropped_history_messages": 0,
+      "output_sha256": "5311a0df7e1dc0cd644058d1e0da99943a5870cd74771b6f3659226490b7bfc2"
+    },
+    {
+      "stage": "reviewer",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4161,
+      "completion_tokens": 369,
+      "reasoning_tokens": 0,
+      "latency_seconds": 3.65,
+      "dropped_history_messages": 0,
+      "output_sha256": "5ef2e94aa6d2de0c11e30ad680f4edc740b7a747edfd850e2a8df65c9378bb3f"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8602,
+      "completion_tokens": 931,
+      "reasoning_tokens": 0,
+      "latency_seconds": 4.558,
+      "dropped_history_messages": 0,
+      "output_sha256": "e79e09a36eed4a9d8f96f972fc30a55f89a890b7358754add151cf781303536f"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/singlediode.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "_golden_sect_DataFrame"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_tools.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_tools.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 3
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 3,
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/modelchain.py",
+    "pvlib/pvsystem.py",
+    "pvlib/temperature.py",
+    "pvlib/bifacial/pvfactors.py",
+    "pvlib/location.py",
+    "pvlib/tools.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/singlediode.py",
+    "pvlib/iam.py",
+    "pvlib/forecast.py"
+  ],
+  "test_env_available": true,
+  "suspected_file_count": 3,
+  "suspected_files": [
+    "pvlib/tools.py",
+    "pvlib/singlediode.py",
+    "pvlib/tests/test_tools.py"
+  ],
+  "patch_size_bytes": 3145,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_tools.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 11
+        },
+        "failing": [],
+        "seconds": 2.58
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 10,
+          "FAILED": 2
+        },
+        "failing": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_equal_bounds",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+        ],
+        "seconds": 2.82
+      },
+      "seconds": 5.4,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+      ],
+      "newly_passing": []
+    },
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_tools.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 11
+        },
+        "failing": [],
+        "seconds": 2.58
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 5,
+          "FAILED": 7
+        },
+        "failing": [
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params0-0.0-1.0-0.5-_obj_test_golden_sect]",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params1-0.0-1.0-0.07230200263994839-_obj_test_golden_sect]",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params2-0.0-100.0-89.14332727531685-_obj_test_golden_sect]",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_atol",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_vector",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_equal_bounds",
+          "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans"
+        ],
+        "seconds": 2.52
+      },
+      "seconds": 5.1,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params0-0.0-1.0-0.5-_obj_test_golden_sect]",
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params1-0.0-1.0-0.07230200263994839-_obj_test_golden_sect]",
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame[params2-0.0-100.0-89.14332727531685-_obj_test_golden_sect]",
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_atol",
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_nans",
+        "pvlib/tests/test_tools.py::test__golden_sect_DataFrame_vector"
+      ],
+      "newly_passing": []
+    }
+  ],
+  "prompt_tokens": 76167,
+  "completion_tokens": 3729,
+  "reasoning_tokens": 0,
+  "duration_seconds": 37.07,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

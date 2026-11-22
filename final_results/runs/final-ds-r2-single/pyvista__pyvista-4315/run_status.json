@@ -1,0 +1,152 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pyvista__pyvista-4315",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pyvista/pyvista",
+  "base_commit": "db6ee8dd4a747b8864caae36c5d05883976a3ae5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "e50abba40069d813ef53ea3b3268bf1e64a117119a1b7d37239111c74ca427ff",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 2,
+      "edited_files": [
+        "pyvista/core/grid.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "963d475b40540a440e9c64942cbcb288d7b9367a90088989de7c695b675f1512",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pyvista/core/grid.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "step": 2,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\":{\"relative_path\":\"pyvista/cor"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pyvista/utilities/errors.py",
+    "pyvista/core/grid.py",
+    "pyvista/plotting/charts.py",
+    "pyvista/plotting/renderer.py",
+    "pyvista/plotting/plotting.py",
+    "doc/source/conf.py",
+    "pyvista/core/dataobject.py",
+    "pyvista/utilities/helpers.py",
+    "tests/test_dataset.py",
+    "pyvista/core/filters/data_set.py"
+  ],
+  "read_files": [
+    "pyvista/core/grid.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pyvista/core/grid.py"
+  ],
+  "patch_size_bytes": 2087,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1113,
+      "completion_tokens": 29,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.641,
+      "dropped_history_messages": 0,
+      "output_sha256": "d614674447708916353946b46c1560d18083e0815da5ec6ddeb4527782c0e3ae"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3637,
+      "completion_tokens": 41,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.047,
+      "dropped_history_messages": 0,
+      "output_sha256": "22ae31ea708af75e1a496c9b149a8989052160a1a58adb3dbf30b92b4813ed87"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3726,
+      "completion_tokens": 29,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.595,
+      "dropped_history_messages": 0,
+      "output_sha256": "cb9c5cbb897f90ec0a2a640146b1c5f3f40cce132bf057cf11a4fdde451274d5"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6825,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.748,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6957,
+      "completion_tokens": 522,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.263,
+      "dropped_history_messages": 0,
+      "output_sha256": "e50abba40069d813ef53ea3b3268bf1e64a117119a1b7d37239111c74ca427ff"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 22258,
+  "completion_tokens": 626,
+  "reasoning_tokens": 0,
+  "duration_seconds": 8.92,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

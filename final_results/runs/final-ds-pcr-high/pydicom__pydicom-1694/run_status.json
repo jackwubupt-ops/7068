@@ -1,0 +1,138 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pydicom__pydicom-1694",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "f8cf45b6c121e5a4bf4a43f71aba3bc64af3db9c",
+  "status": "experiment_error",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 5,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_started",
+  "patch_sha256": null,
+  "source_checkout_clean": null,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 17,
+      "reasoning_tokens": 14,
+      "latency_seconds": 0.724,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1235,
+      "completion_tokens": 118,
+      "reasoning_tokens": 70,
+      "latency_seconds": 1.267,
+      "dropped_history_messages": 0,
+      "output_sha256": "daa3df542cb7e938691f56361bd7921db29c6c2b1c7e28d5099103b8f202aa12"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1333,
+      "completion_tokens": 39,
+      "reasoning_tokens": 12,
+      "latency_seconds": 0.554,
+      "dropped_history_messages": 0,
+      "output_sha256": "4b47a5cd119af255683c4320fa1cffeeda647d5c1aa644ae91610d685a244d46"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1544,
+      "completion_tokens": 81,
+      "reasoning_tokens": 10,
+      "latency_seconds": 0.811,
+      "dropped_history_messages": 0,
+      "output_sha256": "a61f1ae7009ea3997be4c7abb2e01a6153182d5d9ddc810cde40b9052f44159a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1645,
+      "completion_tokens": 60,
+      "reasoning_tokens": 29,
+      "latency_seconds": 0.797,
+      "dropped_history_messages": 0,
+      "output_sha256": "5d6d3e0304f205c9df3c90a76d273867c9c0926db3e7845f0995bf0117711891"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "length",
+      "prompt_tokens": 3441,
+      "completion_tokens": 67036,
+      "reasoning_tokens": 53,
+      "latency_seconds": 180.317,
+      "dropped_history_messages": 0,
+      "output_sha256": "ce02ae5297eed1f4ab40a2ab0324425c117fa03776033eb34601ffcdc5d16597"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "def to_json_dict",
+      "prior_protocol_error": "Protocol validation error: Extra data: line 3 column 1 (char 102). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/dataset.py",
+      "prior_protocol_error": "Protocol validation error: Extra data: line 3 column 1 (char 109). Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "dicom.py",
+    "pydicom/dataset.py",
+    "pydicom/dataelem.py",
+    "pydicom/values.py",
+    "pydicom/valuerep.py",
+    "pydicom/uid.py",
+    "pydicom/fileset.py",
+    "pydicom/filebase.py",
+    "pydicom/multival.py",
+    "pydicom/config.py"
+  ],
+  "failed_stage": "real_planner_localization",
+  "error": "RuntimeError: REASONING_EXHAUSTED_CALL:planner",
+  "prompt_tokens": 9235,
+  "completion_tokens": 67351,
+  "reasoning_tokens": 188,
+  "duration_seconds": 185.59,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

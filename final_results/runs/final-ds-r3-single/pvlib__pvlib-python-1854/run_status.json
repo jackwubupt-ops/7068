@@ -1,0 +1,134 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1854",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "27a3a07ebc84b11014d3753e4923902adf9a38c0",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "b0dcd0a3e381640134af7429ffba69f5b9a1eab15478fe5f84a661fef2f01c05",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/pvsystem.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "4b1e09205e711d152c90bc353421eb88ccc670526f9271e7923deccee8ca77c3",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/pvsystem.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "elif len(arrays) == 0"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/pvsystem.py",
+    "pvlib/modelchain.py",
+    "pvlib/temperature.py",
+    "pvlib/location.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/iotools/pvgis.py",
+    "docs/examples/irradiance-transposition/plot_seasonal_tilt.py",
+    "pvlib/tests/test_pvsystem.py",
+    "pvlib/tools.py",
+    "pvlib/irradiance.py"
+  ],
+  "read_files": [
+    "pvlib/pvsystem.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/pvsystem.py"
+  ],
+  "patch_size_bytes": 524,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1238,
+      "completion_tokens": 21,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.982,
+      "dropped_history_messages": 0,
+      "output_sha256": "c4242364a271d5d1d83c1346730472b5550b54a255d35b376358b0c5768a5804"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1373,
+      "completion_tokens": 28,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.539,
+      "dropped_history_messages": 0,
+      "output_sha256": "e47c807676720a598567c65831e58656f29c44ad72827ee5d668720e362738bf"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3247,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.767,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3379,
+      "completion_tokens": 61,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.82,
+      "dropped_history_messages": 0,
+      "output_sha256": "b0dcd0a3e381640134af7429ffba69f5b9a1eab15478fe5f84a661fef2f01c05"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 9237,
+  "completion_tokens": 115,
+  "reasoning_tokens": 0,
+  "duration_seconds": 5.51,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

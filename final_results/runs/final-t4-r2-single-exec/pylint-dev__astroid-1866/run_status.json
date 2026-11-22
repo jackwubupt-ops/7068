@@ -1,0 +1,117 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pylint-dev__astroid-1866",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "6cf238d089cf4b6753c94cfc089b4a47487711e5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "50f29028f564767181cc5b6759bb5afd679700ed7989f93ca3d9c84300bade2b",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "astroid/brain/brain_builtin_inference.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "fb8180c067ae9d6f68b4c3ba4c4297c384af4fb34e97fcb37cb100f0cd48f763",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "astroid/brain/brain_builtin_inference.py"
+      ],
+      "test_check": {
+        "status": "no_tests",
+        "targets": []
+      }
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "astroid/brain/brain_builtin_inference.py"
+    },
+    {
+      "step": 2,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "no_tests"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "astroid/brain/brain_builtin_inference.py",
+    "astroid/nodes/scoped_nodes/scoped_nodes.py",
+    "astroid/nodes/node_ng.py",
+    "astroid/interpreter/objectmodel.py",
+    "astroid/bases.py",
+    "astroid/inference_tip.py",
+    "astroid/objects.py",
+    "astroid/nodes/node_classes.py",
+    "astroid/brain/brain_functools.py",
+    "astroid/nodes/as_string.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "status": "no_tests",
+      "targets": []
+    }
+  ],
+  "read_files": [
+    "astroid/brain/brain_builtin_inference.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "astroid/brain/brain_builtin_inference.py"
+  ],
+  "patch_size_bytes": 691,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1446,
+      "completion_tokens": 34,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.555,
+      "dropped_history_messages": 0,
+      "output_sha256": "1caad9edddaae8f756e3b3f7ddd0a2a5867e44311686dc29a3a2ebe7f630b943"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3915,
+      "completion_tokens": 234,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.585,
+      "dropped_history_messages": 0,
+      "output_sha256": "50f29028f564767181cc5b6759bb5afd679700ed7989f93ca3d9c84300bade2b"
+    }
+  ],
+  "agent_calls": 2,
+  "prompt_tokens": 5361,
+  "completion_tokens": 268,
+  "reasoning_tokens": 0,
+  "duration_seconds": 3.06,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

@@ -1,0 +1,151 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pylint-dev__astroid-1196",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "39c2a9805970ca57093d32bbaf0e6a63e05041d8",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "c047f82d9db9ad66878acc960aac171727d8e9019fe3299d9c2459b2cf6dba6b",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "astroid/nodes/node_classes.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "2a37d0d0a1cca60b521cd4cf3af4c6acff48a2c1b2f02d552b05b2f3dcfa6662",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "astroid/nodes/node_classes.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "step": 2,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\":{\"relative_path\":\"astroid/nod"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "astroid/nodes/node_classes.py",
+    "astroid/nodes/scoped_nodes/scoped_nodes.py",
+    "astroid/bases.py",
+    "astroid/brain/brain_collections.py",
+    "astroid/nodes/node_ng.py",
+    "astroid/builder.py",
+    "astroid/brain/brain_builtin_inference.py",
+    "astroid/protocols.py",
+    "astroid/exceptions.py",
+    "astroid/inference.py"
+  ],
+  "read_files": [
+    "astroid/nodes/node_classes.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "astroid/nodes/node_classes.py"
+  ],
+  "patch_size_bytes": 1120,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1194,
+      "completion_tokens": 31,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.763,
+      "dropped_history_messages": 0,
+      "output_sha256": "d1fe3005e60959da035ac7e57bab0fcbcf5f37eb7ca674fa48552c06021c0195"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3156,
+      "completion_tokens": 43,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.489,
+      "dropped_history_messages": 0,
+      "output_sha256": "c0daf75d031a87d9324b8656b1b970b679c6a8a5a39190521c7800a80ffc05a2"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3247,
+      "completion_tokens": 31,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.437,
+      "dropped_history_messages": 0,
+      "output_sha256": "b015ce3cc0ff765ad385277171b8507616a6e8242f78ace501a26f932974ff20"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5559,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.756,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5691,
+      "completion_tokens": 192,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.194,
+      "dropped_history_messages": 0,
+      "output_sha256": "c047f82d9db9ad66878acc960aac171727d8e9019fe3299d9c2459b2cf6dba6b"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 18847,
+  "completion_tokens": 302,
+  "reasoning_tokens": 0,
+  "duration_seconds": 4.58,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

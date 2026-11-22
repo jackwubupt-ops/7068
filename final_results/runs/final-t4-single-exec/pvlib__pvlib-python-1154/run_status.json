@@ -1,0 +1,353 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1154",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "0b8f24c265d76320067a5ee908a57d475cd1bb24",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": true,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "20e2165b4524821f30f4a1134706bf1091a7d237150333303bdcd1b48a69b7e8",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/irradiance.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "ce66d14d3e9bf84c387103a979554c2e26ef3cf245d81d1b4c8a7d7c99e9ac90",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/irradiance.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_irradiance.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 98
+          },
+          "failing": [],
+          "seconds": 10.84
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 97,
+            "FAILED": 1
+          },
+          "failing": [
+            "pvlib/tests/test_irradiance.py::test_reindl"
+          ],
+          "seconds": 10.21
+        },
+        "seconds": 21.05,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_irradiance.py::test_reindl"
+        ],
+        "newly_passing": []
+      }
+    },
+    {
+      "raw_model_output_sha256": "20e2165b4524821f30f4a1134706bf1091a7d237150333303bdcd1b48a69b7e8",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/irradiance.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "ce66d14d3e9bf84c387103a979554c2e26ef3cf245d81d1b4c8a7d7c99e9ac90",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/irradiance.py"
+      ],
+      "test_check": {
+        "targets": [
+          "pvlib/tests/test_irradiance.py"
+        ],
+        "base": {
+          "run_status": "completed",
+          "exit_code": 0,
+          "counts": {
+            "PASSED": 98
+          },
+          "failing": [],
+          "seconds": 10.84
+        },
+        "patched": {
+          "run_status": "completed",
+          "exit_code": 1,
+          "counts": {
+            "PASSED": 97,
+            "FAILED": 1
+          },
+          "failing": [
+            "pvlib/tests/test_irradiance.py::test_reindl"
+          ],
+          "seconds": 10.83
+        },
+        "seconds": 21.67,
+        "status": "regressions",
+        "regressions": [
+          "pvlib/tests/test_irradiance.py::test_reindl"
+        ],
+        "newly_passing": []
+      }
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "find_definition",
+      "definition_name": "reindl"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "regressions"
+    },
+    {
+      "step": 5,
+      "action": "search_repo",
+      "search_query": "def test_reindl"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_irradiance.py"
+    },
+    {
+      "step": 7,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py"
+    },
+    {
+      "step": 8,
+      "action": "submit",
+      "patch_status": "applied",
+      "test_check": "regressions"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/irradiance.py",
+    "pvlib/shading.py",
+    "pvlib/iam.py",
+    "pvlib/clearsky.py",
+    "docs/examples/plot_diffuse_aoi_correction.py",
+    "pvlib/pvsystem.py",
+    "docs/examples/plot_transposition_gain.py",
+    "versioneer.py",
+    "pvlib/ivtools/sdm.py",
+    "pvlib/singlediode.py"
+  ],
+  "test_env_available": true,
+  "test_runs": [
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_irradiance.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 98
+        },
+        "failing": [],
+        "seconds": 10.84
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 97,
+          "FAILED": 1
+        },
+        "failing": [
+          "pvlib/tests/test_irradiance.py::test_reindl"
+        ],
+        "seconds": 10.21
+      },
+      "seconds": 21.05,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_irradiance.py::test_reindl"
+      ],
+      "newly_passing": []
+    },
+    {
+      "kind": "check",
+      "targets": [
+        "pvlib/tests/test_irradiance.py"
+      ],
+      "base": {
+        "run_status": "completed",
+        "exit_code": 0,
+        "counts": {
+          "PASSED": 98
+        },
+        "failing": [],
+        "seconds": 10.84
+      },
+      "patched": {
+        "run_status": "completed",
+        "exit_code": 1,
+        "counts": {
+          "PASSED": 97,
+          "FAILED": 1
+        },
+        "failing": [
+          "pvlib/tests/test_irradiance.py::test_reindl"
+        ],
+        "seconds": 10.83
+      },
+      "seconds": 21.67,
+      "status": "regressions",
+      "regressions": [
+        "pvlib/tests/test_irradiance.py::test_reindl"
+      ],
+      "newly_passing": []
+    }
+  ],
+  "read_files": [
+    "pvlib/irradiance.py",
+    "pvlib/tests/test_irradiance.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/irradiance.py"
+  ],
+  "patch_size_bytes": 595,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 975,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.534,
+      "dropped_history_messages": 0,
+      "output_sha256": "3cb39846e3dd4ea66fab3c33585709964e0e57e45358ca32cb52c4ef93918013"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1113,
+      "completion_tokens": 29,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.473,
+      "dropped_history_messages": 0,
+      "output_sha256": "319723728c4532fc94be64d1b3dac68aaf60f42d2826fc35fffe0109d534df0a"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3407,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.85,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3540,
+      "completion_tokens": 124,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.524,
+      "dropped_history_messages": 0,
+      "output_sha256": "20e2165b4524821f30f4a1134706bf1091a7d237150333303bdcd1b48a69b7e8"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4342,
+      "completion_tokens": 18,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.578,
+      "dropped_history_messages": 0,
+      "output_sha256": "7cc4d966be0a967ee2a6915bb5981e4b0b975193542a09e0f06c426d229d5932"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4480,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.75,
+      "dropped_history_messages": 0,
+      "output_sha256": "e4320e0031db779b2343092184c5a479ca5cd7ea05843ac66201f1ae76d35367"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5349,
+      "completion_tokens": 29,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.013,
+      "dropped_history_messages": 0,
+      "output_sha256": "3792d85790a65279d8cac33b973e4996af05b2aaf45b1f02c71985c2b9323f43"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6034,
+      "completion_tokens": 124,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.008,
+      "dropped_history_messages": 0,
+      "output_sha256": "20e2165b4524821f30f4a1134706bf1091a7d237150333303bdcd1b48a69b7e8"
+    }
+  ],
+  "agent_calls": 8,
+  "prompt_tokens": 29240,
+  "completion_tokens": 377,
+  "reasoning_tokens": 0,
+  "duration_seconds": 41.66,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

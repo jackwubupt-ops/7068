@@ -1,0 +1,262 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1978",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "0c9ab0fe56703fa83c73e514a1020d398d23fa7f",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "df86fcc7703db1e797285834cbf4a6a5a6a539137831e5d796946773d587411e",
+      "raw_model_patch_sha256": "cebf6f1734574d9266bdb54652a2b780a1956bb1a7059c0f80e1442c6c5250da",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "astroid/raw_building.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "astroid/raw_building.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "c59df7017f6e3f888203c3338aca24237f811d04970e23fbf623d42866df0d4c",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 20,
+      "reasoning_tokens": 17,
+      "latency_seconds": 0.75,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 930,
+      "completion_tokens": 118,
+      "reasoning_tokens": 52,
+      "latency_seconds": 1.662,
+      "dropped_history_messages": 0,
+      "output_sha256": "7394055e940396ad0602ba6f720338a26b04c2e0b955828c481323bbbc5b01eb"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1057,
+      "completion_tokens": 112,
+      "reasoning_tokens": 16,
+      "latency_seconds": 0.877,
+      "dropped_history_messages": 0,
+      "output_sha256": "7394055e940396ad0602ba6f720338a26b04c2e0b955828c481323bbbc5b01eb"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1184,
+      "completion_tokens": 50,
+      "reasoning_tokens": 16,
+      "latency_seconds": 0.608,
+      "dropped_history_messages": 0,
+      "output_sha256": "2e7722a994d037437a5eb86b8bc9de5ebab227c9e96f0da796c088d743a4881b"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1369,
+      "completion_tokens": 103,
+      "reasoning_tokens": 10,
+      "latency_seconds": 1.125,
+      "dropped_history_messages": 0,
+      "output_sha256": "7af3a51be7357e97948ffcef2e7d38bf895d07da02ced522e32c80e37d28ba74"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1493,
+      "completion_tokens": 46,
+      "reasoning_tokens": 16,
+      "latency_seconds": 0.528,
+      "dropped_history_messages": 0,
+      "output_sha256": "0c4d89e01926099568a99f6055479490fb22fd94974690830528f3daa1bc7066"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3365,
+      "completion_tokens": 168,
+      "reasoning_tokens": 80,
+      "latency_seconds": 1.305,
+      "dropped_history_messages": 0,
+      "output_sha256": "750aae68b473a432961dd78cee832e62c54aa47211719251d772185749f4de90"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3484,
+      "completion_tokens": 84,
+      "reasoning_tokens": 10,
+      "latency_seconds": 0.797,
+      "dropped_history_messages": 0,
+      "output_sha256": "cd1b49ea2ec76bdaf87c19fa1750abaf3bed84fb0262d8d8b992e1c15554eb27"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3589,
+      "completion_tokens": 54,
+      "reasoning_tokens": 28,
+      "latency_seconds": 0.693,
+      "dropped_history_messages": 0,
+      "output_sha256": "d377c4afd9341de1e49d4d9468ced484121e91fc60903fb3857e31c30e159fd5"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3974,
+      "completion_tokens": 100,
+      "reasoning_tokens": 21,
+      "latency_seconds": 0.978,
+      "dropped_history_messages": 0,
+      "output_sha256": "8f6ac6f9d3d521acb3801d50cc1b125d3966c69facb5a049f42592354103fe65"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4248,
+      "completion_tokens": 668,
+      "reasoning_tokens": 117,
+      "latency_seconds": 4.476,
+      "dropped_history_messages": 0,
+      "output_sha256": "1e7c4054aaaa8964eef49318b52c4dbbbe37877637b493a4b5d36b16bbe928a1"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1321,
+      "completion_tokens": 472,
+      "reasoning_tokens": 253,
+      "latency_seconds": 2.264,
+      "dropped_history_messages": 0,
+      "output_sha256": "cebf6f1734574d9266bdb54652a2b780a1956bb1a7059c0f80e1442c6c5250da"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "invalid_json",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "getattr(sys.modules[modname], name)",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/raw_building.py",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "invalid_json",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "catch_warnings",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1,
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "astroid/nodes/scoped_nodes/scoped_nodes.py",
+    "astroid/objects.py",
+    "astroid/brain/brain_numpy_random_mtrand.py",
+    "astroid/brain/brain_gi.py",
+    "astroid/modutils.py",
+    "astroid/interpreter/_import/util.py",
+    "astroid/brain/brain_namedtuple_enum.py",
+    "astroid/nodes/node_classes.py",
+    "astroid/builder.py",
+    "astroid/nodes/node_ng.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "astroid/raw_building.py"
+  ],
+  "patch_size_bytes": 655,
+  "prompt_tokens": 26051,
+  "completion_tokens": 1995,
+  "reasoning_tokens": 636,
+  "duration_seconds": 17.06,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

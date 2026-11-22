@@ -1,0 +1,138 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1707",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "40e9e978c170bdde4eeee1547729417665dbc34c",
+  "status": "experiment_error",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 5,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_started",
+  "patch_sha256": null,
+  "source_checkout_clean": null,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 18,
+      "reasoning_tokens": 15,
+      "latency_seconds": 0.781,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 824,
+      "completion_tokens": 75,
+      "reasoning_tokens": 37,
+      "latency_seconds": 0.851,
+      "dropped_history_messages": 0,
+      "output_sha256": "de4995cd87b79796f6b507af9d0a320ad8df5646c791692b1d3186ca35091061"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 892,
+      "completion_tokens": 37,
+      "reasoning_tokens": 12,
+      "latency_seconds": 0.604,
+      "dropped_history_messages": 0,
+      "output_sha256": "dea55478baff3f3b78373420642ea9d9dacf78072b7659210101d4d9a70c35ba"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1135,
+      "completion_tokens": 48,
+      "reasoning_tokens": 20,
+      "latency_seconds": 0.827,
+      "dropped_history_messages": 0,
+      "output_sha256": "296a18587c329f95d99d2b8a7849a327c93b39bde5537f728c360cbfe05653c2"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3982,
+      "completion_tokens": 87,
+      "reasoning_tokens": 59,
+      "latency_seconds": 1.248,
+      "dropped_history_messages": 0,
+      "output_sha256": "8247709f0a7ed5378334a005f58be79b7a1692a33c75538cf4c40618f09637ab"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5161,
+      "completion_tokens": 3060,
+      "reasoning_tokens": 661,
+      "latency_seconds": 16.694,
+      "dropped_history_messages": 0,
+      "output_sha256": "541a501de4d1226817ad52a34ebf886b7b096516446435b2cab800872bfb407d"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "def physical",
+      "prior_protocol_error": "Protocol validation error: Extra data: line 3 column 1 (char 98). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/iam.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/iam.py"
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/iam.py",
+    "docs/examples/reflections/plot_diffuse_aoi_correction.py",
+    "pvlib/pvsystem.py",
+    "pvlib/modelchain.py",
+    "pvlib/iotools/psm3.py",
+    "pvlib/irradiance.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/_deprecation.py",
+    "pvlib/bifacial/infinite_sheds.py",
+    "pvlib/iotools/crn.py"
+  ],
+  "failed_stage": "real_planner_localization",
+  "error": "RuntimeError: QWEN_TRUNCATED_OUTPUT:planner",
+  "prompt_tokens": 12031,
+  "completion_tokens": 3325,
+  "reasoning_tokens": 804,
+  "duration_seconds": 22.28,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

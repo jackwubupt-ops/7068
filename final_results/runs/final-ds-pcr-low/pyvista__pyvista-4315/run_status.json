@@ -1,0 +1,213 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pyvista__pyvista-4315",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pyvista/pyvista",
+  "base_commit": "db6ee8dd4a747b8864caae36c5d05883976a3ae5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 7,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "61699d44789a41546fbad39c2852c0a35084a4bbf4fe519acd463edd3edfe5df",
+      "raw_model_patch_sha256": "0f939a5dac501f762787bce62812d02804f43e5de0aa7e371a221296cfb83299",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pyvista/core/grid.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pyvista/core/grid.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "ddbcabe215e70fe3a395d4d95c53345edf16371117b27d955262586f6eef9c16",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 14,
+      "reasoning_tokens": 11,
+      "latency_seconds": 0.847,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1102,
+      "completion_tokens": 67,
+      "reasoning_tokens": 40,
+      "latency_seconds": 0.777,
+      "dropped_history_messages": 0,
+      "output_sha256": "7a6fc7e38bdddf49e1bc515c855d100436ff8ad2c2805f450d7571a8ff1a259a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1354,
+      "completion_tokens": 44,
+      "reasoning_tokens": 14,
+      "latency_seconds": 0.615,
+      "dropped_history_messages": 0,
+      "output_sha256": "a0b1e41434d7faf675f218d1c4ee177b529df62528b04a89c9cc7f457874c414"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5674,
+      "completion_tokens": 169,
+      "reasoning_tokens": 140,
+      "latency_seconds": 1.841,
+      "dropped_history_messages": 0,
+      "output_sha256": "6a67d99c7e134bea58ad0324fbf670864056a94daa7d365b36f4972146cd8eb1"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5833,
+      "completion_tokens": 93,
+      "reasoning_tokens": 56,
+      "latency_seconds": 0.988,
+      "dropped_history_messages": 0,
+      "output_sha256": "af1efb3bf0cd34b1ff952805ac50b9dfea133ec5196f820d0de93e81669bd699"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5911,
+      "completion_tokens": 51,
+      "reasoning_tokens": 21,
+      "latency_seconds": 0.92,
+      "dropped_history_messages": 0,
+      "output_sha256": "51088d1e007e9913f8e0f1138566f13f1e7d11b210ce4b2c57da46f9aae26dbd"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7266,
+      "completion_tokens": 481,
+      "reasoning_tokens": 48,
+      "latency_seconds": 3.276,
+      "dropped_history_messages": 0,
+      "output_sha256": "f591aa1040f8be7e873e3c904075188d58190d5bc14a2d1b0fd66f2ca90862e7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7726,
+      "completion_tokens": 472,
+      "reasoning_tokens": 50,
+      "latency_seconds": 2.276,
+      "dropped_history_messages": 0,
+      "output_sha256": "43b9cf5c6eebca46a353bdc62de05e78f66a279e4e3441e7a5700b07611f7043"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1898,
+      "completion_tokens": 1271,
+      "reasoning_tokens": 839,
+      "latency_seconds": 5.125,
+      "dropped_history_messages": 0,
+      "output_sha256": "0f939a5dac501f762787bce62812d02804f43e5de0aa7e371a221296cfb83299"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "class RectilinearGrid"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "from collections.abc import Sequence"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1,
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pyvista/utilities/errors.py",
+    "pyvista/core/grid.py",
+    "pyvista/plotting/charts.py",
+    "pyvista/plotting/renderer.py",
+    "pyvista/plotting/plotting.py",
+    "doc/source/conf.py",
+    "pyvista/core/dataobject.py",
+    "pyvista/utilities/helpers.py",
+    "tests/test_dataset.py",
+    "pyvista/core/filters/data_set.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pyvista/core/grid.py"
+  ],
+  "patch_size_bytes": 2005,
+  "prompt_tokens": 36801,
+  "completion_tokens": 2662,
+  "reasoning_tokens": 1219,
+  "duration_seconds": 20.82,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

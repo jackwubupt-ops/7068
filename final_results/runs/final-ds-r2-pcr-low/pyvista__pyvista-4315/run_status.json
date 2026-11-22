@@ -1,0 +1,198 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pyvista__pyvista-4315",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pyvista/pyvista",
+  "base_commit": "db6ee8dd4a747b8864caae36c5d05883976a3ae5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "029fa9ec860a1f9740cfadfda85840cf69fd4eb3db55cabbcc7f9572019df1dd",
+      "raw_model_patch_sha256": "ca4be24914a241e7ce0e687cf87ad090481a9756e6bbe8c09ed401cb5d13167f",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pyvista/core/grid.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pyvista/core/grid.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "63675713c24f92f3faa6fec19bb910dddf70d170260c272c6df3f1912d6a1b56",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 14,
+      "reasoning_tokens": 11,
+      "latency_seconds": 0.462,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1102,
+      "completion_tokens": 79,
+      "reasoning_tokens": 52,
+      "latency_seconds": 1.043,
+      "dropped_history_messages": 0,
+      "output_sha256": "80d200d2d42b3877d3130c4cee6d3189c58b42ab09f86111ff76d0f21b546125"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1354,
+      "completion_tokens": 30,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.464,
+      "dropped_history_messages": 0,
+      "output_sha256": "a2c99a045571b5001e7255b42d3870b21526ef065ca4d304205299eb45fe70ae"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5596,
+      "completion_tokens": 47,
+      "reasoning_tokens": 17,
+      "latency_seconds": 0.736,
+      "dropped_history_messages": 0,
+      "output_sha256": "98953af71d8c7a3c61823c82e521bf40aab40b1ea3ec0fa244e73d4be00730a6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7448,
+      "completion_tokens": 704,
+      "reasoning_tokens": 53,
+      "latency_seconds": 4.722,
+      "dropped_history_messages": 0,
+      "output_sha256": "32cf494aa7841bc3db0ed450822ff601db3376c581a950a9bb9a818abda334cc"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8124,
+      "completion_tokens": 756,
+      "reasoning_tokens": 108,
+      "latency_seconds": 3.05,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdef53db799b0a60638907b96eddaccf86ca7a4d27dc99e8e7c3e529b0c68e5"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8797,
+      "completion_tokens": 1238,
+      "reasoning_tokens": 590,
+      "latency_seconds": 6.664,
+      "dropped_history_messages": 0,
+      "output_sha256": "a8063a5429a9b4e07a5967144f1c1a302c252b6f700809eed8f13c563e76ca6e"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 2544,
+      "completion_tokens": 1413,
+      "reasoning_tokens": 1033,
+      "latency_seconds": 6.474,
+      "dropped_history_messages": 0,
+      "output_sha256": "ca4be24914a241e7ce0e687cf87ad090481a9756e6bbe8c09ed401cb5d13167f"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "class RectilinearGrid"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate lines are not covered by cited evidence. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate lines are not covered by cited evidence. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pyvista/utilities/errors.py",
+    "pyvista/core/grid.py",
+    "pyvista/plotting/charts.py",
+    "pyvista/plotting/renderer.py",
+    "pyvista/plotting/plotting.py",
+    "doc/source/conf.py",
+    "pyvista/core/dataobject.py",
+    "pyvista/utilities/helpers.py",
+    "tests/test_dataset.py",
+    "pyvista/core/filters/data_set.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "pyvista/core/grid.py",
+    "pyvista/core/grid.py"
+  ],
+  "patch_size_bytes": 1789,
+  "prompt_tokens": 35002,
+  "completion_tokens": 4281,
+  "reasoning_tokens": 1864,
+  "duration_seconds": 27.67,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

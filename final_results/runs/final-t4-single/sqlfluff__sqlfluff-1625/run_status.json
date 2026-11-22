@@ -1,0 +1,202 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "sqlfluff__sqlfluff-1625",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "14e1a23a3166b9a645a16de96f694c77a5d4abb7",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "exec_feedback": false,
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "c50a45e578c878c4028bf07d60026de782c7c7e2a94fb414fdbc5cee5802eb25",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/rules/L031.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "fc3a3fe3d8bc87937912e8b6c211151caf6b28dfe247011a9346d3468ba4f28b",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "src/sqlfluff/rules/L031.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L031.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L031.py"
+    },
+    {
+      "step": 3,
+      "action": "search_repo",
+      "search_query": "L031"
+    },
+    {
+      "step": 4,
+      "action": "search_repo",
+      "search_query": "_lint_aliases_in_join"
+    },
+    {
+      "step": 5,
+      "action": "invalid",
+      "protocol_error": "Extra data: line 3 column 1 (char 19)",
+      "raw_head": "{\"action\":\"edit\"}\n\nThe issue: L031 flags aliases even when there's no join. The rule should only trigger when there's a "
+    },
+    {
+      "step": 6,
+      "action": "search_repo",
+      "search_query": "join_clause"
+    },
+    {
+      "step": 7,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/rules/analysis/select.py"
+    },
+    {
+      "step": 8,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "src/sqlfluff/rules/L031.py",
+    "src/sqlfluff/rules/L028.py",
+    "src/sqlfluff/rules/L026.py",
+    "src/sqlfluff/rules/L044.py",
+    "src/sqlfluff/dialects/dialect_tsql.py",
+    "src/sqlfluff/core/rules/analysis/select_crawler.py",
+    "examples/01_basic_api_usage.py",
+    "src/sqlfluff/core/rules/analysis/select.py",
+    "src/sqlfluff/dialects/dialect_ansi.py",
+    "src/sqlfluff/core/dialects/base.py"
+  ],
+  "read_files": [
+    "src/sqlfluff/core/rules/analysis/select.py",
+    "src/sqlfluff/rules/L031.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "src/sqlfluff/rules/L031.py"
+  ],
+  "patch_size_bytes": 675,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 960,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.234,
+      "dropped_history_messages": 0,
+      "output_sha256": "2843d06937a9830e0ab851c0f64e99990fbef524fb12e7d74358b9ceb0b6d59d"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4987,
+      "completion_tokens": 32,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.957,
+      "dropped_history_messages": 0,
+      "output_sha256": "3a342fc480192ce27e03cc848cbaa8e34f0df6e52762ca8c60e6d235bc22242e"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5448,
+      "completion_tokens": 15,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.765,
+      "dropped_history_messages": 0,
+      "output_sha256": "ca86508fa82fc727b7af8ea6f8c18d0124e015cecf1c3ad8b27d21ac67de0d3e"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5974,
+      "completion_tokens": 21,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.138,
+      "dropped_history_messages": 0,
+      "output_sha256": "e8fe7cba5e0e322a61d69fe3d5d8e6924bfe0f1b21eeee82688ee5b724f676c3"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6182,
+      "completion_tokens": 92,
+      "reasoning_tokens": 0,
+      "latency_seconds": 3.258,
+      "dropped_history_messages": 0,
+      "output_sha256": "fa55e6b18910b8452ca3d81088ebb56f3c0966a663392ae32a1a6d40adea5807"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6305,
+      "completion_tokens": 16,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.818,
+      "dropped_history_messages": 0,
+      "output_sha256": "13fd8194ae7f1f5cb58b6c7f48ea7c68e85bb80aed64e07f7d4e97f571ef1d82"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6747,
+      "completion_tokens": 35,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.68,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cda1ac9a7e0e50127249e5d15637c63ce978e24323e742e891da197ba1e285c"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 7600,
+      "completion_tokens": 169,
+      "reasoning_tokens": 0,
+      "latency_seconds": 2.16,
+      "dropped_history_messages": 0,
+      "output_sha256": "c50a45e578c878c4028bf07d60026de782c7c7e2a94fb414fdbc5cee5802eb25"
+    }
+  ],
+  "agent_calls": 8,
+  "prompt_tokens": 44203,
+  "completion_tokens": 412,
+  "reasoning_tokens": 0,
+  "duration_seconds": 18.26,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}
