@@ -7,7 +7,7 @@ Neither gold patch, test patch, test labels nor hints are passed to agents.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 import json
 from pathlib import Path
 import re
