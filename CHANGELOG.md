@@ -4,6 +4,15 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## Tidy-up before v1.0 (2026-11-23)
+
+### Added
+- `report/figures/make_heatmap.py`: regenerates the report's Figure 2 from `final_results/` (CSV and LaTeX table, checked cell by cell against the figure).
+
+### Changed
+- Runbook stage 17 now describes the final protocol (7 configurations × 3 runs, RQ1–RQ3, parallel repeat streams, `repeat_report`, export), replacing the earlier 2-run-type plan.
+- README: repository map lists `report/figures/` and `final_results/first-server/`; reproducibility row counts both result sets. `.gitignore` keeps `.env.qwen-small.example` (the old `.env.example` exception was stale). CONTRIBUTING lists `report/figures/`.
+
 ## Release v1.0 (2026-11-23)
 
 ### Changed
