@@ -2,7 +2,7 @@
 
 proposal 里的模型是本地的 Qwen2.5-Coder-7B-Instruct。最终的对比实验（RQ1 推理强度、RQ3 P-C-R 对比单 agent）改用 DeepSeek API 的 `deepseek-flash`。本文整理换模型的依据，以及在报告里怎么用这些数据。
 
-> 下表的数字都来自 README 第 5 节记录的 pilot 结果（SWE-bench Lite dev，23 题，search_replace 编辑格式，官方 harness 评测）。原始数据在服务器的 `/data/runs`（pilot v1/v2/v3）和 `/data/analysis/`（诊断报告）里，**不在仓库里**，报告定稿前要先打包下载（runbook 阶段 12）。
+> 下表的数字都来自 README 第 5 节记录的 pilot 结果（SWE-bench Lite dev，23 题，search_replace 编辑格式，官方 harness 评测）。原始数据（pilot v1/v2/v3 两种 agent 的批次、诊断报告、vLLM 日志、和 7B 配对的第一轮 DeepSeek 批次）都在 [`final_results/first-server/`](../final_results/first-server/README.md)。
 
 ## 1. 证据：7B 的解决率在三轮改进后一直是 0
 

@@ -1,0 +1,207 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1072",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "04a523fafbd61bc2e49420963b84ed8e2bd1b3cf",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.176,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1168,
+      "completion_tokens": 44,
+      "latency_seconds": 2.136,
+      "dropped_history_messages": 0,
+      "output_sha256": "ceb16e5cd48bc7fbb2a45815b623c763d2e0c4f4c0a168cbb41a70c1ce6dc8c7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1649,
+      "completion_tokens": 51,
+      "latency_seconds": 1.86,
+      "dropped_history_messages": 0,
+      "output_sha256": "5d63ef73b685a26f880a364d5bfea1ec297b18282ccc56883714f1ffc61f5a54"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2713,
+      "completion_tokens": 294,
+      "latency_seconds": 10.35,
+      "dropped_history_messages": 0,
+      "output_sha256": "7054753052a0ca6893e1266868c87655aacbbf239ea8979f48276c69e21c4fb2"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3042,
+      "completion_tokens": 51,
+      "latency_seconds": 1.905,
+      "dropped_history_messages": 0,
+      "output_sha256": "eff93b17fa47bccc7894ff9b690c5d34f2eafc596030df3274229b2646873b0a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3541,
+      "completion_tokens": 294,
+      "latency_seconds": 10.479,
+      "dropped_history_messages": 0,
+      "output_sha256": "d86d488fe7802915a0f03811a96547514a70e40622d5eec0a1544466571bc4a6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3870,
+      "completion_tokens": 51,
+      "latency_seconds": 1.8,
+      "dropped_history_messages": 0,
+      "output_sha256": "eff93b17fa47bccc7894ff9b690c5d34f2eafc596030df3274229b2646873b0a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3983,
+      "completion_tokens": 50,
+      "latency_seconds": 1.998,
+      "dropped_history_messages": 0,
+      "output_sha256": "a1a46cf7664d9706c6e91998b557ce4c79eb6b8e0f2ce4230897f67ccda694e7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6804,
+      "completion_tokens": 416,
+      "latency_seconds": 15.612,
+      "dropped_history_messages": 0,
+      "output_sha256": "1c32511629b05b746a24dcb18f2f63288fd9ed6b7a40e19191cc478fa55554a5"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7255,
+      "completion_tokens": 50,
+      "latency_seconds": 1.936,
+      "dropped_history_messages": 0,
+      "output_sha256": "a1a46cf7664d9706c6e91998b557ce4c79eb6b8e0f2ce4230897f67ccda694e7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7553,
+      "completion_tokens": 180,
+      "latency_seconds": 6.999,
+      "dropped_history_messages": 0,
+      "output_sha256": "85b44af2b91e185f4e9f33660773c39c3539dbc9328b3696f0a5778ad2640652"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "temperature.fuentes"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_temperature.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_temperature.py",
+      "prior_protocol_error": "Protocol validation error: relevant_lines must be an inclusive [start, end] range. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_temperature.py",
+      "prior_protocol_error": "Protocol validation error: relevant_lines must be an inclusive [start, end] range. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py",
+      "prior_protocol_error": "Protocol validation error: relevant_lines must be an inclusive [start, end] range. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 0
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 41614,
+  "completion_tokens": 1484,
+  "duration_seconds": 55.88,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

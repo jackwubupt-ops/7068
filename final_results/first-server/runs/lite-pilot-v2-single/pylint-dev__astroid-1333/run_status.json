@@ -1,0 +1,273 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pylint-dev__astroid-1333",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "d2a5b3c7b1e203fec3c7ca73c30eb1785d3d4d0a",
+  "status": "no_submission",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "not_attempted",
+  "attempt_count": 0,
+  "candidate_attempts": [],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "__init__.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 5,
+      "action": "edit"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 7,
+      "action": "edit"
+    },
+    {
+      "step": 8,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 9,
+      "action": "edit"
+    },
+    {
+      "step": 10,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 11,
+      "action": "edit"
+    },
+    {
+      "step": 12,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 13,
+      "action": "edit"
+    },
+    {
+      "step": 14,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 15,
+      "action": "edit"
+    },
+    {
+      "step": 16,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "repeat_of_step": 2
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "read_files": [],
+  "stop_reason": "step_budget_exhausted",
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 859,
+      "completion_tokens": 31,
+      "latency_seconds": 1.253,
+      "dropped_history_messages": 0,
+      "output_sha256": "93f38d96e4ce8aaa47e439e60128497145ad724bc68d88c6a08d710d9c090965"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1324,
+      "completion_tokens": 53,
+      "latency_seconds": 1.984,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1422,
+      "completion_tokens": 14,
+      "latency_seconds": 0.559,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1472,
+      "completion_tokens": 53,
+      "latency_seconds": 1.918,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1593,
+      "completion_tokens": 14,
+      "latency_seconds": 0.565,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1643,
+      "completion_tokens": 53,
+      "latency_seconds": 1.911,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1764,
+      "completion_tokens": 14,
+      "latency_seconds": 0.573,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1814,
+      "completion_tokens": 53,
+      "latency_seconds": 2.092,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1935,
+      "completion_tokens": 14,
+      "latency_seconds": 0.561,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1985,
+      "completion_tokens": 53,
+      "latency_seconds": 2.472,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2106,
+      "completion_tokens": 14,
+      "latency_seconds": 0.581,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2156,
+      "completion_tokens": 53,
+      "latency_seconds": 2.458,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2277,
+      "completion_tokens": 14,
+      "latency_seconds": 0.647,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2327,
+      "completion_tokens": 53,
+      "latency_seconds": 1.969,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2448,
+      "completion_tokens": 14,
+      "latency_seconds": 0.577,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2498,
+      "completion_tokens": 53,
+      "latency_seconds": 2.078,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc3bc40022adc54d111e9b7cfe23f1c2b83076b1f10fe91e5efa232f069b18f"
+    }
+  ],
+  "agent_calls": 16,
+  "prompt_tokens": 29623,
+  "completion_tokens": 553,
+  "duration_seconds": 22.31,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

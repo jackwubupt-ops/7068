@@ -1,0 +1,221 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1196",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "39c2a9805970ca57093d32bbaf0e6a63e05041d8",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 11,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.171,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 827,
+      "completion_tokens": 45,
+      "latency_seconds": 1.786,
+      "dropped_history_messages": 0,
+      "output_sha256": "54809d5e20c6227c8e52ee6cb880fb18f5334aa3e06f56b9ff503732ce6682f6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 951,
+      "completion_tokens": 45,
+      "latency_seconds": 1.622,
+      "dropped_history_messages": 0,
+      "output_sha256": "54809d5e20c6227c8e52ee6cb880fb18f5334aa3e06f56b9ff503732ce6682f6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1058,
+      "completion_tokens": 54,
+      "latency_seconds": 1.937,
+      "dropped_history_messages": 0,
+      "output_sha256": "eef1fa3679c1f2e8d6d52ce081c03be2eea15d4e98dc5489e85460fd6f0bc4d1"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3432,
+      "completion_tokens": 50,
+      "latency_seconds": 2.3,
+      "dropped_history_messages": 0,
+      "output_sha256": "961138e32569fd613618eb8dd92ee8c9ec4f800fcdd6efe7cfc64d7e9ead6342"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5814,
+      "completion_tokens": 49,
+      "latency_seconds": 2.848,
+      "dropped_history_messages": 0,
+      "output_sha256": "d909a7789be89874113e202aeeaceab15e93abf27e6ea0120eeb3967893fa32c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7970,
+      "completion_tokens": 48,
+      "latency_seconds": 2.348,
+      "dropped_history_messages": 0,
+      "output_sha256": "4c303e706d2a2ecd818894fff6fe3c0d7901893db8483b96d0a7134c199a16b4"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 10096,
+      "completion_tokens": 48,
+      "latency_seconds": 2.333,
+      "dropped_history_messages": 0,
+      "output_sha256": "054a69f5a32cd3c2701ed3b6203a84a8e0bb7202424238a468cc5927252b5e02"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 12200,
+      "completion_tokens": 48,
+      "latency_seconds": 2.367,
+      "dropped_history_messages": 0,
+      "output_sha256": "f439ad617d8b2b4c5589229824f0176d5e67966bf70b408082594e2dd66d549a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 12336,
+      "completion_tokens": 48,
+      "latency_seconds": 1.814,
+      "dropped_history_messages": 0,
+      "output_sha256": "f2d005cce7bab5475fbdd62392fbbb8d8a89e471535a60d214eab46b68e9bc57"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 14749,
+      "completion_tokens": 826,
+      "latency_seconds": 31.628,
+      "dropped_history_messages": 0,
+      "output_sha256": "3f63211ed271bc4edcc58d8d2a8f0f86410bb1a7f4fa18532f26cb69be68cdc5"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 15320,
+      "completion_tokens": 162,
+      "latency_seconds": 9.806,
+      "dropped_history_messages": 5,
+      "output_sha256": "3897db90ba77de6019b713ba5c8cad38d72d377fa739ac93772e59b6df143359"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "astroid getitem"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "astroid getitem"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/builder.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/__init__.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/exceptions.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/bases.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/manager.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2
+    },
+    {
+      "round": 11,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 0,
+      "prior_protocol_error": "Protocol validation error: relevant_lines must be an inclusive [start, end] range. Correct the action; do not invent evidence."
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 84789,
+  "completion_tokens": 1426,
+  "duration_seconds": 61.2,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

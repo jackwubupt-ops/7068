@@ -1,0 +1,140 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1268",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "ce5cbce5ba11cdc2f8139ade66feea1e181a7944",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.181,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 625,
+      "completion_tokens": 45,
+      "latency_seconds": 1.754,
+      "dropped_history_messages": 0,
+      "output_sha256": "61b9786e5aceec34e0761eb2c1e22555d4f07dcc3c66a827db897026c3caf318"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 749,
+      "completion_tokens": 45,
+      "latency_seconds": 2.312,
+      "dropped_history_messages": 0,
+      "output_sha256": "61b9786e5aceec34e0761eb2c1e22555d4f07dcc3c66a827db897026c3caf318"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 856,
+      "completion_tokens": 52,
+      "latency_seconds": 2.072,
+      "dropped_history_messages": 0,
+      "output_sha256": "8e5cec87bf93e75dff6eecaba0845f35db7d28a206a76e5d35d6039ef8743e82"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1000,
+      "completion_tokens": 52,
+      "latency_seconds": 1.879,
+      "dropped_history_messages": 0,
+      "output_sha256": "861eb1ee086bfbea9f17cf9900591197437b927d726b5122de733cc2ae9b132d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1144,
+      "completion_tokens": 53,
+      "latency_seconds": 2.01,
+      "dropped_history_messages": 0,
+      "output_sha256": "69c18d4cfbdade50cfcfc70c2f92e139043cff4456a015b0405655e6ad8ece32"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1290,
+      "completion_tokens": 124,
+      "latency_seconds": 4.489,
+      "dropped_history_messages": 0,
+      "output_sha256": "afde8637c90dff9cb0baff9cfd42f8e97f870f9d186d813a0f5d170796ba6f79"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "AsStringVisitor visit_unknown"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "AsStringVisitor visit_unknown"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/nodes/as_string.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/nodes/node_ng.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/nodes/__init__.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 5700,
+  "completion_tokens": 374,
+  "duration_seconds": 14.83,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

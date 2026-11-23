@@ -1,0 +1,204 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "marshmallow-code__marshmallow-1343",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "2be2d83a1a9a6d3d9b85804f3ab545cecc409bb0",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 7,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "e67b375f82e10f342c61330fc2aa80d11c216c8274c94d7f7c0057df0ceff1dc",
+      "raw_model_patch_sha256": "30572f3c7de64dfb785187bb9e7f03330a0eee44a34ba7391059b76fc2b2f4ca",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "src/marshmallow/schema.py",
+        "src/marshmallow/fields.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "src/marshmallow/schema.py",
+        "src/marshmallow/fields.py"
+      ],
+      "search_match_modes": [
+        "indent_shift",
+        "indent_shift"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "aeebb4d845d75eb422b2e27bcc4659d737af416d113013052b2ccab1380e8629",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 1.012,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1345,
+      "completion_tokens": 52,
+      "latency_seconds": 2.509,
+      "dropped_history_messages": 0,
+      "output_sha256": "179bd2da2a9f40061baae17f6ff7ec61a7447719d604bb000331d44bc6d3c685"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1483,
+      "completion_tokens": 52,
+      "latency_seconds": 2.002,
+      "dropped_history_messages": 0,
+      "output_sha256": "179bd2da2a9f40061baae17f6ff7ec61a7447719d604bb000331d44bc6d3c685"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1597,
+      "completion_tokens": 52,
+      "latency_seconds": 2.009,
+      "dropped_history_messages": 0,
+      "output_sha256": "3ae2161227956e0fd6188ef7235274cc42df2534a0ab7210a726c4a14a4728ff"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2317,
+      "completion_tokens": 53,
+      "latency_seconds": 2.208,
+      "dropped_history_messages": 0,
+      "output_sha256": "d612c820bfa946cf9761dbd5de76b38dbb71278ad81d0c64cfe5c9dba65551dc"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2921,
+      "completion_tokens": 53,
+      "latency_seconds": 2.045,
+      "dropped_history_messages": 0,
+      "output_sha256": "315f66100ff69b22ed32f1fc65b51dd896551d7f31702e7e52bad7c76b005299"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3473,
+      "completion_tokens": 52,
+      "latency_seconds": 2.018,
+      "dropped_history_messages": 0,
+      "output_sha256": "075b4cc34f6ed2c1593271c8df44349bc01fa3fccbf80a98825308774de44b24"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4024,
+      "completion_tokens": 355,
+      "latency_seconds": 13.734,
+      "dropped_history_messages": 0,
+      "output_sha256": "15e635fc2316124d86973ffda0f4905ce768862d284384c32d655bcf7f576c70"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1639,
+      "completion_tokens": 127,
+      "latency_seconds": 5.393,
+      "dropped_history_messages": 0,
+      "output_sha256": "30572f3c7de64dfb785187bb9e7f03330a0eee44a34ba7391059b76fc2b2f4ca"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "TypeError: 'NoneType' object is not subscriptable"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "TypeError: 'NoneType' object is not subscriptable"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/schema.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/marshalling.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/decorators.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2
+    }
+  ],
+  "retrieval_candidates": [
+    "src/marshmallow/schema.py",
+    "src/marshmallow/fields.py",
+    "src/marshmallow/marshalling.py",
+    "src/marshmallow/base.py",
+    "src/marshmallow/decorators.py",
+    "tests/test_fields.py",
+    "tests/test_schema.py",
+    "tests/test_marshalling.py",
+    "src/marshmallow/utils.py",
+    "src/marshmallow/validate.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "src/marshmallow/schema.py",
+    "src/marshmallow/fields.py"
+  ],
+  "patch_size_bytes": 1240,
+  "prompt_tokens": 18835,
+  "completion_tokens": 799,
+  "duration_seconds": 33.11,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

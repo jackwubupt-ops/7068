@@ -1,0 +1,216 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1733",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "a1579a16b1d8913d9d7c7d12add374a290bcc78c",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 8,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "707b7eb9f1e4f679ac2689552a29cf24fd0db9d95b99d53815a309c448fcaf80",
+      "raw_model_patch_sha256": "582801341da537d4cbd244507bb6394e519a45266c7cf5f6801b69f86b8e3b9f",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "src/sqlfluff/rules/L003.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/rules/L003.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "c4ead621fc4ae81844bf02f595edc8e473d2e8d15d48136b8879d586a9dcde82",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.167,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1034,
+      "completion_tokens": 47,
+      "latency_seconds": 2.183,
+      "dropped_history_messages": 0,
+      "output_sha256": "47dfd7eb17b65f3f94628c2e2a2ef17e76d3e3ff299e1c5691d3953b276a3e52"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1162,
+      "completion_tokens": 47,
+      "latency_seconds": 1.62,
+      "dropped_history_messages": 0,
+      "output_sha256": "47dfd7eb17b65f3f94628c2e2a2ef17e76d3e3ff299e1c5691d3953b276a3e52"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1271,
+      "completion_tokens": 47,
+      "latency_seconds": 1.727,
+      "dropped_history_messages": 0,
+      "output_sha256": "45c0b479426ffc6ce1b963571423f0c5a34464aac308ffb8f1e7f30be2b59539"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1399,
+      "completion_tokens": 48,
+      "latency_seconds": 2.394,
+      "dropped_history_messages": 0,
+      "output_sha256": "9a9dd8106164c6b8b9046df4895c231cd8710742bd09441c05bfd1f5ddc55ed2"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1529,
+      "completion_tokens": 47,
+      "latency_seconds": 2.185,
+      "dropped_history_messages": 0,
+      "output_sha256": "84cbc3b45c0549af4c70043ba3aec4249db22e2feef040b0af0c2ec767d67b3f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1657,
+      "completion_tokens": 49,
+      "latency_seconds": 2.331,
+      "dropped_history_messages": 0,
+      "output_sha256": "9a8abedd6a16c91f64fd4a68d91d3a2a2d7025a37931d63ea326db9f692c4b58"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1789,
+      "completion_tokens": 53,
+      "latency_seconds": 2.479,
+      "dropped_history_messages": 0,
+      "output_sha256": "605342882980643439c529258f8b7fb19127977a034897c7ad72ad64cc6f7e41"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3976,
+      "completion_tokens": 241,
+      "latency_seconds": 13.548,
+      "dropped_history_messages": 0,
+      "output_sha256": "5997ff540ffb1b2ec9a1baf39d12bfc1965e899919c4b96957ce17da31dea724"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2228,
+      "completion_tokens": 161,
+      "latency_seconds": 7.533,
+      "dropped_history_messages": 0,
+      "output_sha256": "582801341da537d4cbd244507bb6394e519a45266c7cf5f6801b69f86b8e3b9f"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "indentation handling in WITH statements"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "indentation handling in WITH statements"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "SQLFluff rule for indentation"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "indentation rules in SQLFluff"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "indentation issues in SQL queries"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "SQLFluff rule L003"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "retrieval_candidates": [
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/rules/L003.py",
+    "src/sqlfluff/dialects/dialect_ansi.py",
+    "plugins/sqlfluff-templater-dbt/sqlfluff_templater_dbt/templater.py",
+    "src/sqlfluff/core/rules/base.py",
+    "src/sqlfluff/rules/L044.py",
+    "src/sqlfluff/core/templaters/python.py",
+    "src/sqlfluff/core/parser/segments/base.py",
+    "src/sqlfluff/dialects/dialect_tsql.py",
+    "src/sqlfluff/core/linter/runner.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "src/sqlfluff/rules/L003.py"
+  ],
+  "patch_size_bytes": 626,
+  "prompt_tokens": 16081,
+  "completion_tokens": 743,
+  "duration_seconds": 39.22,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

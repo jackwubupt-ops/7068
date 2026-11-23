@@ -1,0 +1,172 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1866",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "6cf238d089cf4b6753c94cfc089b4a47487711e5",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 8,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.191,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 888,
+      "completion_tokens": 50,
+      "latency_seconds": 2.613,
+      "dropped_history_messages": 0,
+      "output_sha256": "b4920b4a15278cecf50a1c8ede89d5502b602b9ac687976587c3ec5f84a2d028"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1014,
+      "completion_tokens": 57,
+      "latency_seconds": 2.197,
+      "dropped_history_messages": 0,
+      "output_sha256": "9be92dee3168d6f7be45cf2d71629fb531416fd8ec831391c26251e88264429f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1154,
+      "completion_tokens": 64,
+      "latency_seconds": 3.116,
+      "dropped_history_messages": 0,
+      "output_sha256": "09cbcfdbf87c4cfcbf3a2ac55c7be43a915a67f421d312811f492434da213cfa"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1314,
+      "completion_tokens": 54,
+      "latency_seconds": 2.126,
+      "dropped_history_messages": 0,
+      "output_sha256": "e99df76740be3faebdf621c79c0ec05e0a2dd293a6922d1970e2bc5245b8380c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1462,
+      "completion_tokens": 57,
+      "latency_seconds": 2.177,
+      "dropped_history_messages": 0,
+      "output_sha256": "7eb7377c6f206f45d50d31fd72495ec8ab2db95fa5d0faa3c6a0117a85ca36f9"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1616,
+      "completion_tokens": 57,
+      "latency_seconds": 2.221,
+      "dropped_history_messages": 0,
+      "output_sha256": "de3e04b7c08e0beb3cec6b2c0275b22f348eec933104b07373a48f202fc80f11"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1770,
+      "completion_tokens": 53,
+      "latency_seconds": 2.03,
+      "dropped_history_messages": 0,
+      "output_sha256": "d2c871cbfc4adfe4ce86716532bccda5fbb8e7d2cd887c6528195fb01949dcac"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1916,
+      "completion_tokens": 137,
+      "latency_seconds": 5.7,
+      "dropped_history_messages": 0,
+      "output_sha256": "976a49bc03a600b4742c1fdcc9ee12a8e82f6c970ccdfae6a73b7bbbbdbf28b6"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "NoneType.__format__"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "TypeError: unsupported format string passed to NoneType.__format__"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/nodes/scoped_nodes/scoped_nodes.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/nodes/node_ng.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/brain/brain_builtin_inference.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/checkers/classes/special_methods_checker.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/astroid/utils/ast_walker.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 11170,
+  "completion_tokens": 532,
+  "duration_seconds": 22.62,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

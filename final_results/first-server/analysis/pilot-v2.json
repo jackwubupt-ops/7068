@@ -1,0 +1,1052 @@
+{
+  "lite-pilot-v2-pcr": {
+    "summary": {
+      "tasks": 23,
+      "read_gold_rate": 0.435,
+      "selected_gold_rate": 0.391,
+      "edited_gold_rate": 0.217,
+      "hunk_overlap_rate": 0.087,
+      "categories": {
+        "resolved": 0,
+        "never_read_gold_file": 13,
+        "read_gold_not_selected": 1,
+        "no_applicable_patch": 4,
+        "wrong_location": 3,
+        "right_location_wrong_fix": 2
+      }
+    },
+    "tasks": [
+      {
+        "instance_id": "sqlfluff__sqlfluff-1625",
+        "agent": "pcr",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/sqlfluff/rules/L031.py"
+        ],
+        "read_files": [
+          "src/sqlfluff/rules/L031.py"
+        ],
+        "selected_files": [
+          "src/sqlfluff/rules/L031.py"
+        ],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-2419",
+        "agent": "pcr",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/sqlfluff/rules/L060.py"
+        ],
+        "read_files": [
+          "src/linter/rules/L060.py",
+          "src/rules/L060.py",
+          "src/sqlfluff/core/parser/segments/base.py",
+          "src/sqlfluff/dialects/dialect_ansi.py"
+        ],
+        "selected_files": [
+          "src/sqlfluff/core/parser/segments/base.py"
+        ],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-1733",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/sqlfluff/rules/L039.py"
+        ],
+        "read_files": [
+          "sqlfluff/rules/L016.py",
+          "sqlfluff/rules/R016.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-1517",
+        "agent": "pcr",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "src/sqlfluff/core/parser/helpers.py"
+        ],
+        "read_files": [
+          "src/sqlfluff/core/linter/linter.py"
+        ],
+        "selected_files": [
+          "src/sqlfluff/core/linter/linter.py"
+        ],
+        "edited_files": [
+          "src/sqlfluff/core/linter/linter.py"
+        ],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-1763",
+        "agent": "pcr",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "src/sqlfluff/core/linter/linted_file.py"
+        ],
+        "read_files": [
+          ".pre-commit-hooks.yaml"
+        ],
+        "selected_files": [
+          ".pre-commit-hooks.yaml"
+        ],
+        "edited_files": [
+          ".pre-commit-hooks.yaml"
+        ],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "marshmallow-code__marshmallow-1359",
+        "agent": "pcr",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/marshmallow/fields.py"
+        ],
+        "read_files": [
+          "src/marshmallow/fields.py"
+        ],
+        "selected_files": [
+          "src/marshmallow/fields.py"
+        ],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "marshmallow-code__marshmallow-1343",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/marshmallow/schema.py"
+        ],
+        "read_files": [
+          "src/bug_mschema.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1707",
+        "agent": "pcr",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pvlib/iam.py"
+        ],
+        "read_files": [
+          "pvlib/iam.py"
+        ],
+        "selected_files": [
+          "pvlib/iam.py"
+        ],
+        "edited_files": [
+          "pvlib/iam.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": false,
+        "category": "wrong_location"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1072",
+        "agent": "pcr",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "pvlib/temperature.py"
+        ],
+        "read_files": [
+          "pvlib/tests/test_temperature.py"
+        ],
+        "selected_files": [
+          "pvlib/tests/test_temperature.py"
+        ],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1606",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "pvlib/tools.py"
+        ],
+        "read_files": [
+          "src/pvlib/modelchain.py",
+          "src/pvlib/pvsystem.py",
+          "src/pvlib/tools.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1854",
+        "agent": "pcr",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "read_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "selected_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "edited_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": false,
+        "category": "wrong_location"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1154",
+        "agent": "pcr",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pvlib/irradiance.py"
+        ],
+        "read_files": [
+          "pvlib/irradiance.py"
+        ],
+        "selected_files": [
+          "pvlib/irradiance.py"
+        ],
+        "edited_files": [
+          "pvlib/irradiance.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": false,
+        "category": "wrong_location"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1978",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/raw_building.py"
+        ],
+        "read_files": [
+          "src/test_case.py",
+          "test_cases/test_case.py",
+          "tests/test_case.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1333",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/modutils.py"
+        ],
+        "read_files": [
+          "astroid/__init__.py",
+          "astroid/modutils.py",
+          "src/project/__init__.py",
+          "src/project/file.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "read_gold_not_selected"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1196",
+        "agent": "pcr",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/nodes/node_classes.py"
+        ],
+        "read_files": [
+          "astroid/__init__.py",
+          "astroid/bases.py",
+          "astroid/builder.py",
+          "astroid/exceptions.py",
+          "astroid/manager.py",
+          "astroid/nodes.py",
+          "astroid/nodes/node_classes.py"
+        ],
+        "selected_files": [
+          "astroid/builder.py",
+          "astroid/nodes/node_classes.py"
+        ],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1866",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/brain/brain_builtin_inference.py"
+        ],
+        "read_files": [
+          "src/astroid/brain/brain_builtin_inference.py",
+          "src/astroid/checkers/classes/special_methods_checker.py",
+          "src/astroid/nodes/node_ng.py",
+          "src/astroid/nodes/scoped_nodes/scoped_nodes.py",
+          "src/astroid/utils/ast_walker.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1268",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/nodes/as_string.py"
+        ],
+        "read_files": [
+          "src/astroid/nodes/__init__.py",
+          "src/astroid/nodes/as_string.py",
+          "src/astroid/nodes/node_ng.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pyvista__pyvista-4315",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "pyvista/core/grid.py"
+        ],
+        "read_files": [
+          "src/pyvista/core/grid.py",
+          "src/pyvista/core/rectilinear_grid.py",
+          "src/pyvista/grid.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1694",
+        "agent": "pcr",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "pydicom/dataset.py"
+        ],
+        "read_files": [
+          "pydicom/dataset.py"
+        ],
+        "selected_files": [
+          "pydicom/dataset.py"
+        ],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1413",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "pydicom/dataelem.py"
+        ],
+        "read_files": [
+          "pydicom/dicom/dataelem.py",
+          "pydicom/dicom/element.py",
+          "pydicom/dicom/item.py",
+          "pydicom/dicom/tag.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pydicom__pydicom-901",
+        "agent": "pcr",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pydicom/config.py"
+        ],
+        "read_files": [
+          "pydicom/config.py"
+        ],
+        "selected_files": [
+          "pydicom/config.py"
+        ],
+        "edited_files": [
+          "pydicom/config.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": true,
+        "category": "right_location_wrong_fix"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1139",
+        "agent": "pcr",
+        "run_status": "no_candidate_files",
+        "official": "no_prediction",
+        "gold_files": [
+          "pydicom/valuerep.py"
+        ],
+        "read_files": [
+          "pydicom/dicom/dataelem.py",
+          "pydicom/dicom/personname.py",
+          "pydicom/dicom/uid.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1256",
+        "agent": "pcr",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "read_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "selected_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "edited_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": true,
+        "category": "right_location_wrong_fix"
+      }
+    ]
+  },
+  "lite-pilot-v2-single": {
+    "summary": {
+      "tasks": 23,
+      "read_gold_rate": 0.565,
+      "selected_gold_rate": 0.217,
+      "edited_gold_rate": 0.217,
+      "hunk_overlap_rate": 0.217,
+      "categories": {
+        "resolved": 0,
+        "never_read_gold_file": 10,
+        "read_gold_not_selected": 0,
+        "no_applicable_patch": 8,
+        "wrong_location": 0,
+        "right_location_wrong_fix": 5
+      }
+    },
+    "tasks": [
+      {
+        "instance_id": "sqlfluff__sqlfluff-1625",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/sqlfluff/rules/L031.py"
+        ],
+        "read_files": [
+          "src/sqlfluff/rules/L031.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-2419",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/sqlfluff/rules/L060.py"
+        ],
+        "read_files": [
+          "rules/L060.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-1733",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/sqlfluff/rules/L039.py"
+        ],
+        "read_files": [
+          "sqlfluff/rules/R101.py",
+          "src/file.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-1517",
+        "agent": "single",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "src/sqlfluff/core/parser/helpers.py"
+        ],
+        "read_files": [
+          "src/sqlfluff/core/parser/helpers.py"
+        ],
+        "selected_files": [
+          "src/sqlfluff/core/parser/helpers.py"
+        ],
+        "edited_files": [
+          "src/sqlfluff/core/parser/helpers.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": true,
+        "category": "right_location_wrong_fix"
+      },
+      {
+        "instance_id": "sqlfluff__sqlfluff-1763",
+        "agent": "single",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "src/sqlfluff/core/linter/linted_file.py"
+        ],
+        "read_files": [
+          "src/sqlfluff/cli.py",
+          "src/sqlfluff/core/__init__.py",
+          "src/sqlfluff/core/parser.py",
+          "src/sqlfluff/core/rules.py",
+          "src/sqlfluff/rules/lint.py"
+        ],
+        "selected_files": [
+          "src/sqlfluff/core/__init__.py"
+        ],
+        "edited_files": [
+          "src/sqlfluff/core/__init__.py"
+        ],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "marshmallow-code__marshmallow-1359",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/marshmallow/fields.py"
+        ],
+        "read_files": [
+          "marshmallow/__init__.py",
+          "marshmallow/deserializers.py",
+          "marshmallow/exceptions.py",
+          "marshmallow/fields.py",
+          "marshmallow/schema.py",
+          "marshmallow/serializers.py",
+          "marshmallow/utils.py",
+          "marshmallow/validators.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "marshmallow-code__marshmallow-1343",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "src/marshmallow/schema.py"
+        ],
+        "read_files": [
+          "src/file.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1707",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "pvlib/iam.py"
+        ],
+        "read_files": [
+          "pvlib/iam.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1072",
+        "agent": "single",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pvlib/temperature.py"
+        ],
+        "read_files": [
+          "pvlib/temperature.py"
+        ],
+        "selected_files": [
+          "pvlib/temperature.py"
+        ],
+        "edited_files": [
+          "pvlib/temperature.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": true,
+        "category": "right_location_wrong_fix"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1606",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "pvlib/tools.py"
+        ],
+        "read_files": [
+          "pvlib/modelchain.py",
+          "pvlib/tools.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1854",
+        "agent": "single",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "read_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "selected_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "edited_files": [
+          "pvlib/pvsystem.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": true,
+        "category": "right_location_wrong_fix"
+      },
+      {
+        "instance_id": "pvlib__pvlib-python-1154",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "pvlib/irradiance.py"
+        ],
+        "read_files": [
+          "pvlib/irradiance.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1978",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/raw_building.py"
+        ],
+        "read_files": [
+          "docs/examples/test_case.py",
+          "examples/test_case.py",
+          "scripts/test_case.py",
+          "src/test_case.py",
+          "test_cases/test_case.py",
+          "tests/integration/test_case.py",
+          "tests/test_case.py",
+          "tests/unit/test_case.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1333",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/modutils.py"
+        ],
+        "read_files": [
+          "src/project/__init__.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1196",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/nodes/node_classes.py"
+        ],
+        "read_files": [
+          "astroid/nodes/node_classes.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1866",
+        "agent": "single",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "astroid/brain/brain_builtin_inference.py"
+        ],
+        "read_files": [
+          "astroid/brain/brain_builtin_inference.py"
+        ],
+        "selected_files": [
+          "astroid/brain/brain_builtin_inference.py"
+        ],
+        "edited_files": [
+          "astroid/brain/brain_builtin_inference.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": true,
+        "category": "right_location_wrong_fix"
+      },
+      {
+        "instance_id": "pylint-dev__astroid-1268",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "astroid/nodes/as_string.py"
+        ],
+        "read_files": [
+          "astroid/nodes/as_string.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pyvista__pyvista-4315",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "pyvista/core/grid.py"
+        ],
+        "read_files": [
+          "src/pyvista/__init__.py",
+          "src/pyvista/_vtk.py",
+          "src/pyvista/core/__init__.py",
+          "src/pyvista/core/common.py",
+          "src/pyvista/core/dataobject.py",
+          "src/pyvista/core/grid.py",
+          "src/pyvista/core/mesh.py",
+          "src/pyvista/core/rectilinear_grid.py",
+          "src/pyvista/core/uniformgrid.py",
+          "src/pyvista/core/vtktypealiases.py",
+          "src/pyvista/core/vtktypeconversion.py",
+          "src/pyvista/core/vtktypehelpers.py",
+          "src/pyvista/core/vtktypeutils.py",
+          "src/pyvista/grid.py",
+          "src/pyvista/rectilinear_grid.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1694",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "pydicom/dataset.py"
+        ],
+        "read_files": [
+          "pydicom/dataset.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1413",
+        "agent": "single",
+        "run_status": "no_submission",
+        "official": "no_prediction",
+        "gold_files": [
+          "pydicom/dataelem.py"
+        ],
+        "read_files": [
+          "pydicom/dataset.py",
+          "pydicom/dicom/item.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pydicom__pydicom-901",
+        "agent": "single",
+        "run_status": "patch_failed",
+        "official": "no_prediction",
+        "gold_files": [
+          "pydicom/config.py"
+        ],
+        "read_files": [
+          "pydicom/__init__.py",
+          "pydicom/config.py"
+        ],
+        "selected_files": [],
+        "edited_files": [],
+        "read_gold": true,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "no_applicable_patch"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1139",
+        "agent": "single",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pydicom/valuerep.py"
+        ],
+        "read_files": [
+          "pydicom/__init__.py",
+          "pydicom/dicom_dataset.py",
+          "pydicom/dicom_element.py",
+          "pydicom/dicom_personname.py"
+        ],
+        "selected_files": [
+          "pydicom/__init__.py"
+        ],
+        "edited_files": [
+          "pydicom/__init__.py"
+        ],
+        "read_gold": false,
+        "selected_gold": false,
+        "edited_gold": false,
+        "hunk_overlap": false,
+        "category": "never_read_gold_file"
+      },
+      {
+        "instance_id": "pydicom__pydicom-1256",
+        "agent": "single",
+        "run_status": "prediction_ready",
+        "official": "unresolved",
+        "gold_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "read_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "selected_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "edited_files": [
+          "pydicom/jsonrep.py"
+        ],
+        "read_gold": true,
+        "selected_gold": true,
+        "edited_gold": true,
+        "hunk_overlap": true,
+        "category": "right_location_wrong_fix"
+      }
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pylint-dev__astroid-1333",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "d2a5b3c7b1e203fec3c7ca73c30eb1785d3d4d0a",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "0c22feb22cb828b6f868df532d99b0a2ddc75f74b746c8b5263dde07d5016953",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "astroid/__init__.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "371bb0c6f52c02a53064e96c0acba696b668d43f1478815696aa65f546677b95",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "astroid/__init__.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "__init__.py"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "astroid/__init__.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "astroid/__init__.py",
+    "astroid/nodes/__init__.py",
+    "astroid/nodes/scoped_nodes/__init__.py",
+    "astroid/brain/__init__.py",
+    "astroid/interpreter/__init__.py",
+    "astroid/interpreter/_import/__init__.py",
+    "tests/testdata/python3/data/module1abs/__init__.py",
+    "tests/testdata/python3/data/beyond_top_level_two/__init__.py",
+    "tests/testdata/python3/data/beyond_top_level_three/module/__init__.py",
+    "tests/testdata/python3/data/beyond_top_level_two/level1/__init__.py"
+  ],
+  "read_files": [
+    "astroid/__init__.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "astroid/__init__.py"
+  ],
+  "patch_size_bytes": 427,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1232,
+      "completion_tokens": 31,
+      "latency_seconds": 1.499,
+      "dropped_history_messages": 0,
+      "output_sha256": "93f38d96e4ce8aaa47e439e60128497145ad724bc68d88c6a08d710d9c090965"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1697,
+      "completion_tokens": 53,
+      "latency_seconds": 2.005,
+      "dropped_history_messages": 0,
+      "output_sha256": "b72fb4b6604869a1123db639cb640fb8fd5cc1bd4bf33ee312769f229a4e2d05"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4400,
+      "completion_tokens": 14,
+      "latency_seconds": 1.13,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4531,
+      "completion_tokens": 206,
+      "latency_seconds": 9.325,
+      "dropped_history_messages": 0,
+      "output_sha256": "0c22feb22cb828b6f868df532d99b0a2ddc75f74b746c8b5263dde07d5016953"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 11860,
+  "completion_tokens": 304,
+  "duration_seconds": 14.37,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

@@ -1,0 +1,170 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "sqlfluff__sqlfluff-1517",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "304a197829f98e7425a46d872ada73176137e5ae",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "edit_invalid",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "b8bfabde4c2bd9fe491f3ef5c674e7185e67937c2cba2bee10a2104958b7cb68",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "b8bfabde4c2bd9fe491f3ef5c674e7185e67937c2cba2bee10a2104958b7cb68",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for src/sqlfluff/core/linter/linter.py does not match the original file. First SEARCH line: 'def _parse_tokens('",
+      "changed_files": []
+    },
+    {
+      "raw_model_output_sha256": "b8bfabde4c2bd9fe491f3ef5c674e7185e67937c2cba2bee10a2104958b7cb68",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "b8bfabde4c2bd9fe491f3ef5c674e7185e67937c2cba2bee10a2104958b7cb68",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for src/sqlfluff/core/linter/linter.py does not match the original file. First SEARCH line: 'def _parse_tokens('",
+      "changed_files": []
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "RuntimeError: Dropped elements in sequence matching"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/linter/linter.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/linter/linter.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 6,
+      "action": "edit"
+    },
+    {
+      "step": 7,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "src/sqlfluff/core/linter/linter.py",
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/core/parser/segments/base.py",
+    "src/sqlfluff/api/simple.py",
+    "setup.py",
+    "src/sqlfluff/core/parser/helpers.py",
+    "src/sqlfluff/core/parser/parser.py",
+    "src/sqlfluff/core/dialects/base.py",
+    "src/sqlfluff/core/parser/grammar/sequence.py",
+    "src/sqlfluff/core/parser/segments/ephemeral.py"
+  ],
+  "read_files": [
+    "src/sqlfluff/core/linter/linter.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1669,
+      "completion_tokens": 33,
+      "latency_seconds": 2.017,
+      "dropped_history_messages": 0,
+      "output_sha256": "5e945f034c07b0cdbe9b22515b5c297228ed65caa2baa720436be901dbf62565"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1748,
+      "completion_tokens": 53,
+      "latency_seconds": 2.035,
+      "dropped_history_messages": 0,
+      "output_sha256": "423520c90abda64c90329091c174c063cd121eaf46bc6fc340f393863170e898"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4308,
+      "completion_tokens": 10,
+      "latency_seconds": 1.077,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4439,
+      "completion_tokens": 175,
+      "latency_seconds": 6.886,
+      "dropped_history_messages": 0,
+      "output_sha256": "b8bfabde4c2bd9fe491f3ef5c674e7185e67937c2cba2bee10a2104958b7cb68"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4680,
+      "completion_tokens": 53,
+      "latency_seconds": 2.452,
+      "dropped_history_messages": 0,
+      "output_sha256": "423520c90abda64c90329091c174c063cd121eaf46bc6fc340f393863170e898"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4801,
+      "completion_tokens": 10,
+      "latency_seconds": 0.424,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4932,
+      "completion_tokens": 175,
+      "latency_seconds": 7.882,
+      "dropped_history_messages": 0,
+      "output_sha256": "b8bfabde4c2bd9fe491f3ef5c674e7185e67937c2cba2bee10a2104958b7cb68"
+    }
+  ],
+  "agent_calls": 7,
+  "prompt_tokens": 26577,
+  "completion_tokens": 509,
+  "duration_seconds": 24.0,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

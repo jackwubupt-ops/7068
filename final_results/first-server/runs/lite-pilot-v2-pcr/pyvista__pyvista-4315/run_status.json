@@ -1,0 +1,140 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pyvista__pyvista-4315",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pyvista/pyvista",
+  "base_commit": "db6ee8dd4a747b8864caae36c5d05883976a3ae5",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.15,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 811,
+      "completion_tokens": 47,
+      "latency_seconds": 2.439,
+      "dropped_history_messages": 0,
+      "output_sha256": "7537c59fa74950f7729a9a02220b8d2e8390f04999773236293133767b07eeae"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 939,
+      "completion_tokens": 47,
+      "latency_seconds": 1.895,
+      "dropped_history_messages": 0,
+      "output_sha256": "7537c59fa74950f7729a9a02220b8d2e8390f04999773236293133767b07eeae"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1048,
+      "completion_tokens": 49,
+      "latency_seconds": 1.776,
+      "dropped_history_messages": 0,
+      "output_sha256": "915d564b99c84e966de6a73b0f68b8687a7d7869f795c529ee726a8a60d59d56"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1186,
+      "completion_tokens": 53,
+      "latency_seconds": 2.008,
+      "dropped_history_messages": 0,
+      "output_sha256": "f79bfa41bbbf527ac5988dd9db147e6c7bd11b20dbcb38e129192c286522a71a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1332,
+      "completion_tokens": 50,
+      "latency_seconds": 1.825,
+      "dropped_history_messages": 0,
+      "output_sha256": "ef755c6da56bff1d03bed6ad8d592a7fbc7f2ab3fe6102e1ed047e04dde90b87"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1472,
+      "completion_tokens": 120,
+      "latency_seconds": 4.449,
+      "dropped_history_messages": 0,
+      "output_sha256": "d369a05b3bb62cd026fc308925b77c66caed4dce34e29d08f0818b0d066ccfba"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "pyvista RectilinearGrid"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "pyvista RectilinearGrid"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/pyvista/grid.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/pyvista/core/rectilinear_grid.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/pyvista/core/grid.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 6824,
+  "completion_tokens": 369,
+  "duration_seconds": 15.51,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

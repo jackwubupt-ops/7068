@@ -1,0 +1,251 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1517",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "304a197829f98e7425a46d872ada73176137e5ae",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "4cdf16e78586b5b54f582b74423820ff9ed906aea11d0f0a5a50a45a674f6fde",
+      "raw_model_patch_sha256": "8742e8edc94f852706811f500dde505b96c425bef781544a430ba1ce174f2d6c",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "src/sqlfluff/core/parser/helpers.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/core/parser/helpers.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "28c5bb95b8fc8a74f63065e3f883f5f50c9874cc0819337510df2725ade3d649",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.137,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1648,
+      "completion_tokens": 50,
+      "latency_seconds": 2.322,
+      "dropped_history_messages": 0,
+      "output_sha256": "deac64226408d48c2d46be6df46287afdde27785094ab18e8aa271ac83a2e247"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1782,
+      "completion_tokens": 45,
+      "latency_seconds": 1.62,
+      "dropped_history_messages": 0,
+      "output_sha256": "cad822dc11d9f4e849efefbe3215034c0ed2ac99b6af8cb8995ed5bd0487c565"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2256,
+      "completion_tokens": 51,
+      "latency_seconds": 1.843,
+      "dropped_history_messages": 0,
+      "output_sha256": "203d64a92093e469d3d42e11cce40b0411690ef21131bf0eff67942d99474f96"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2663,
+      "completion_tokens": 56,
+      "latency_seconds": 2.674,
+      "dropped_history_messages": 0,
+      "output_sha256": "4aea62ee65a107a6798c8accebb557d60adac16e59d77cfbb97bf450283419ac"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3045,
+      "completion_tokens": 53,
+      "latency_seconds": 2.395,
+      "dropped_history_messages": 0,
+      "output_sha256": "36c5c917ea7afc3d5e81dfc947c1105360ef2ecc38cb2db8e39ac2b9704626f7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3410,
+      "completion_tokens": 55,
+      "latency_seconds": 2.536,
+      "dropped_history_messages": 0,
+      "output_sha256": "f4a33642ea8017922fd5da1f8a3b231aeef5d8ffd021064e3ee2b5701d20075b"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3735,
+      "completion_tokens": 347,
+      "latency_seconds": 18.734,
+      "dropped_history_messages": 0,
+      "output_sha256": "dfe6c5a0ec018c6c4230d0d65c3167d9d78b8e4f69fa52813b7b85611e4bec0c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4117,
+      "completion_tokens": 315,
+      "latency_seconds": 14.617,
+      "dropped_history_messages": 0,
+      "output_sha256": "fc37ab2be9eef7315de9358031eeee3807b1897ab26c9e8a9eb5c951b5ea6d6c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4465,
+      "completion_tokens": 177,
+      "latency_seconds": 13.822,
+      "dropped_history_messages": 0,
+      "output_sha256": "168c0611eeb9cca3c8364e3604d68e47f6e15dbb2a60c7fadd627802a5bb859f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4920,
+      "completion_tokens": 240,
+      "latency_seconds": 9.129,
+      "dropped_history_messages": 0,
+      "output_sha256": "f9af90f9a5e29e62c0fbec80732903bd27b91da52bfc6aa8d21b2c64aa9e57f7"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1568,
+      "completion_tokens": 47,
+      "latency_seconds": 2.162,
+      "dropped_history_messages": 0,
+      "output_sha256": "8742e8edc94f852706811f500dde505b96c425bef781544a430ba1ce174f2d6c"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "RuntimeError: Dropped elements in sequence matching!"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "check_still_complete"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/parser/helpers.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/parser/grammar/sequence.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/parser/segments/base.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/parser/segments/ephemeral.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: relevant_lines must be an inclusive [start, end] range. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0,
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1,
+      "prior_protocol_error": "Protocol validation error: You have read code: name at least one file you read as your best candidate (a hypothesis; state uncertainty in li"
+    }
+  ],
+  "retrieval_candidates": [
+    "src/sqlfluff/core/linter/linter.py",
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/core/parser/segments/base.py",
+    "src/sqlfluff/api/simple.py",
+    "setup.py",
+    "src/sqlfluff/core/parser/helpers.py",
+    "src/sqlfluff/core/parser/parser.py",
+    "src/sqlfluff/core/dialects/base.py",
+    "src/sqlfluff/core/parser/grammar/sequence.py",
+    "src/sqlfluff/core/parser/segments/ephemeral.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "src/sqlfluff/core/parser/helpers.py"
+  ],
+  "patch_size_bytes": 722,
+  "prompt_tokens": 33645,
+  "completion_tokens": 1439,
+  "duration_seconds": 74.41,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

@@ -1,0 +1,127 @@
+{
+  "tasks": 23,
+  "resolved_a": 0,
+  "resolved_b": 0,
+  "rate_a": 0.0,
+  "rate_b": 0.0,
+  "diff_a_minus_b": 0.0,
+  "table": {
+    "both": 0,
+    "only_a": 0,
+    "only_b": 0,
+    "neither": 23
+  },
+  "mcnemar_exact_p": 1.0,
+  "bootstrap_95ci_diff": [
+    0.0,
+    0.0
+  ],
+  "per_task": {
+    "marshmallow-code__marshmallow-1343": {
+      "a": false,
+      "b": false
+    },
+    "marshmallow-code__marshmallow-1359": {
+      "a": false,
+      "b": false
+    },
+    "pvlib__pvlib-python-1072": {
+      "a": false,
+      "b": false
+    },
+    "pvlib__pvlib-python-1154": {
+      "a": false,
+      "b": false
+    },
+    "pvlib__pvlib-python-1606": {
+      "a": false,
+      "b": false
+    },
+    "pvlib__pvlib-python-1707": {
+      "a": false,
+      "b": false
+    },
+    "pvlib__pvlib-python-1854": {
+      "a": false,
+      "b": false
+    },
+    "pydicom__pydicom-1139": {
+      "a": false,
+      "b": false
+    },
+    "pydicom__pydicom-1256": {
+      "a": false,
+      "b": false
+    },
+    "pydicom__pydicom-1413": {
+      "a": false,
+      "b": false
+    },
+    "pydicom__pydicom-1694": {
+      "a": false,
+      "b": false
+    },
+    "pydicom__pydicom-901": {
+      "a": false,
+      "b": false
+    },
+    "pylint-dev__astroid-1196": {
+      "a": false,
+      "b": false
+    },
+    "pylint-dev__astroid-1268": {
+      "a": false,
+      "b": false
+    },
+    "pylint-dev__astroid-1333": {
+      "a": false,
+      "b": false
+    },
+    "pylint-dev__astroid-1866": {
+      "a": false,
+      "b": false
+    },
+    "pylint-dev__astroid-1978": {
+      "a": false,
+      "b": false
+    },
+    "pyvista__pyvista-4315": {
+      "a": false,
+      "b": false
+    },
+    "sqlfluff__sqlfluff-1517": {
+      "a": false,
+      "b": false
+    },
+    "sqlfluff__sqlfluff-1625": {
+      "a": false,
+      "b": false
+    },
+    "sqlfluff__sqlfluff-1733": {
+      "a": false,
+      "b": false
+    },
+    "sqlfluff__sqlfluff-1763": {
+      "a": false,
+      "b": false
+    },
+    "sqlfluff__sqlfluff-2419": {
+      "a": false,
+      "b": false
+    }
+  },
+  "a": {
+    "agent": "pcr",
+    "edit_format": "search_replace",
+    "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "run_id": "lite-pilot-v2-pcr-r2",
+    "dir": "/data/runs/lite-pilot-v2-pcr"
+  },
+  "b": {
+    "agent": "single",
+    "edit_format": "search_replace",
+    "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "run_id": "lite-pilot-v2-single-r2",
+    "dir": "/data/runs/lite-pilot-v2-single"
+  }
+}

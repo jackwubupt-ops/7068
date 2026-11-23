@@ -1,0 +1,128 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pydicom__pydicom-1256",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "49a3da4a3d9c24d7e8427a25048a1c7d5c4f7724",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "222f8dfc26639c6045f80cf0c0632858610d841504e299bbc40afb0a67eb632c",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pydicom/jsonrep.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "eff8224a7ec06dd3b702562c32c2e47e45c8bb04254e262c4896be4bfa722add",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pydicom/jsonrep.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "BulkDataURI"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pydicom/jsonrep.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "pydicom/jsonrep.py",
+    "pydicom/dataset.py",
+    "pydicom/dataelem.py",
+    "pydicom/env_info.py",
+    "pydicom/config.py",
+    "pydicom/filewriter.py",
+    "pydicom/valuerep.py",
+    "pydicom/_uid_dict.py",
+    "pydicom/_dicom_dict.py",
+    "pydicom/fileset.py"
+  ],
+  "read_files": [
+    "pydicom/jsonrep.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pydicom/jsonrep.py"
+  ],
+  "patch_size_bytes": 607,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 971,
+      "completion_tokens": 31,
+      "latency_seconds": 1.272,
+      "dropped_history_messages": 0,
+      "output_sha256": "a966d03c4eb0b20ba257b04219565ca4b2115cc1073a9ad394f6e670bb1c7e8b"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1476,
+      "completion_tokens": 53,
+      "latency_seconds": 2.043,
+      "dropped_history_messages": 0,
+      "output_sha256": "c61126e0b3761b861a8a22ef499e89a7f7da7a6207566965d00e091980cd0830"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3988,
+      "completion_tokens": 14,
+      "latency_seconds": 1.096,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4119,
+      "completion_tokens": 33,
+      "latency_seconds": 1.222,
+      "dropped_history_messages": 0,
+      "output_sha256": "222f8dfc26639c6045f80cf0c0632858610d841504e299bbc40afb0a67eb632c"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 10554,
+  "completion_tokens": 131,
+  "duration_seconds": 6.32,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

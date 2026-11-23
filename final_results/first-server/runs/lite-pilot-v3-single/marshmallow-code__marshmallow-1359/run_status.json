@@ -1,0 +1,128 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "marshmallow-code__marshmallow-1359",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "b40a0f4e33823e6d0f341f7e8684e359a99060d1",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "3a4ceb23b5621871a879772edc325f267c03674a3d3c9756a4cb367aec8e0c56",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/marshmallow/fields.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "3be2e8a1c59c2bcb35128a190783e9c5dc338ea73a48b77d1b91f297c096037e",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "src/marshmallow/fields.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "inner"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "src/marshmallow/fields.py",
+    "src/marshmallow/schema.py",
+    "tests/test_schema.py",
+    "performance/benchmark.py",
+    "src/marshmallow/validate.py",
+    "src/marshmallow/orderedset.py",
+    "src/marshmallow/exceptions.py",
+    "tests/test_serialization.py",
+    "src/marshmallow/error_store.py",
+    "tests/test_utils.py"
+  ],
+  "read_files": [
+    "src/marshmallow/fields.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "src/marshmallow/fields.py"
+  ],
+  "patch_size_bytes": 719,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1236,
+      "completion_tokens": 25,
+      "latency_seconds": 1.131,
+      "dropped_history_messages": 0,
+      "output_sha256": "e6d9f3259c81622db51172e9b43af85916d2709955371d1463fae40f56390fc6"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1701,
+      "completion_tokens": 53,
+      "latency_seconds": 2.156,
+      "dropped_history_messages": 0,
+      "output_sha256": "1882946ae60bf7614850cce48320b5a3c9f0b60986479e62cc31f33bc3746a24"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2051,
+      "completion_tokens": 10,
+      "latency_seconds": 1.025,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2180,
+      "completion_tokens": 67,
+      "latency_seconds": 3.02,
+      "dropped_history_messages": 0,
+      "output_sha256": "3a4ceb23b5621871a879772edc325f267c03674a3d3c9756a4cb367aec8e0c56"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 7168,
+  "completion_tokens": 155,
+  "duration_seconds": 7.52,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

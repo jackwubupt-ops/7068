@@ -1,0 +1,151 @@
+{
+  "experiment": "deepseek-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1707",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "40e9e978c170bdde4eeee1547729417665dbc34c",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "9dc7044d5930349a06d4523dc7951087de76e9f84d53e9f6d877ba8fe13fb2ed",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/iam.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "d299d8f0191c89bb13aefa30acabe5411fca0b9bb52c77ae9f19cba42503b27f",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/iam.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "read_file",
+      "read_path": "pvlib/iam.py"
+    },
+    {
+      "step": 2,
+      "action": "invalid",
+      "protocol_error": "Expecting value: line 3 column 1 (char 2)",
+      "raw_head": "\n\n<｜｜DSML｜｜ calls>\n<｜｜DSML｜｜ invoke name=\"read_file\">\n<｜｜DSML｜｜ parameter name=\"arguments\":{\"relative_path\":\"pvlib/iam.p"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pvlib/iam.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "retrieval_candidates": [
+    "pvlib/iam.py",
+    "docs/examples/reflections/plot_diffuse_aoi_correction.py",
+    "pvlib/pvsystem.py",
+    "pvlib/modelchain.py",
+    "pvlib/iotools/psm3.py",
+    "pvlib/irradiance.py",
+    "docs/examples/bifacial/plot_bifi_model_mc.py",
+    "pvlib/_deprecation.py",
+    "pvlib/bifacial/infinite_sheds.py",
+    "pvlib/iotools/crn.py"
+  ],
+  "read_files": [
+    "pvlib/iam.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/iam.py"
+  ],
+  "patch_size_bytes": 655,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 835,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.479,
+      "dropped_history_messages": 0,
+      "output_sha256": "ac23f9e50fe219de8bdeed083a6c02fef83a9be338cea444258bcc3f72ac3aba"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3424,
+      "completion_tokens": 39,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.628,
+      "dropped_history_messages": 0,
+      "output_sha256": "cf65cda2d7643993f476f644d83656161f98df701d8e68f23aa3ba962527c2de"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3511,
+      "completion_tokens": 27,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.81,
+      "dropped_history_messages": 0,
+      "output_sha256": "3aced489d4d5e68cf3ca9fe9c5b46aa9a6c88808717a0d51a8cbc639fe9c515c"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6750,
+      "completion_tokens": 5,
+      "reasoning_tokens": 0,
+      "latency_seconds": 0.621,
+      "dropped_history_messages": 0,
+      "output_sha256": "8cdbd37e14fcd8ef58ef2844847f10ad77867e87854b1c6cc6e6db784752b502"
+    },
+    {
+      "stage": "agent",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6881,
+      "completion_tokens": 220,
+      "reasoning_tokens": 0,
+      "latency_seconds": 1.897,
+      "dropped_history_messages": 0,
+      "output_sha256": "9dc7044d5930349a06d4523dc7951087de76e9f84d53e9f6d877ba8fe13fb2ed"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 21401,
+  "completion_tokens": 318,
+  "reasoning_tokens": 0,
+  "duration_seconds": 5.91,
+  "prediction_model_label": "deepseek-flash-single-agent",
+  "provider": "deepseek"
+}

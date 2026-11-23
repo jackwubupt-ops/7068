@@ -1,0 +1,128 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pyvista__pyvista-4315",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pyvista/pyvista",
+  "base_commit": "db6ee8dd4a747b8864caae36c5d05883976a3ae5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "d4e0c53cea4eda6e8d3da638efb7fce0f253d2bf595645ec8c6e4c06998dd749",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pyvista/core/grid.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "27b756ab0217c04293524fc25f7ddab5754b88e623493b47f626bb18e4cd4589",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pyvista/core/grid.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "RectilinearGrid"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "pyvista/utilities/errors.py",
+    "pyvista/core/grid.py",
+    "pyvista/plotting/charts.py",
+    "pyvista/plotting/renderer.py",
+    "pyvista/plotting/plotting.py",
+    "doc/source/conf.py",
+    "pyvista/core/dataobject.py",
+    "pyvista/utilities/helpers.py",
+    "tests/test_dataset.py",
+    "pyvista/core/filters/data_set.py"
+  ],
+  "read_files": [
+    "pyvista/core/grid.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pyvista/core/grid.py"
+  ],
+  "patch_size_bytes": 522,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1109,
+      "completion_tokens": 27,
+      "latency_seconds": 1.348,
+      "dropped_history_messages": 0,
+      "output_sha256": "894ccb7b8a93fd592fe7da194efd9cb4e8a5763fd6a5172f362ab164624a09ea"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1560,
+      "completion_tokens": 49,
+      "latency_seconds": 2.991,
+      "dropped_history_messages": 0,
+      "output_sha256": "3ae9d9aa5106991d4881f36847a6fffb766898f25a5cd331d8bce14c49892d99"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4147,
+      "completion_tokens": 10,
+      "latency_seconds": 1.655,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4274,
+      "completion_tokens": 93,
+      "latency_seconds": 3.538,
+      "dropped_history_messages": 0,
+      "output_sha256": "d4e0c53cea4eda6e8d3da638efb7fce0f253d2bf595645ec8c6e4c06998dd749"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 11090,
+  "completion_tokens": 179,
+  "duration_seconds": 11.83,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

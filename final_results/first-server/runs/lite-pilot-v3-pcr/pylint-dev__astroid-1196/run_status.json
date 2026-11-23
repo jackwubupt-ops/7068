@@ -1,0 +1,272 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1196",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "39c2a9805970ca57093d32bbaf0e6a63e05041d8",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 2,
+  "attempt_count": 2,
+  "reviewer_calls": 1,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "c05847e6e60333c8cdcc224b440acd17c9770617c1630b1db1ef817b573a6c2c",
+      "raw_model_patch_sha256": "c05847e6e60333c8cdcc224b440acd17c9770617c1630b1db1ef817b573a6c2c",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found",
+      "reviewer_failure_type": "patch_apply"
+    },
+    {
+      "attempt": 2,
+      "patch_sha256": "31dbd9e8d5f7e08ad6f22859676b16599063612c394418964206f35154dcaa64",
+      "raw_model_patch_sha256": "31dbd9e8d5f7e08ad6f22859676b16599063612c394418964206f35154dcaa64",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found"
+    }
+  ],
+  "patch_status": "edit_invalid",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.164,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1153,
+      "completion_tokens": 47,
+      "latency_seconds": 2.048,
+      "dropped_history_messages": 0,
+      "output_sha256": "ec2edaf9853f8b143814bd39a896753578332bc46cfc6257877a8918ffbe0041"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1281,
+      "completion_tokens": 47,
+      "latency_seconds": 2.312,
+      "dropped_history_messages": 0,
+      "output_sha256": "ec2edaf9853f8b143814bd39a896753578332bc46cfc6257877a8918ffbe0041"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1390,
+      "completion_tokens": 54,
+      "latency_seconds": 2.204,
+      "dropped_history_messages": 0,
+      "output_sha256": "eef1fa3679c1f2e8d6d52ce081c03be2eea15d4e98dc5489e85460fd6f0bc4d1"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3764,
+      "completion_tokens": 53,
+      "latency_seconds": 2.444,
+      "dropped_history_messages": 0,
+      "output_sha256": "fd9bab071c7ea394164b0fd129d3b7fe0715e0164d9dad829e2e4ed671be5f77"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3910,
+      "completion_tokens": 54,
+      "latency_seconds": 2.163,
+      "dropped_history_messages": 0,
+      "output_sha256": "310b10c424ae6ae2a852b2acf56b07838917ca0200439f264ecb488da245a314"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6284,
+      "completion_tokens": 54,
+      "latency_seconds": 2.551,
+      "dropped_history_messages": 0,
+      "output_sha256": "be467486cfce0243849f0a834df71f2f58a026395b022d7843456b1b784a393b"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 8775,
+      "completion_tokens": 54,
+      "latency_seconds": 2.662,
+      "dropped_history_messages": 0,
+      "output_sha256": "3e3d5db6448be0c18fb1cae4e1fbdb705b34782fe5838a01689c07be7649efdc"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 11171,
+      "completion_tokens": 54,
+      "latency_seconds": 2.684,
+      "dropped_history_messages": 0,
+      "output_sha256": "2cbfccb23927520e28cd9e4602922aebf060d7267c0b11935eda68f0141635d4"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 13558,
+      "completion_tokens": 54,
+      "latency_seconds": 3.27,
+      "dropped_history_messages": 0,
+      "output_sha256": "cbaab0d6c7dd48dd4b026ec8716060e429d46594d141d9844d3ea9992261dc08"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 16169,
+      "completion_tokens": 228,
+      "latency_seconds": 14.55,
+      "dropped_history_messages": 1,
+      "output_sha256": "29673f738c6508d7487b73f8e982a3a309fd1526bff6f33eba994333b76e0833"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2674,
+      "completion_tokens": 120,
+      "latency_seconds": 5.591,
+      "dropped_history_messages": 0,
+      "output_sha256": "c05847e6e60333c8cdcc224b440acd17c9770617c1630b1db1ef817b573a6c2c"
+    },
+    {
+      "stage": "reviewer",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 932,
+      "completion_tokens": 86,
+      "latency_seconds": 3.381,
+      "dropped_history_messages": 0,
+      "output_sha256": "1f1f64480c21f3b0beccb19b7bd715139fee1cbf148fdde32095e29b6e9d8899"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2976,
+      "completion_tokens": 163,
+      "latency_seconds": 6.332,
+      "dropped_history_messages": 0,
+      "output_sha256": "31dbd9e8d5f7e08ad6f22859676b16599063612c394418964206f35154dcaa64"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "dict unpacking getitem AttributeError"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "dict unpacking getitem AttributeError"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/scoped_nodes.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/nodes/node_classes.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "retrieval_candidates": [
+    "astroid/nodes/node_classes.py",
+    "astroid/nodes/scoped_nodes/scoped_nodes.py",
+    "astroid/bases.py",
+    "astroid/brain/brain_collections.py",
+    "astroid/nodes/node_ng.py",
+    "astroid/builder.py",
+    "astroid/brain/brain_builtin_inference.py",
+    "astroid/protocols.py",
+    "astroid/exceptions.py",
+    "astroid/inference.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "astroid/nodes/node_classes.py"
+  ],
+  "patch_error_code": "search_not_found",
+  "patch_error_message": "SEARCH for astroid/nodes/node_classes.py does not match the original file. First SEARCH line: 'def getitem(self, index, context=None):'",
+  "prompt_tokens": 74073,
+  "completion_tokens": 1071,
+  "duration_seconds": 52.9,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

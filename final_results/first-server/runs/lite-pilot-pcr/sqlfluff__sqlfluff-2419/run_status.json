@@ -1,0 +1,267 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-2419",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "f1dba0e1dd764ae72d67c3d5e1471cf14d3db030",
+  "status": "experiment_error",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 14,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_started",
+  "patch_sha256": null,
+  "source_checkout_clean": null,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.158,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 531,
+      "completion_tokens": 46,
+      "latency_seconds": 1.829,
+      "dropped_history_messages": 0,
+      "output_sha256": "4e684ac1055559d46c4e1bd479330b54cdf8df59c4575906485e89aff5b98264"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 657,
+      "completion_tokens": 50,
+      "latency_seconds": 1.935,
+      "dropped_history_messages": 0,
+      "output_sha256": "dcde6463a88f9eff0b264e7f4e14068f29f19a73af391c91c8c3cf09eeb803ec"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 765,
+      "completion_tokens": 47,
+      "latency_seconds": 1.661,
+      "dropped_history_messages": 0,
+      "output_sha256": "e3951b7e2a585dc37e352e47d7716c38cc37737306526906b08386e0ba5d495f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 893,
+      "completion_tokens": 50,
+      "latency_seconds": 1.993,
+      "dropped_history_messages": 0,
+      "output_sha256": "f8da7faedc2496c061a3c8c3096249a06ee9b6963b9f30b1ea733385b34a2b23"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1033,
+      "completion_tokens": 56,
+      "latency_seconds": 1.966,
+      "dropped_history_messages": 0,
+      "output_sha256": "66a7dbc2173540a8a2d319a0146bb34e0c5379848d24f543c08fe17f07f2273a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1177,
+      "completion_tokens": 52,
+      "latency_seconds": 1.847,
+      "dropped_history_messages": 0,
+      "output_sha256": "b468633a7246e2a43cd50571a6a7f05c60921687b138d80a5f3b63c770327915"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1291,
+      "completion_tokens": 50,
+      "latency_seconds": 1.775,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd4a203a8d09157f882f4e35c841abb2722198b326ac60302a17423bb425c87"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1425,
+      "completion_tokens": 51,
+      "latency_seconds": 2.194,
+      "dropped_history_messages": 0,
+      "output_sha256": "3d9022a1a4e12303ab40c1b9c628bc7e31fc339612b9885751ac431b378ef6e3"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1561,
+      "completion_tokens": 51,
+      "latency_seconds": 2.294,
+      "dropped_history_messages": 0,
+      "output_sha256": "3d9022a1a4e12303ab40c1b9c628bc7e31fc339612b9885751ac431b378ef6e3"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1807,
+      "completion_tokens": 170,
+      "latency_seconds": 6.142,
+      "dropped_history_messages": 0,
+      "output_sha256": "8c9af2f70c13691e0922d53a9ae33833db4f252d2156d64e5eab57d451fc8348"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1998,
+      "completion_tokens": 166,
+      "latency_seconds": 5.724,
+      "dropped_history_messages": 0,
+      "output_sha256": "a22de2543f5235c0bff55b5a5b87c43848d57a922296f51c8eaa4810dc41a499"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2189,
+      "completion_tokens": 162,
+      "latency_seconds": 6.002,
+      "dropped_history_messages": 0,
+      "output_sha256": "4599adfecef4b7e2fbde46f12567c8df9e6caf1e133ab84988594f54b45a5c02"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2376,
+      "completion_tokens": 162,
+      "latency_seconds": 5.766,
+      "dropped_history_messages": 0,
+      "output_sha256": "4599adfecef4b7e2fbde46f12567c8df9e6caf1e133ab84988594f54b45a5c02"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2563,
+      "completion_tokens": 166,
+      "latency_seconds": 5.818,
+      "dropped_history_messages": 0,
+      "output_sha256": "4e75424a3a2b8b4b53714bf3712531842c4d92b32dcf0f30405ac1c6af91f89a"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "rule L060"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "rule L060"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "coalesce ifnull nvl"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/rules/L060.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/linter/rules/L060.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/linter/rules/L060.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "linter rules coalesce ifnull nvl"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "linter rules COALESCE IFNULL NVL"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "linter rules COALESCE IFNULL NVL"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "unknown"
+    },
+    {
+      "round": 11,
+      "finalization_requested": true,
+      "action": "unknown",
+      "prior_protocol_error": "Protocol validation error: Unknown action. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 12,
+      "finalization_requested": true,
+      "action": "unknown",
+      "prior_protocol_error": "Protocol validation error: Unknown action. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 13,
+      "finalization_requested": true,
+      "action": "unknown",
+      "prior_protocol_error": "Protocol validation error: Unknown action. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 14,
+      "finalization_requested": true,
+      "action": "unknown",
+      "prior_protocol_error": "Protocol validation error: Unknown action. Correct the action; do not invent evidence."
+    }
+  ],
+  "failed_stage": "real_planner_localization",
+  "error": "ValueError: Planner exhausted action budget without a validated repair plan",
+  "prompt_tokens": 20302,
+  "completion_tokens": 1282,
+  "duration_seconds": 48.77,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

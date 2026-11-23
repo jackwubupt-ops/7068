@@ -1,0 +1,158 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1072",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "04a523fafbd61bc2e49420963b84ed8e2bd1b3cf",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "edit_invalid",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "36952bb881872bb462b1b1aaaafbbaebe943fd9eb62bcfe2a1ca22f86f4b699a",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "36952bb881872bb462b1b1aaaafbbaebe943fd9eb62bcfe2a1ca22f86f4b699a",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for pvlib/temperature.py does not match the original file (it matches if indentation/whitespace is ignored: copy whitespace exactly). First SEARCH line: 'timedelta_hours = np.diff(poa_global.index).astype(float) / 1e9 / 60 / 60'",
+      "changed_files": []
+    },
+    {
+      "raw_model_output_sha256": "c46b7c23588a9ceff520a2862e0a25194b54672221e368e6102efded9adee8c4",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "c46b7c23588a9ceff520a2862e0a25194b54672221e368e6102efded9adee8c4",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for pvlib/temperature.py does not match the original file (it matches if indentation/whitespace is ignored: copy whitespace exactly). First SEARCH line: 'timedelta_hours = np.diff(poa_global.index).astype(float) / 1e9 / 60 / 60'",
+      "changed_files": []
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "temperature.fuentes"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "pvlib/tests/test_temperature.py"
+    },
+    {
+      "step": 6,
+      "action": "edit"
+    },
+    {
+      "step": 7,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "read_files": [
+    "pvlib/temperature.py",
+    "pvlib/tests/test_temperature.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1217,
+      "completion_tokens": 27,
+      "latency_seconds": 1.197,
+      "dropped_history_messages": 0,
+      "output_sha256": "85d559c82d250b9c185db0dd3726a0fac829a136906af59eb9e6b9dfcf54b0e4"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1649,
+      "completion_tokens": 48,
+      "latency_seconds": 2.217,
+      "dropped_history_messages": 0,
+      "output_sha256": "df6e1634566956ebba92471d157cca0dd85634f671d2f9e5a8c6483494342f58"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4489,
+      "completion_tokens": 10,
+      "latency_seconds": 1.018,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4615,
+      "completion_tokens": 63,
+      "latency_seconds": 2.365,
+      "dropped_history_messages": 0,
+      "output_sha256": "36952bb881872bb462b1b1aaaafbbaebe943fd9eb62bcfe2a1ca22f86f4b699a"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4775,
+      "completion_tokens": 49,
+      "latency_seconds": 1.918,
+      "dropped_history_messages": 0,
+      "output_sha256": "dbeb512fa66a3fba0d76b013d79921caf22a333b4e9acbbec7dddee8b84057eb"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7838,
+      "completion_tokens": 10,
+      "latency_seconds": 1.146,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7971,
+      "completion_tokens": 301,
+      "latency_seconds": 12.647,
+      "dropped_history_messages": 0,
+      "output_sha256": "c46b7c23588a9ceff520a2862e0a25194b54672221e368e6102efded9adee8c4"
+    }
+  ],
+  "agent_calls": 7,
+  "prompt_tokens": 32554,
+  "completion_tokens": 508,
+  "duration_seconds": 22.97,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

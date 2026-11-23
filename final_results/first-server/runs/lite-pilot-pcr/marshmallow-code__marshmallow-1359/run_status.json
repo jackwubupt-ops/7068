@@ -1,0 +1,165 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "marshmallow-code__marshmallow-1359",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "b40a0f4e33823e6d0f341f7e8684e359a99060d1",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 4,
+  "coder_calls": 2,
+  "attempt_count": 2,
+  "reviewer_calls": 1,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "d4f93d70f8a190687ddcc768a3bc7491c9a9564d98b9ec1edbcb6563181899f9",
+      "raw_model_patch_sha256": "d4f93d70f8a190687ddcc768a3bc7491c9a9564d98b9ec1edbcb6563181899f9",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found",
+      "reviewer_error": "Unsupported failure type",
+      "reviewer_failure_type": "unknown"
+    },
+    {
+      "attempt": 2,
+      "patch_sha256": "487c9ac5d68ea67dbd8f55802a4428f2ec56e7b4b583d04230c7069b5d2e6d3f",
+      "raw_model_patch_sha256": "487c9ac5d68ea67dbd8f55802a4428f2ec56e7b4b583d04230c7069b5d2e6d3f",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "truncated_output",
+      "changed_files": [],
+      "edit_error_code": "truncated_output"
+    }
+  ],
+  "patch_status": "edit_invalid",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.149,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 849,
+      "completion_tokens": 47,
+      "latency_seconds": 1.693,
+      "dropped_history_messages": 0,
+      "output_sha256": "3e4b432efe7cf509f5870d67e2a6eb72f53154a0e43158916ecd3829bed25a42"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 977,
+      "completion_tokens": 47,
+      "latency_seconds": 1.631,
+      "dropped_history_messages": 0,
+      "output_sha256": "3e4b432efe7cf509f5870d67e2a6eb72f53154a0e43158916ecd3829bed25a42"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1086,
+      "completion_tokens": 51,
+      "latency_seconds": 1.784,
+      "dropped_history_messages": 0,
+      "output_sha256": "3cac5d27943e8a6edb17589979c39a027f8ef5f1b7637d7b0df646b7d19aa94d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3333,
+      "completion_tokens": 314,
+      "latency_seconds": 11.26,
+      "dropped_history_messages": 0,
+      "output_sha256": "7bb6fb758997046f1f0834ea12f2bad00b0bbb3a8265647f5946b6e28b9807f4"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1261,
+      "completion_tokens": 103,
+      "latency_seconds": 3.702,
+      "dropped_history_messages": 0,
+      "output_sha256": "d4f93d70f8a190687ddcc768a3bc7491c9a9564d98b9ec1edbcb6563181899f9"
+    },
+    {
+      "stage": "reviewer",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 968,
+      "completion_tokens": 97,
+      "latency_seconds": 3.372,
+      "dropped_history_messages": 0,
+      "output_sha256": "c2e3a00646ea5acefcc6b278cfa4d64929865e6640ec83fc6b49e1928a662491"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "length",
+      "prompt_tokens": 1493,
+      "completion_tokens": 3500,
+      "latency_seconds": 135.188,
+      "dropped_history_messages": 0,
+      "output_sha256": "9629355671ec6c91d529ba68e27e2765653af3c5b244e1e3262c6b413b117996"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "marshmallow fields List Tuple DateTime"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "marshmallow fields List Tuple DateTime"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "src/marshmallow/fields.py"
+  ],
+  "patch_error_code": "truncated_output",
+  "patch_error_message": "Coder output hit the token limit and was cut off",
+  "prompt_tokens": 10003,
+  "completion_tokens": 4162,
+  "duration_seconds": 158.85,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}
