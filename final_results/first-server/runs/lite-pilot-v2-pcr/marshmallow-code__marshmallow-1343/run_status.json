@@ -1,0 +1,140 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "marshmallow-code__marshmallow-1343",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "2be2d83a1a9a6d3d9b85804f3ab545cecc409bb0",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.168,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1019,
+      "completion_tokens": 52,
+      "latency_seconds": 1.989,
+      "dropped_history_messages": 0,
+      "output_sha256": "179bd2da2a9f40061baae17f6ff7ec61a7447719d604bb000331d44bc6d3c685"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1157,
+      "completion_tokens": 52,
+      "latency_seconds": 1.859,
+      "dropped_history_messages": 0,
+      "output_sha256": "179bd2da2a9f40061baae17f6ff7ec61a7447719d604bb000331d44bc6d3c685"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1271,
+      "completion_tokens": 48,
+      "latency_seconds": 2.031,
+      "dropped_history_messages": 0,
+      "output_sha256": "fa7f83e2cae62fcfc0627df79b1e18044ec7f9c30794b469d24e2dfd405a8ea7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1407,
+      "completion_tokens": 48,
+      "latency_seconds": 1.716,
+      "dropped_history_messages": 0,
+      "output_sha256": "4ff7f52503e55e1b402f5a26e04a7c9aafac35c4830e8629e549ada703e108d7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1543,
+      "completion_tokens": 49,
+      "latency_seconds": 1.753,
+      "dropped_history_messages": 0,
+      "output_sha256": "a1214b9f40249a60222d2d5f9fc0594476fbedb4c9685efc452038202bfd97fb"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1681,
+      "completion_tokens": 150,
+      "latency_seconds": 5.665,
+      "dropped_history_messages": 0,
+      "output_sha256": "1f7a52ce522a3f9c11537213649706a036cb603cb5f0de746a67a92a782a4465"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "TypeError: 'NoneType' object is not subscriptable"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "TypeError: 'NoneType' object is not subscriptable"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/bug_mschema.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/bug_mschema.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/bug_mschema.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 8114,
+  "completion_tokens": 402,
+  "duration_seconds": 15.25,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

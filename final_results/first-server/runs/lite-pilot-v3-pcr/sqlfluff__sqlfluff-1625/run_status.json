@@ -1,0 +1,273 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1625",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "14e1a23a3166b9a645a16de96f694c77a5d4abb7",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 2,
+  "attempt_count": 2,
+  "reviewer_calls": 1,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "68e870ea5e6d62c11c9aaff38aeffcb3d078a5797f9d7d0ed89918e29bc327c0",
+      "raw_model_patch_sha256": "68e870ea5e6d62c11c9aaff38aeffcb3d078a5797f9d7d0ed89918e29bc327c0",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found",
+      "reviewer_failure_type": "patch_apply"
+    },
+    {
+      "attempt": 2,
+      "patch_sha256": "68e870ea5e6d62c11c9aaff38aeffcb3d078a5797f9d7d0ed89918e29bc327c0",
+      "raw_model_patch_sha256": "68e870ea5e6d62c11c9aaff38aeffcb3d078a5797f9d7d0ed89918e29bc327c0",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found"
+    }
+  ],
+  "patch_status": "edit_invalid",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.118,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 850,
+      "completion_tokens": 52,
+      "latency_seconds": 2.384,
+      "dropped_history_messages": 0,
+      "output_sha256": "1f264b9138a652311a236eb76818ef2faf411e07b98d708bab6eff6610eae088"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 980,
+      "completion_tokens": 48,
+      "latency_seconds": 1.715,
+      "dropped_history_messages": 0,
+      "output_sha256": "51bcfa5ea02c55ac1dbe36e97835b04ffc1d6040a0dc1ffd5c3fc52d0e58ae5b"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1090,
+      "completion_tokens": 53,
+      "latency_seconds": 1.925,
+      "dropped_history_messages": 0,
+      "output_sha256": "9a7804193cdcdd6009c5d4b229b175b0526e5666b6caf2a7a66daf868cac9669"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3118,
+      "completion_tokens": 53,
+      "latency_seconds": 2.574,
+      "dropped_history_messages": 0,
+      "output_sha256": "4ecf106b2c327683c7f66fd8557f6c03b157efd56c38854165c9b910350d43c5"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5346,
+      "completion_tokens": 55,
+      "latency_seconds": 2.496,
+      "dropped_history_messages": 0,
+      "output_sha256": "966d4a8d88a31e257430543b2a43fb69ccba206a37d2dfc672478e4cc39ea222"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7627,
+      "completion_tokens": 53,
+      "latency_seconds": 2.503,
+      "dropped_history_messages": 0,
+      "output_sha256": "31262f202b8b840d0bf8f0e4952d5ad9d56196a8f6fb4b23668a9ec886d769ee"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 9727,
+      "completion_tokens": 53,
+      "latency_seconds": 2.948,
+      "dropped_history_messages": 0,
+      "output_sha256": "17ff7fc5aecb0e9982504da184942ed18c957024077650588c4615e326a90c9d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 11817,
+      "completion_tokens": 53,
+      "latency_seconds": 2.463,
+      "dropped_history_messages": 0,
+      "output_sha256": "86e16dbba0c20c3848b4754f76caf090eb281e50c5ead09a93fb12c5147f5c63"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 14059,
+      "completion_tokens": 55,
+      "latency_seconds": 2.905,
+      "dropped_history_messages": 0,
+      "output_sha256": "1fafd80772add6275a6a3280cbd9c3f297ccd52f1035cfce0e11586cf7680e44"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 14472,
+      "completion_tokens": 270,
+      "latency_seconds": 13.988,
+      "dropped_history_messages": 1,
+      "output_sha256": "a1c50c4a848a0a7523e51cbfa4c50a16c1b2de9469032a72c895e3b1ed6a1a4a"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3824,
+      "completion_tokens": 312,
+      "latency_seconds": 18.857,
+      "dropped_history_messages": 0,
+      "output_sha256": "68e870ea5e6d62c11c9aaff38aeffcb3d078a5797f9d7d0ed89918e29bc327c0"
+    },
+    {
+      "stage": "reviewer",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 866,
+      "completion_tokens": 109,
+      "latency_seconds": 7.137,
+      "dropped_history_messages": 0,
+      "output_sha256": "17e3b8aa916e8b458e9053c2b2d898b57c6c37b1ca5587dc3225f7006332e8c4"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4391,
+      "completion_tokens": 312,
+      "latency_seconds": 13.461,
+      "dropped_history_messages": 0,
+      "output_sha256": "68e870ea5e6d62c11c9aaff38aeffcb3d078a5797f9d7d0ed89918e29bc327c0"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "L031 trigger without join"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "L031 trigger without join"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L031.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/rules/analysis/select.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/rules/analysis/select_crawler.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L028.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L026.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L044.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/dialects/dialect_tsql.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2
+    }
+  ],
+  "retrieval_candidates": [
+    "src/sqlfluff/rules/L031.py",
+    "src/sqlfluff/rules/L028.py",
+    "src/sqlfluff/rules/L026.py",
+    "src/sqlfluff/rules/L044.py",
+    "src/sqlfluff/dialects/dialect_tsql.py",
+    "src/sqlfluff/core/rules/analysis/select_crawler.py",
+    "examples/01_basic_api_usage.py",
+    "src/sqlfluff/core/rules/analysis/select.py",
+    "src/sqlfluff/dialects/dialect_ansi.py",
+    "src/sqlfluff/core/dialects/base.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "src/sqlfluff/rules/L031.py",
+    "src/sqlfluff/core/rules/analysis/select.py"
+  ],
+  "patch_error_code": "search_not_found",
+  "patch_error_message": "SEARCH for src/sqlfluff/rules/L031.py does not match the original file. First SEARCH line: 'if segment.is_type(\"select_statement\"):'",
+  "prompt_tokens": 78203,
+  "completion_tokens": 1481,
+  "duration_seconds": 77.65,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

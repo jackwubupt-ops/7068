@@ -1,0 +1,157 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1763",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "a10057635e5b2559293a676486f0b730981f037a",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 7,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.159,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2430,
+      "completion_tokens": 45,
+      "latency_seconds": 2.071,
+      "dropped_history_messages": 0,
+      "output_sha256": "bf902d2ae41d4618486536b34e0d20db6a954804397448474b7c0e3f46f26b6d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3297,
+      "completion_tokens": 47,
+      "latency_seconds": 1.885,
+      "dropped_history_messages": 0,
+      "output_sha256": "0826a0ccedbb16a3dbd389d1ca3b80adc011c8701650bf4e25f970f6cc1c3e4f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3600,
+      "completion_tokens": 249,
+      "latency_seconds": 8.575,
+      "dropped_history_messages": 0,
+      "output_sha256": "a642aaeb44dd8a8017a49e59fbb3564785eec9b02b705d8268889a9cde822e9c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3884,
+      "completion_tokens": 47,
+      "latency_seconds": 1.734,
+      "dropped_history_messages": 0,
+      "output_sha256": "0826a0ccedbb16a3dbd389d1ca3b80adc011c8701650bf4e25f970f6cc1c3e4f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3993,
+      "completion_tokens": 47,
+      "latency_seconds": 1.815,
+      "dropped_history_messages": 0,
+      "output_sha256": "7fad8f1af2280de49f8c77b2a9d8a8e3003d5b26bc6d866f2295eceb62a13be4"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4127,
+      "completion_tokens": 44,
+      "latency_seconds": 1.589,
+      "dropped_history_messages": 0,
+      "output_sha256": "259e65b42f50513dcd60477c857c543408059bbe9fb20d09dd945c6485e2be87"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5025,
+      "completion_tokens": 145,
+      "latency_seconds": 5.376,
+      "dropped_history_messages": 0,
+      "output_sha256": "b2d16d44d45b2d4ffcaed517cd382f4ef409341f0574d2f71f4eab028a503d07"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "sqlfluff fix"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": ".pre-commit-hooks.yaml"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": ".pre-commit-hooks.yaml",
+      "prior_protocol_error": "Protocol validation error: relevant_lines must be an inclusive [start, end] range. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/dbt_project.yml"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "README.md"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 26392,
+  "completion_tokens": 627,
+  "duration_seconds": 23.48,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

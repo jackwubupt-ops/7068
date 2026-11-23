@@ -1,0 +1,137 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1517",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "304a197829f98e7425a46d872ada73176137e5ae",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 4,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "daad82757c6804f9fd2d6b3ebfb2d3173c1cdc4955bbe136296aa0c26331d3df",
+      "raw_model_patch_sha256": "3b4364b0b2241b7daa433a29eb461a3f83acc6e560ec63ebc7815db01bc64a44",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "src/sqlfluff/core/linter/linter.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/core/linter/linter.py"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "59379962cdfcf4ce35fa0b66fa9200304e449c3fb5fdbbf6e68a58114fec068a",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.107,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1293,
+      "completion_tokens": 50,
+      "latency_seconds": 2.017,
+      "dropped_history_messages": 0,
+      "output_sha256": "deac64226408d48c2d46be6df46287afdde27785094ab18e8aa271ac83a2e247"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1427,
+      "completion_tokens": 44,
+      "latency_seconds": 1.734,
+      "dropped_history_messages": 0,
+      "output_sha256": "873bc03135e47547f153914ad337b36b5e45319bbc665aa5f868f39948a70b17"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1549,
+      "completion_tokens": 55,
+      "latency_seconds": 1.932,
+      "dropped_history_messages": 0,
+      "output_sha256": "21149f3636ad2d6b6321ced147e6938ffe48d867de8add2d0348d7c1be815fe7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2784,
+      "completion_tokens": 226,
+      "latency_seconds": 7.986,
+      "dropped_history_messages": 0,
+      "output_sha256": "b23486bfb32e8af1d99c98f7f87349caec47b41a0b662948dffda5cc06d69f37"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2207,
+      "completion_tokens": 77,
+      "latency_seconds": 3.182,
+      "dropped_history_messages": 0,
+      "output_sha256": "3b4364b0b2241b7daa433a29eb461a3f83acc6e560ec63ebc7815db01bc64a44"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "RuntimeError: Dropped elements in sequence matching!"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "double semicolon"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/linter/linter.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "src/sqlfluff/core/linter/linter.py"
+  ],
+  "patch_size_bytes": 646,
+  "prompt_tokens": 9296,
+  "completion_tokens": 455,
+  "duration_seconds": 18.16,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

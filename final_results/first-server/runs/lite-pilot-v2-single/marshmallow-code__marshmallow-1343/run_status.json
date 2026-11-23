@@ -1,0 +1,273 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "marshmallow-code__marshmallow-1343",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "2be2d83a1a9a6d3d9b85804f3ab545cecc409bb0",
+  "status": "no_submission",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "not_attempted",
+  "attempt_count": 0,
+  "candidate_attempts": [],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "TypeError: 'NoneType' object is not subscriptable"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "src/file.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "read_file",
+      "read_path": "src/file.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 5,
+      "action": "edit"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "src/file.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 7,
+      "action": "edit"
+    },
+    {
+      "step": 8,
+      "action": "read_file",
+      "read_path": "src/file.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 9,
+      "action": "edit"
+    },
+    {
+      "step": 10,
+      "action": "read_file",
+      "read_path": "src/file.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 11,
+      "action": "edit"
+    },
+    {
+      "step": 12,
+      "action": "read_file",
+      "read_path": "src/file.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 13,
+      "action": "edit"
+    },
+    {
+      "step": 14,
+      "action": "read_file",
+      "read_path": "src/file.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 15,
+      "action": "edit"
+    },
+    {
+      "step": 16,
+      "action": "read_file",
+      "read_path": "src/file.py",
+      "repeat_of_step": 2
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "read_files": [],
+  "stop_reason": "step_budget_exhausted",
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1040,
+      "completion_tokens": 35,
+      "latency_seconds": 1.403,
+      "dropped_history_messages": 0,
+      "output_sha256": "1f75b0fe847db391822c387cf40929b16637a9a3c5820e09ef4d85d259987a4c"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1121,
+      "completion_tokens": 46,
+      "latency_seconds": 1.841,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1212,
+      "completion_tokens": 10,
+      "latency_seconds": 0.515,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1258,
+      "completion_tokens": 46,
+      "latency_seconds": 1.943,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1372,
+      "completion_tokens": 10,
+      "latency_seconds": 1.0,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1418,
+      "completion_tokens": 46,
+      "latency_seconds": 1.707,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1532,
+      "completion_tokens": 10,
+      "latency_seconds": 0.423,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1578,
+      "completion_tokens": 46,
+      "latency_seconds": 2.185,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1692,
+      "completion_tokens": 10,
+      "latency_seconds": 0.413,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1738,
+      "completion_tokens": 46,
+      "latency_seconds": 1.718,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1852,
+      "completion_tokens": 10,
+      "latency_seconds": 0.415,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1898,
+      "completion_tokens": 46,
+      "latency_seconds": 2.088,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2012,
+      "completion_tokens": 10,
+      "latency_seconds": 0.418,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2058,
+      "completion_tokens": 46,
+      "latency_seconds": 2.269,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2172,
+      "completion_tokens": 10,
+      "latency_seconds": 0.706,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2218,
+      "completion_tokens": 46,
+      "latency_seconds": 1.697,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34c878eff50fd0b61a5933cf3bcd1ec104558e99a97577dabae921a5c5d03"
+    }
+  ],
+  "agent_calls": 16,
+  "prompt_tokens": 26171,
+  "completion_tokens": 473,
+  "duration_seconds": 20.8,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

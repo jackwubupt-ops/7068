@@ -1,0 +1,248 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1072",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "04a523fafbd61bc2e49420963b84ed8e2bd1b3cf",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "4cd5cef929e9322f87a914afb8c431d1abde4e7cc11edbac16da7da1e3319ca6",
+      "raw_model_patch_sha256": "68e5b6dcc6aaa6517d74b2c555b517439cdecde24e81c950b3c3bb3ddc4a665a",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/temperature.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/temperature.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "583e291aa233947c614b3467061c2706034db28931146d6be1e0c73df1c52786",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.167,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1451,
+      "completion_tokens": 44,
+      "latency_seconds": 2.232,
+      "dropped_history_messages": 0,
+      "output_sha256": "04a654f5c73ab86765b7ade7962288a74972855070738799859ac92469d25a41"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1573,
+      "completion_tokens": 44,
+      "latency_seconds": 1.745,
+      "dropped_history_messages": 0,
+      "output_sha256": "04a654f5c73ab86765b7ade7962288a74972855070738799859ac92469d25a41"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1679,
+      "completion_tokens": 48,
+      "latency_seconds": 1.775,
+      "dropped_history_messages": 0,
+      "output_sha256": "45a1a5219f0c7bbfdb1464d31231672b7ff04c019a5690f159d77a76928928d7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3942,
+      "completion_tokens": 50,
+      "latency_seconds": 2.879,
+      "dropped_history_messages": 0,
+      "output_sha256": "a1a46cf7664d9706c6e91998b557ce4c79eb6b8e0f2ce4230897f67ccda694e7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6763,
+      "completion_tokens": 50,
+      "latency_seconds": 2.568,
+      "dropped_history_messages": 0,
+      "output_sha256": "f59e2f8c2a150e312bb3f67549bf5736577f1fb3c6110080472fce6305faf5ac"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 9391,
+      "completion_tokens": 48,
+      "latency_seconds": 2.532,
+      "dropped_history_messages": 0,
+      "output_sha256": "45a1a5219f0c7bbfdb1464d31231672b7ff04c019a5690f159d77a76928928d7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 9501,
+      "completion_tokens": 50,
+      "latency_seconds": 2.294,
+      "dropped_history_messages": 0,
+      "output_sha256": "a1a46cf7664d9706c6e91998b557ce4c79eb6b8e0f2ce4230897f67ccda694e7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 9613,
+      "completion_tokens": 50,
+      "latency_seconds": 1.919,
+      "dropped_history_messages": 0,
+      "output_sha256": "f59e2f8c2a150e312bb3f67549bf5736577f1fb3c6110080472fce6305faf5ac"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 9725,
+      "completion_tokens": 48,
+      "latency_seconds": 1.848,
+      "dropped_history_messages": 0,
+      "output_sha256": "45a1a5219f0c7bbfdb1464d31231672b7ff04c019a5690f159d77a76928928d7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 10031,
+      "completion_tokens": 282,
+      "latency_seconds": 11.375,
+      "dropped_history_messages": 0,
+      "output_sha256": "8e2a5cb851ac7d07b3dcd1534f65c07fe35e79e18c5b2d33317d3889dd08e36b"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1379,
+      "completion_tokens": 66,
+      "latency_seconds": 3.161,
+      "dropped_history_messages": 0,
+      "output_sha256": "68e5b6dcc6aaa6517d74b2c555b517439cdecde24e81c950b3c3bb3ddc4a665a"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "np.diff(index)"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "np.diff(index)"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/temperature.py",
+    "pvlib/solarposition.py",
+    "pvlib/pvsystem.py",
+    "pvlib/iotools/epw.py",
+    "versioneer.py",
+    "pvlib/forecast.py",
+    "pvlib/iotools/tmy.py",
+    "pvlib/iotools/srml.py",
+    "pvlib/iotools/crn.py",
+    "pvlib/irradiance.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pvlib/temperature.py"
+  ],
+  "patch_size_bytes": 720,
+  "prompt_tokens": 65084,
+  "completion_tokens": 783,
+  "duration_seconds": 35.68,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

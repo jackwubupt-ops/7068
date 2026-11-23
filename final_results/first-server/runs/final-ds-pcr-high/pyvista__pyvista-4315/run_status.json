@@ -1,0 +1,263 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pyvista__pyvista-4315",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pyvista/pyvista",
+  "base_commit": "db6ee8dd4a747b8864caae36c5d05883976a3ae5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "b3be5f58b2ce90d9a14e2fa182f8efc2b2b8bf2a28f5e4ce911882be4b662bc1",
+      "raw_model_patch_sha256": "3608075596100ca57f2b66b2b0e62a781e4d3c3ece9bce965f44ddf57eece43b",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pyvista/core/grid.py"
+      ],
+      "edit_blocks": 2,
+      "edited_files": [
+        "pyvista/core/grid.py"
+      ],
+      "search_match_modes": [
+        "exact",
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "e295c5b59c646eb1f89a59730bc495b0637b39cc95f38dc41501fd0aaa861a89",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 15,
+      "reasoning_tokens": 12,
+      "latency_seconds": 0.471,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1102,
+      "completion_tokens": 88,
+      "reasoning_tokens": 28,
+      "latency_seconds": 0.746,
+      "dropped_history_messages": 0,
+      "output_sha256": "16a9a89487aaad9e6f8635b2be42b23f4ef6fc05e1f822cf851d2a042d7aab62"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1223,
+      "completion_tokens": 59,
+      "reasoning_tokens": 32,
+      "latency_seconds": 0.64,
+      "dropped_history_messages": 0,
+      "output_sha256": "3ab0d8f914c1bf6ceb724e356aec6e62b00e53790cb9d4bbf72bcf2f5f30edea"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1475,
+      "completion_tokens": 115,
+      "reasoning_tokens": 22,
+      "latency_seconds": 0.841,
+      "dropped_history_messages": 0,
+      "output_sha256": "0a34c6112edcf809bf1eb3099df1bcb1e4b8f17f98d648ce227edf35df0f19ea"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1599,
+      "completion_tokens": 46,
+      "reasoning_tokens": 16,
+      "latency_seconds": 0.645,
+      "dropped_history_messages": 0,
+      "output_sha256": "a0b1e41434d7faf675f218d1c4ee177b529df62528b04a89c9cc7f457874c414"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5919,
+      "completion_tokens": 150,
+      "reasoning_tokens": 73,
+      "latency_seconds": 1.408,
+      "dropped_history_messages": 0,
+      "output_sha256": "369041b225f3bcab69374163d248babbc194f11a7c189d501f5b560e29037ce3"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6037,
+      "completion_tokens": 294,
+      "reasoning_tokens": 207,
+      "latency_seconds": 2.182,
+      "dropped_history_messages": 0,
+      "output_sha256": "a7366d738af0d38eace464de49d351de416123f4badbbfa489a36a0b7b82a2df"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6155,
+      "completion_tokens": 63,
+      "reasoning_tokens": 36,
+      "latency_seconds": 1.036,
+      "dropped_history_messages": 0,
+      "output_sha256": "ed5d070ac001b1b7e686d04356c2b891b87f4242e96acacd0977e1acfc617452"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6616,
+      "completion_tokens": 193,
+      "reasoning_tokens": 100,
+      "latency_seconds": 1.58,
+      "dropped_history_messages": 0,
+      "output_sha256": "c6f753847ebcd1df4e731b9bb568a8fd55d72ba2b7410bec8246f2e021772863"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6740,
+      "completion_tokens": 52,
+      "reasoning_tokens": 22,
+      "latency_seconds": 1.126,
+      "dropped_history_messages": 0,
+      "output_sha256": "387b2b7132516020dcc5c0e482cb6a98d5e4db419f40fffe174155cd133d53ff"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 9862,
+      "completion_tokens": 881,
+      "reasoning_tokens": 209,
+      "latency_seconds": 6.382,
+      "dropped_history_messages": 0,
+      "output_sha256": "5ebd23b762bbdeb54fa0679d00cd97f4a516de5930a0b0a0de116f88180ef881"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1984,
+      "completion_tokens": 2768,
+      "reasoning_tokens": 2215,
+      "latency_seconds": 13.846,
+      "dropped_history_messages": 0,
+      "output_sha256": "3608075596100ca57f2b66b2b0e62a781e4d3c3ece9bce965f44ddf57eece43b"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "class RectilinearGrid",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "invalid_json",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "np.ndarray)",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pyvista/core/grid.py",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "retrieval_candidates": [
+    "pyvista/utilities/errors.py",
+    "pyvista/core/grid.py",
+    "pyvista/plotting/charts.py",
+    "pyvista/plotting/renderer.py",
+    "pyvista/plotting/plotting.py",
+    "doc/source/conf.py",
+    "pyvista/core/dataobject.py",
+    "pyvista/utilities/helpers.py",
+    "tests/test_dataset.py",
+    "pyvista/core/filters/data_set.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pyvista/core/grid.py"
+  ],
+  "patch_size_bytes": 2069,
+  "prompt_tokens": 48749,
+  "completion_tokens": 4724,
+  "reasoning_tokens": 2972,
+  "duration_seconds": 33.1,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

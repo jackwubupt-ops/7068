@@ -1,0 +1,158 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pylint-dev__astroid-1866",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "6cf238d089cf4b6753c94cfc089b4a47487711e5",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "edit_invalid",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "a5f899f9482c4ff4fa419bb4b1c0069d61599394285950bb15e558471f88b893",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "a5f899f9482c4ff4fa419bb4b1c0069d61599394285950bb15e558471f88b893",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for astroid/brain/brain_builtin_inference.py does not match the original file (it matches if indentation/whitespace is ignored: copy whitespace exactly). First SEARCH line: 'formatted_string = format_template.format(*pos_values, **keyword_values)'",
+      "changed_files": []
+    },
+    {
+      "raw_model_output_sha256": "a5f899f9482c4ff4fa419bb4b1c0069d61599394285950bb15e558471f88b893",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "a5f899f9482c4ff4fa419bb4b1c0069d61599394285950bb15e558471f88b893",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for astroid/brain/brain_builtin_inference.py does not match the original file (it matches if indentation/whitespace is ignored: copy whitespace exactly). First SEARCH line: 'formatted_string = format_template.format(*pos_values, **keyword_values)'",
+      "changed_files": []
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "format_template.format"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "astroid/brain/brain_builtin_inference.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "astroid/brain/brain_builtin_inference.py",
+      "repeat_of_step": 2
+    },
+    {
+      "step": 6,
+      "action": "edit"
+    },
+    {
+      "step": 7,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "read_files": [
+    "astroid/brain/brain_builtin_inference.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 909,
+      "completion_tokens": 31,
+      "latency_seconds": 1.233,
+      "dropped_history_messages": 0,
+      "output_sha256": "98347f72386f9ac79625c346f521ab483ac17a745d7bcbdcd1002575025026c2"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1065,
+      "completion_tokens": 59,
+      "latency_seconds": 2.132,
+      "dropped_history_messages": 0,
+      "output_sha256": "bb37dda3942e63933ace1eb4566eeee3a5bf446f06671cbcae18d85de658ae08"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1436,
+      "completion_tokens": 14,
+      "latency_seconds": 0.61,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1571,
+      "completion_tokens": 63,
+      "latency_seconds": 2.377,
+      "dropped_history_messages": 0,
+      "output_sha256": "a5f899f9482c4ff4fa419bb4b1c0069d61599394285950bb15e558471f88b893"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1722,
+      "completion_tokens": 59,
+      "latency_seconds": 2.432,
+      "dropped_history_messages": 0,
+      "output_sha256": "bb37dda3942e63933ace1eb4566eeee3a5bf446f06671cbcae18d85de658ae08"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1849,
+      "completion_tokens": 14,
+      "latency_seconds": 0.576,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1984,
+      "completion_tokens": 63,
+      "latency_seconds": 2.274,
+      "dropped_history_messages": 0,
+      "output_sha256": "a5f899f9482c4ff4fa419bb4b1c0069d61599394285950bb15e558471f88b893"
+    }
+  ],
+  "agent_calls": 7,
+  "prompt_tokens": 10536,
+  "completion_tokens": 303,
+  "duration_seconds": 11.85,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

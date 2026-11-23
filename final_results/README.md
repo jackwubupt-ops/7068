@@ -10,6 +10,7 @@ README section 5 come from these files. No API keys, prompts or repository check
 | `analysis/comparison-final-t4*.md` | one report per run (per-configuration table, McNemar + bootstrap pairs) |
 | `analysis/final-repeats.md`, `analysis/final-comparison*.md` | earlier agent version (2 tools), 3 runs |
 | `runs/<batch>/` | `manifest.json` (all settings, commit), `summary.json`, `official_eval.json` (official SWE-bench harness verdicts), `results.jsonl`, `all_preds.jsonl` (the patches), `<task>/run_status.json` (per-task decisions, tool calls, attempts, test checks, token usage; no prompt text) |
+| `first-server/` | first server (A10): Qwen-7B pilots v1–v3, the original DeepSeek round 1 used for the model comparison (10 vs 0 for both agents, p = 0.002), diagnosis reports, vLLM log; see its README |
 | `eval-selftest/gold.gold-all-dev-fixed.json` | gold-patch self-test after the image repair: 23/23 resolved |
 | `samples/` | traces of the five sample requests (`.md` readable, `.json` full session views): ordinary task, changed request, vague request, invalid repository, execution feedback |
 

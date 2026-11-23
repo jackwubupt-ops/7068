@@ -1,0 +1,154 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1154",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "0b8f24c265d76320067a5ee908a57d475cd1bb24",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "edit_invalid",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "2ba8353554a37d042b4fd92718505ed6da4c83079f8f8591822686b8933257c7",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "2ba8353554a37d042b4fd92718505ed6da4c83079f8f8591822686b8933257c7",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for pvlib/irradiance.py does not match the original file (it matches only if indentation is ignored, and not by one consistent shift: copy whitespace exactly). First SEARCH line: \"    elif model == 'reindl':\"",
+      "changed_files": []
+    },
+    {
+      "raw_model_output_sha256": "2ba8353554a37d042b4fd92718505ed6da4c83079f8f8591822686b8933257c7",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "2ba8353554a37d042b4fd92718505ed6da4c83079f8f8591822686b8933257c7",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for pvlib/irradiance.py does not match the original file (it matches only if indentation is ignored, and not by one consistent shift: copy whitespace exactly). First SEARCH line: \"    elif model == 'reindl':\"",
+      "changed_files": []
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "reindl"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "pvlib/irradiance.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    },
+    {
+      "step": 5,
+      "action": "edit"
+    },
+    {
+      "step": 6,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "pvlib/irradiance.py",
+    "pvlib/shading.py",
+    "pvlib/iam.py",
+    "pvlib/clearsky.py",
+    "docs/examples/plot_diffuse_aoi_correction.py",
+    "pvlib/pvsystem.py",
+    "docs/examples/plot_transposition_gain.py",
+    "versioneer.py",
+    "pvlib/ivtools/sdm.py",
+    "pvlib/singlediode.py"
+  ],
+  "read_files": [
+    "pvlib/irradiance.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 801,
+      "completion_tokens": 31,
+      "latency_seconds": 1.239,
+      "dropped_history_messages": 0,
+      "output_sha256": "67d7b7fb7b6d9c3152099450047c9a8dd75c094b9d1a986e6c2c52cca00237fc"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1261,
+      "completion_tokens": 56,
+      "latency_seconds": 2.115,
+      "dropped_history_messages": 0,
+      "output_sha256": "e6253450a51436db7b0fcb0d565735f1fc412b033651508b003f4765da7ffae3"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2321,
+      "completion_tokens": 14,
+      "latency_seconds": 0.756,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2453,
+      "completion_tokens": 122,
+      "latency_seconds": 4.625,
+      "dropped_history_messages": 0,
+      "output_sha256": "2ba8353554a37d042b4fd92718505ed6da4c83079f8f8591822686b8933257c7"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2661,
+      "completion_tokens": 14,
+      "latency_seconds": 0.732,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2793,
+      "completion_tokens": 122,
+      "latency_seconds": 5.692,
+      "dropped_history_messages": 0,
+      "output_sha256": "2ba8353554a37d042b4fd92718505ed6da4c83079f8f8591822686b8933257c7"
+    }
+  ],
+  "agent_calls": 6,
+  "prompt_tokens": 12290,
+  "completion_tokens": 359,
+  "duration_seconds": 16.11,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

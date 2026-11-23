@@ -1,0 +1,188 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1606",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "c78b50f4337ecbe536a961336ca91a1176efc0e8",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "edit_invalid",
+  "attempt_count": 2,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "f604ce38026d69556e8859520dea2b10ef6b9de923107e4aa3cab033bf96f2ce",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "f604ce38026d69556e8859520dea2b10ef6b9de923107e4aa3cab033bf96f2ce",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for pvlib/modelchain.py does not match the original file. First SEARCH line: 'def _golden_sect_DataFrame(func, lower, upper, tol=1e-6, maxiter=1000):'",
+      "changed_files": []
+    },
+    {
+      "raw_model_output_sha256": "8b08df032b6c283d9621a6bc945c84872e84239a697621be9b394c5a37f73751",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "patch_sha256": "8b08df032b6c283d9621a6bc945c84872e84239a697621be9b394c5a37f73751",
+      "error_code": "search_not_found",
+      "error_message": "SEARCH for pvlib/tools.py does not match the original file. First SEARCH line: 'def _golden_sect_DataFrame(func, lower, upper, tol=1e-6, maxiter=1000):'",
+      "changed_files": []
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "pvlib.tools._golden_sect_DataFrame"
+    },
+    {
+      "step": 2,
+      "action": "search_repo",
+      "search_query": "pvlib.singlediode._lambertw"
+    },
+    {
+      "step": 3,
+      "action": "search_repo",
+      "search_query": "pvlib.modelchain.ModelChain"
+    },
+    {
+      "step": 4,
+      "action": "read_file",
+      "read_path": "pvlib/modelchain.py"
+    },
+    {
+      "step": 5,
+      "action": "edit"
+    },
+    {
+      "step": 6,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    },
+    {
+      "step": 7,
+      "action": "read_file",
+      "read_path": "pvlib/tools.py"
+    },
+    {
+      "step": 8,
+      "action": "edit"
+    },
+    {
+      "step": 9,
+      "action": "submit",
+      "patch_status": "edit_invalid"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "read_files": [
+    "pvlib/modelchain.py",
+    "pvlib/tools.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [],
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2499,
+      "completion_tokens": 33,
+      "latency_seconds": 1.788,
+      "dropped_history_messages": 0,
+      "output_sha256": "b55132a2288453a85a38f9c26da3dd17883a0402e4da451757bd916e1c69e43c"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2578,
+      "completion_tokens": 35,
+      "latency_seconds": 1.351,
+      "dropped_history_messages": 0,
+      "output_sha256": "53ff35258481f463470a808d58f163ed02ca7ba2ccea7e49e44f1c8c1ba788e0"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2659,
+      "completion_tokens": 30,
+      "latency_seconds": 1.419,
+      "dropped_history_messages": 0,
+      "output_sha256": "aeab77965fb92ca216ac29979470f8d4f5623050e1f9db3969eb8809d6480553"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3133,
+      "completion_tokens": 48,
+      "latency_seconds": 1.865,
+      "dropped_history_messages": 0,
+      "output_sha256": "a0b7b969300251ca4573ceaf06938794917144182110e4cae6250efe39201ded"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5803,
+      "completion_tokens": 10,
+      "latency_seconds": 1.021,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5929,
+      "completion_tokens": 523,
+      "latency_seconds": 19.677,
+      "dropped_history_messages": 0,
+      "output_sha256": "f604ce38026d69556e8859520dea2b10ef6b9de923107e4aa3cab033bf96f2ce"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6536,
+      "completion_tokens": 47,
+      "latency_seconds": 1.76,
+      "dropped_history_messages": 0,
+      "output_sha256": "50215cd38b3407d49175b47ad2dae5b51bf03374fe0f790c821a21c933e7c6d6"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 8608,
+      "completion_tokens": 10,
+      "latency_seconds": 0.958,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 8739,
+      "completion_tokens": 522,
+      "latency_seconds": 20.191,
+      "dropped_history_messages": 0,
+      "output_sha256": "8b08df032b6c283d9621a6bc945c84872e84239a697621be9b394c5a37f73751"
+    }
+  ],
+  "agent_calls": 9,
+  "prompt_tokens": 46484,
+  "completion_tokens": 1258,
+  "duration_seconds": 51.3,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

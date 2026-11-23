@@ -4,6 +4,14 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
+## First-server data restored (2026-11-23)
+
+### Added
+- `final_results/first-server/`: the Qwen2.5-Coder-7B pilot batches v1–v3 (both agents; v3 with pre- and post-repair verdicts), the original DeepSeek round 1 that the model comparison uses, the invalid RQ1 round 1, pilot diagnosis reports, and the vLLM server log (private IP and host redacted), from the backup of the first server.
+
+### Changed
+- README model comparison now cites the original pairing: P-C-R 10 vs 0 and single 10 vs 0 (p = 0.002 each). It previously quoted single 9 vs 0 from the later rerun.
+
 ## AI-use declaration and prompts (2026-11-22)
 
 ### Added

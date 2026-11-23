@@ -1,0 +1,144 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "sqlfluff__sqlfluff-1733",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "a1579a16b1d8913d9d7c7d12add374a290bcc78c",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "891c4a106c3a5c42b7205e6b5858d05da46562cd10348dc396c9269899763b4c",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/rules/L003.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "5452dc40366b884394f3f1c484062770c28e40c032ef98ba9ec63e87d2247510",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "src/sqlfluff/rules/L003.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "L003"
+    },
+    {
+      "step": 2,
+      "action": "search_repo",
+      "search_query": "L003",
+      "repeat_of_step": 1
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/L003.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "src/sqlfluff/cli/commands.py",
+    "src/sqlfluff/rules/L003.py",
+    "src/sqlfluff/dialects/dialect_ansi.py",
+    "plugins/sqlfluff-templater-dbt/sqlfluff_templater_dbt/templater.py",
+    "src/sqlfluff/core/rules/base.py",
+    "src/sqlfluff/rules/L044.py",
+    "src/sqlfluff/core/templaters/python.py",
+    "src/sqlfluff/core/parser/segments/base.py",
+    "src/sqlfluff/dialects/dialect_tsql.py",
+    "src/sqlfluff/core/linter/runner.py"
+  ],
+  "read_files": [
+    "src/sqlfluff/rules/L003.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "src/sqlfluff/rules/L003.py"
+  ],
+  "patch_size_bytes": 588,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1055,
+      "completion_tokens": 28,
+      "latency_seconds": 1.641,
+      "dropped_history_messages": 0,
+      "output_sha256": "2b6aea335011453286f2495d3e6dc0c3a149c82bb4f629410c02fa268f714f61"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2026,
+      "completion_tokens": 28,
+      "latency_seconds": 1.307,
+      "dropped_history_messages": 0,
+      "output_sha256": "2b6aea335011453286f2495d3e6dc0c3a149c82bb4f629410c02fa268f714f61"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2122,
+      "completion_tokens": 53,
+      "latency_seconds": 2.733,
+      "dropped_history_messages": 0,
+      "output_sha256": "3195394679023b763011c6f9518af454c47ecce62745f38811167294faab27b3"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4677,
+      "completion_tokens": 10,
+      "latency_seconds": 0.972,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4808,
+      "completion_tokens": 187,
+      "latency_seconds": 6.749,
+      "dropped_history_messages": 0,
+      "output_sha256": "891c4a106c3a5c42b7205e6b5858d05da46562cd10348dc396c9269899763b4c"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 14688,
+  "completion_tokens": 306,
+  "duration_seconds": 14.6,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

@@ -1,0 +1,152 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1978",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "0c9ab0fe56703fa83c73e514a1020d398d23fa7f",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 4,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "7da24c907f7c185e9dbb3c16436797df0b156d863771ec69d97be56376542729",
+      "raw_model_patch_sha256": "9ddd2cef2d8ab05a4ae7d3c22ebabcd6752f12ab431544c7f21584767d921ddc",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "astroid/brain/brain_numpy_random_mtrand.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "astroid/brain/brain_numpy_random_mtrand.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "2f508c80e0108fe595514fff6798ecf7cbd42e2f1c9c321030610c9b0b29a81d",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.151,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 888,
+      "completion_tokens": 64,
+      "latency_seconds": 2.394,
+      "dropped_history_messages": 0,
+      "output_sha256": "963429d397aa0276b50b930df304fc51cb6acd46f813eb2350f814b2b1592e0d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1042,
+      "completion_tokens": 48,
+      "latency_seconds": 2.245,
+      "dropped_history_messages": 0,
+      "output_sha256": "611b143aadc4e0b9390d3f990e7ce31beb7779500fd30ccab848bb16f8171580"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1164,
+      "completion_tokens": 54,
+      "latency_seconds": 2.499,
+      "dropped_history_messages": 0,
+      "output_sha256": "94f5bfd85203ebd8b8ee9d2f67d0e66922366bcbee88e5ed92df01c8f05e5d6a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3124,
+      "completion_tokens": 265,
+      "latency_seconds": 13.135,
+      "dropped_history_messages": 0,
+      "output_sha256": "d385b2019c13455a478c60264abd6f61a72088f3669cb7be67d493235f0d1cdc"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1007,
+      "completion_tokens": 81,
+      "latency_seconds": 7.01,
+      "dropped_history_messages": 0,
+      "output_sha256": "9ddd2cef2d8ab05a4ae7d3c22ebabcd6752f12ab431544c7f21584767d921ddc"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "FutureWarning: In the future `np.long` will be defined as the corresponding NumP"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "np.random.seed"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/brain/brain_numpy_random_mtrand.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "retrieval_candidates": [
+    "astroid/nodes/scoped_nodes/scoped_nodes.py",
+    "astroid/objects.py",
+    "astroid/brain/brain_numpy_random_mtrand.py",
+    "astroid/brain/brain_gi.py",
+    "astroid/modutils.py",
+    "astroid/interpreter/_import/util.py",
+    "astroid/brain/brain_namedtuple_enum.py",
+    "astroid/nodes/node_classes.py",
+    "astroid/builder.py",
+    "astroid/nodes/node_ng.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "astroid/brain/brain_numpy_random_mtrand.py"
+  ],
+  "patch_size_bytes": 664,
+  "prompt_tokens": 7261,
+  "completion_tokens": 515,
+  "duration_seconds": 28.06,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

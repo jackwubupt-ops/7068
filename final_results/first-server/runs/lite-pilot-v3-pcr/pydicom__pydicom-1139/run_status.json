@@ -1,0 +1,284 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pydicom__pydicom-1139",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "b9fb05c177b685bf683f7f57b2d57374eb7d882d",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 14,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.168,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 740,
+      "completion_tokens": 46,
+      "latency_seconds": 1.928,
+      "dropped_history_messages": 0,
+      "output_sha256": "48941ff28c7ccb4dfc328a2fb7056ac7c958acb1b8189ab996a77cce5315e992"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 866,
+      "completion_tokens": 46,
+      "latency_seconds": 1.806,
+      "dropped_history_messages": 0,
+      "output_sha256": "48941ff28c7ccb4dfc328a2fb7056ac7c958acb1b8189ab996a77cce5315e992"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 974,
+      "completion_tokens": 51,
+      "latency_seconds": 1.932,
+      "dropped_history_messages": 0,
+      "output_sha256": "8186a60f821b3d51465416056cc5e5bae2fe925216ef527ffcaf470d0c7c570d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3337,
+      "completion_tokens": 49,
+      "latency_seconds": 2.333,
+      "dropped_history_messages": 0,
+      "output_sha256": "ad92d3d9f43abc50be374f4e5a4b0b680d4c316ba6c93b44e1797af19fc48b33"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3475,
+      "completion_tokens": 50,
+      "latency_seconds": 1.853,
+      "dropped_history_messages": 0,
+      "output_sha256": "5c3c21d9bd92f817404dbfbc3df365f4a07f2ea7da8001ee947fa4c14c59cf4a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3615,
+      "completion_tokens": 49,
+      "latency_seconds": 2.015,
+      "dropped_history_messages": 0,
+      "output_sha256": "2f456cf6ca3ef16bc875fcf81d2ae5405e186155d8a83ef38ef3d7ac91fadabb"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5851,
+      "completion_tokens": 51,
+      "latency_seconds": 2.499,
+      "dropped_history_messages": 0,
+      "output_sha256": "8186a60f821b3d51465416056cc5e5bae2fe925216ef527ffcaf470d0c7c570d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5964,
+      "completion_tokens": 49,
+      "latency_seconds": 1.898,
+      "dropped_history_messages": 0,
+      "output_sha256": "ad92d3d9f43abc50be374f4e5a4b0b680d4c316ba6c93b44e1797af19fc48b33"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6075,
+      "completion_tokens": 50,
+      "latency_seconds": 1.848,
+      "dropped_history_messages": 0,
+      "output_sha256": "5c3c21d9bd92f817404dbfbc3df365f4a07f2ea7da8001ee947fa4c14c59cf4a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6367,
+      "completion_tokens": 239,
+      "latency_seconds": 8.666,
+      "dropped_history_messages": 0,
+      "output_sha256": "ee1388ac9bb9ad6f6fe2bfa26257a88fecb3ceadc7ee2a66e3be93c8a7f6ac11"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6631,
+      "completion_tokens": 246,
+      "latency_seconds": 8.472,
+      "dropped_history_messages": 0,
+      "output_sha256": "ddb961d0c45f471c0e7434e4dbb81939bdaf35b162ce1add7bb951766d4aef1c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6904,
+      "completion_tokens": 246,
+      "latency_seconds": 8.392,
+      "dropped_history_messages": 0,
+      "output_sha256": "ddb961d0c45f471c0e7434e4dbb81939bdaf35b162ce1add7bb951766d4aef1c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7177,
+      "completion_tokens": 246,
+      "latency_seconds": 8.4,
+      "dropped_history_messages": 0,
+      "output_sha256": "ddb961d0c45f471c0e7434e4dbb81939bdaf35b162ce1add7bb951766d4aef1c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 7450,
+      "completion_tokens": 246,
+      "latency_seconds": 8.471,
+      "dropped_history_messages": 0,
+      "output_sha256": "ddb961d0c45f471c0e7434e4dbb81939bdaf35b162ce1add7bb951766d4aef1c"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "iterable PersonName3"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "iterable PersonName3"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/valuerep.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/personname.py"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/dicomutil.py"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/dataelem.py"
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/valuerep.py"
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/personname.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pydicom/dicomutil.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "unknown"
+    },
+    {
+      "round": 11,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Unknown action. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 12,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 13,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 14,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pydicom/dataset.py",
+    "pydicom/tag.py",
+    "pydicom/dataelem.py",
+    "pydicom/jsonrep.py",
+    "pydicom/uid.py",
+    "pydicom/filewriter.py",
+    "pydicom/valuerep.py",
+    "pydicom/values.py",
+    "pydicom/config.py",
+    "pydicom/filereader.py"
+  ],
+  "planner_stop_reason": "planner_budget_exhausted",
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 65462,
+  "completion_tokens": 1667,
+  "duration_seconds": 61.23,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

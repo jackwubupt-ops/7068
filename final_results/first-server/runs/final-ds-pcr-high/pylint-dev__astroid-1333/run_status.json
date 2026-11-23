@@ -1,0 +1,262 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1333",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "d2a5b3c7b1e203fec3c7ca73c30eb1785d3d4d0a",
+  "status": "experiment_error",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 11,
+  "coder_calls": 1,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_started",
+  "patch_sha256": null,
+  "source_checkout_clean": null,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 17,
+      "reasoning_tokens": 14,
+      "latency_seconds": 0.45,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1252,
+      "completion_tokens": 157,
+      "reasoning_tokens": 97,
+      "latency_seconds": 1.278,
+      "dropped_history_messages": 0,
+      "output_sha256": "80e20841b50c599260fb92c3d852e7cab7df59f3391cf675c2867c4643c0876f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1373,
+      "completion_tokens": 43,
+      "reasoning_tokens": 16,
+      "latency_seconds": 0.777,
+      "dropped_history_messages": 0,
+      "output_sha256": "ab6c13f5642b4757cbaae55f5b7f2532b1f264e296cc447e608af6a6aee802e8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1548,
+      "completion_tokens": 41,
+      "reasoning_tokens": 13,
+      "latency_seconds": 0.655,
+      "dropped_history_messages": 0,
+      "output_sha256": "96242fe19e4eab4977379f6b02eefe0a7d33f1a56ff1e38a56efe22427e3fa2e"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3836,
+      "completion_tokens": 140,
+      "reasoning_tokens": 114,
+      "latency_seconds": 1.288,
+      "dropped_history_messages": 0,
+      "output_sha256": "fc5449c34c2be07912c71837c9d285db935da237d11b835245ec01807e63f4d6"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4332,
+      "completion_tokens": 113,
+      "reasoning_tokens": 22,
+      "latency_seconds": 1.095,
+      "dropped_history_messages": 0,
+      "output_sha256": "153294669cbef1e41de1cf469d6987bcf78d37df249e9d72dbee4e3bbaef4f77"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4454,
+      "completion_tokens": 120,
+      "reasoning_tokens": 29,
+      "latency_seconds": 0.95,
+      "dropped_history_messages": 0,
+      "output_sha256": "d57a1e3d73b998881c9fe4ff3c98bbe45253513a13b414201d646f548998c565"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4576,
+      "completion_tokens": 43,
+      "reasoning_tokens": 15,
+      "latency_seconds": 0.632,
+      "dropped_history_messages": 0,
+      "output_sha256": "16f7583c432954ff2cb46c034b21d889cde221b92e823ec644f1fa85ca77e98c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 6504,
+      "completion_tokens": 134,
+      "reasoning_tokens": 101,
+      "latency_seconds": 1.1,
+      "dropped_history_messages": 0,
+      "output_sha256": "6f1e29fcbf9da7eb3bdda110f973e91f89395b2fb2c3d614d335e9a391b8138c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 8993,
+      "completion_tokens": 185,
+      "reasoning_tokens": 156,
+      "latency_seconds": 1.609,
+      "dropped_history_messages": 0,
+      "output_sha256": "0c52e09627e733b1820acc3fb5a684a4d69d8f75366b0e4341aba7f9f48e1b51"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 11309,
+      "completion_tokens": 1016,
+      "reasoning_tokens": 142,
+      "latency_seconds": 6.835,
+      "dropped_history_messages": 0,
+      "output_sha256": "ccd34814ba1b55cb9083023cf4668fbb4f3bbf3a2e6d7face91b5ef08c178694"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 12217,
+      "completion_tokens": 877,
+      "reasoning_tokens": 125,
+      "latency_seconds": 4.363,
+      "dropped_history_messages": 0,
+      "output_sha256": "25e0310da8c799989a68b63455b6026355c218cc79739a2854e566d5620266f7"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "length",
+      "prompt_tokens": 2185,
+      "completion_tokens": 28076,
+      "reasoning_tokens": 28076,
+      "latency_seconds": 141.385,
+      "dropped_history_messages": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "Unable to load file",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/builder.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "is_namespace"
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "invalid_json",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/modutils.py",
+      "prior_protocol_error": "Protocol validation error: Expecting value: line 3 column 1 (char 2). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/interpreter/_import/spec.py"
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/modutils.py"
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "invalid_json"
+    },
+    {
+      "round": 11,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Expecting ',' delimiter: line 1 column 3738 (char 3737). Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "astroid/__init__.py",
+    "astroid/nodes/__init__.py",
+    "astroid/nodes/scoped_nodes/__init__.py",
+    "astroid/brain/__init__.py",
+    "astroid/interpreter/__init__.py",
+    "astroid/interpreter/_import/__init__.py",
+    "tests/testdata/python3/data/module1abs/__init__.py",
+    "tests/testdata/python3/data/beyond_top_level_two/__init__.py",
+    "tests/testdata/python3/data/beyond_top_level_three/module/__init__.py",
+    "tests/testdata/python3/data/beyond_top_level_two/level1/__init__.py"
+  ],
+  "suspected_file_count": 2,
+  "suspected_files": [
+    "astroid/modutils.py",
+    "astroid/builder.py"
+  ],
+  "failed_stage": "real_coder_patch",
+  "error": "RuntimeError: QWEN_EMPTY_CONTENT:coder",
+  "prompt_tokens": 62616,
+  "completion_tokens": 30962,
+  "reasoning_tokens": 28920,
+  "duration_seconds": 162.81,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

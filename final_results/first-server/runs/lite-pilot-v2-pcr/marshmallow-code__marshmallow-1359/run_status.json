@@ -1,0 +1,164 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "marshmallow-code__marshmallow-1359",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "b40a0f4e33823e6d0f341f7e8684e359a99060d1",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 4,
+  "coder_calls": 2,
+  "attempt_count": 2,
+  "reviewer_calls": 1,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "fcbe6de791bf82eabc0d6e00faef6357ea6b1121980ee823b2eb7a7d706ebe53",
+      "raw_model_patch_sha256": "fcbe6de791bf82eabc0d6e00faef6357ea6b1121980ee823b2eb7a7d706ebe53",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found",
+      "reviewer_failure_type": "patch_apply"
+    },
+    {
+      "attempt": 2,
+      "patch_sha256": "fcbe6de791bf82eabc0d6e00faef6357ea6b1121980ee823b2eb7a7d706ebe53",
+      "raw_model_patch_sha256": "fcbe6de791bf82eabc0d6e00faef6357ea6b1121980ee823b2eb7a7d706ebe53",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found"
+    }
+  ],
+  "patch_status": "edit_invalid",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.15,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 877,
+      "completion_tokens": 47,
+      "latency_seconds": 1.759,
+      "dropped_history_messages": 0,
+      "output_sha256": "3e4b432efe7cf509f5870d67e2a6eb72f53154a0e43158916ecd3829bed25a42"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1005,
+      "completion_tokens": 47,
+      "latency_seconds": 1.667,
+      "dropped_history_messages": 0,
+      "output_sha256": "3e4b432efe7cf509f5870d67e2a6eb72f53154a0e43158916ecd3829bed25a42"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1114,
+      "completion_tokens": 51,
+      "latency_seconds": 1.935,
+      "dropped_history_messages": 0,
+      "output_sha256": "3cac5d27943e8a6edb17589979c39a027f8ef5f1b7637d7b0df646b7d19aa94d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3361,
+      "completion_tokens": 270,
+      "latency_seconds": 10.091,
+      "dropped_history_messages": 0,
+      "output_sha256": "3d5645263a8d1ec4736dc06424d0da068e65bac90ee81918dbe1a28d7bd20431"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1239,
+      "completion_tokens": 140,
+      "latency_seconds": 5.071,
+      "dropped_history_messages": 0,
+      "output_sha256": "fcbe6de791bf82eabc0d6e00faef6357ea6b1121980ee823b2eb7a7d706ebe53"
+    },
+    {
+      "stage": "reviewer",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1006,
+      "completion_tokens": 117,
+      "latency_seconds": 4.513,
+      "dropped_history_messages": 0,
+      "output_sha256": "3098bf52a4a858ab0e7e9d95e1bbe7aad861ef0fda8d20121764b4a2594e0b38"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1597,
+      "completion_tokens": 140,
+      "latency_seconds": 5.349,
+      "dropped_history_messages": 0,
+      "output_sha256": "fcbe6de791bf82eabc0d6e00faef6357ea6b1121980ee823b2eb7a7d706ebe53"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "marshmallow fields List Tuple DateTime"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "marshmallow fields List Tuple DateTime"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/marshmallow/fields.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "src/marshmallow/fields.py"
+  ],
+  "patch_error_code": "search_not_found",
+  "patch_error_message": "SEARCH for src/marshmallow/fields.py does not match the original file. First SEARCH line: 'if isinstance(inner, SchemaABC):'",
+  "prompt_tokens": 10235,
+  "completion_tokens": 815,
+  "duration_seconds": 30.63,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

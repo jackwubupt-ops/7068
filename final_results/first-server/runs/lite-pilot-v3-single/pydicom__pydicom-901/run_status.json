@@ -1,0 +1,142 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pydicom__pydicom-901",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pydicom/pydicom",
+  "base_commit": "3746878d8edf1cbda6fbcf35eec69f9ba79301ca",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "9f2def005d131fd91ad41a34d9f12bb68303b18a11ea0798baf07241e8a5a6f5",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pydicom/config.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "e9b8ba4f712854b5d6a865c94091a9264f5a7f9709222c8975019d2b34ad4c4c",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pydicom/config.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "logger.setLevel"
+    },
+    {
+      "step": 2,
+      "action": "edit"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pydicom/config.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "pydicom/config.py",
+    "pydicom/filereader.py",
+    "pydicom/dataset.py",
+    "pydicom/pixel_data_handlers/pillow_handler.py",
+    "pydicom/dataelem.py",
+    "pydicom/dicomdir.py",
+    "pydicom/encaps.py",
+    "pydicom/pixel_data_handlers/jpeg_ls_handler.py",
+    "pydicom/pixel_data_handlers/numpy_handler.py",
+    "pydicom/pixel_data_handlers/rle_handler.py"
+  ],
+  "read_files": [
+    "pydicom/config.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pydicom/config.py"
+  ],
+  "patch_size_bytes": 714,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 857,
+      "completion_tokens": 26,
+      "latency_seconds": 1.077,
+      "dropped_history_messages": 0,
+      "output_sha256": "3cdd506f58b2c8d7687045118a068761af240664ed85e6669d333867b3b1a4a1"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1047,
+      "completion_tokens": 10,
+      "latency_seconds": 0.439,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1093,
+      "completion_tokens": 48,
+      "latency_seconds": 1.807,
+      "dropped_history_messages": 0,
+      "output_sha256": "742cf691d440eacc4a86ecf2361e17378f7aeecf1029c6b74240950ede4d6bfc"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3879,
+      "completion_tokens": 10,
+      "latency_seconds": 1.103,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4005,
+      "completion_tokens": 78,
+      "latency_seconds": 3.389,
+      "dropped_history_messages": 0,
+      "output_sha256": "9f2def005d131fd91ad41a34d9f12bb68303b18a11ea0798baf07241e8a5a6f5"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 10881,
+  "completion_tokens": 172,
+  "duration_seconds": 8.42,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

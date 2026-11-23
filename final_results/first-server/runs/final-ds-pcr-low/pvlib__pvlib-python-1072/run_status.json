@@ -1,0 +1,196 @@
+{
+  "experiment": "deepseek-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1072",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "04a523fafbd61bc2e49420963b84ed8e2bd1b3cf",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "3b672b5a84e2c3f2b6ee32907d67f590865b75b62635395347ae791ee7c5dbc0",
+      "raw_model_patch_sha256": "d32c0bec86afb770817f8b95248d5af1c3adcbb70f24c91d40ec63e8404b5d5b",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        "pvlib/temperature.py"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/temperature.py"
+      ],
+      "search_match_modes": [
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "0a141be666306da823e6e4cda20400ec35cae589504b8068c09fb1ff1f7339e0",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "deepseek-flash",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 37,
+      "completion_tokens": 15,
+      "reasoning_tokens": 12,
+      "latency_seconds": 0.644,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1466,
+      "completion_tokens": 434,
+      "reasoning_tokens": 83,
+      "latency_seconds": 3.528,
+      "dropped_history_messages": 0,
+      "output_sha256": "9e5e6b8d1a2fd3e32c1b5eba805834bfe14eca608b916c7724fb35e355b9f891"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 1862,
+      "completion_tokens": 61,
+      "reasoning_tokens": 33,
+      "latency_seconds": 1.032,
+      "dropped_history_messages": 0,
+      "output_sha256": "7351ca688d4356956e3e5ad2003088ca24479dec73cc1d188a8b807a2fae6d57"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4258,
+      "completion_tokens": 690,
+      "reasoning_tokens": 151,
+      "latency_seconds": 4.12,
+      "dropped_history_messages": 0,
+      "output_sha256": "1dfb5c965c66d7c41d5b9158df4e0e651f4a0e7f461fa1fe3cfb5872da86f78e"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 4821,
+      "completion_tokens": 66,
+      "reasoning_tokens": 34,
+      "latency_seconds": 0.98,
+      "dropped_history_messages": 0,
+      "output_sha256": "83a5b6e4d7046d1574556a7f05a756b5e5c37290b955d4af98207b6f373e212a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5039,
+      "completion_tokens": 517,
+      "reasoning_tokens": 22,
+      "latency_seconds": 2.728,
+      "dropped_history_messages": 0,
+      "output_sha256": "f92baa32ebf3f8a9b0ae435cb37dfb639dc2462a9865f3a2c3bfe1e2424e185a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 5561,
+      "completion_tokens": 691,
+      "reasoning_tokens": 201,
+      "latency_seconds": 3.599,
+      "dropped_history_messages": 0,
+      "output_sha256": "f97f411fd0a7e3c68f65873ae72a17543c096354228421257cd9a0d9521c4b33"
+    },
+    {
+      "stage": "coder",
+      "response_model": "deepseek-flash",
+      "finish_reason": "stop",
+      "prompt_tokens": 3482,
+      "completion_tokens": 380,
+      "reasoning_tokens": 150,
+      "latency_seconds": 1.98,
+      "dropped_history_messages": 0,
+      "output_sha256": "d32c0bec86afb770817f8b95248d5af1c3adcbb70f24c91d40ec63e8404b5d5b"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "invalid_json"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py",
+      "prior_protocol_error": "Protocol validation error: Extra data: line 3 column 1 (char 97). Correct the action; do not invent evidence."
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "timedelta_hours = np.diff",
+      "prior_protocol_error": "Protocol validation error: Search evidence is required before finalizing. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1,
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    }
+  ],
+  "retrieval_candidates": [
+    "pvlib/temperature.py",
+    "pvlib/solarposition.py",
+    "pvlib/pvsystem.py",
+    "pvlib/iotools/epw.py",
+    "versioneer.py",
+    "pvlib/forecast.py",
+    "pvlib/iotools/tmy.py",
+    "pvlib/iotools/srml.py",
+    "pvlib/iotools/crn.py",
+    "pvlib/irradiance.py"
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pvlib/temperature.py"
+  ],
+  "patch_size_bytes": 716,
+  "prompt_tokens": 26526,
+  "completion_tokens": 2854,
+  "reasoning_tokens": 686,
+  "duration_seconds": 19.77,
+  "prediction_model_label": "deepseek-flash",
+  "provider": "deepseek",
+  "agent": "pcr"
+}

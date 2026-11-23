@@ -1,0 +1,243 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "sqlfluff__sqlfluff-1763",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "a10057635e5b2559293a676486f0b730981f037a",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 10,
+  "coder_calls": 1,
+  "attempt_count": 1,
+  "reviewer_calls": 0,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "a428dd5a419b98e9e810c9f75008a533bb3716e6140f707dded04cc91cf912da",
+      "raw_model_patch_sha256": "f68fec6847ae8bdf26ccc35dbe2f9f45496b122fa931954e564386f60808880f",
+      "hunk_header_corrections": 0,
+      "patch_status": "applied",
+      "error_code": null,
+      "changed_files": [
+        ".pre-commit-hooks.yaml"
+      ],
+      "edit_blocks": 1,
+      "edited_files": [
+        ".pre-commit-hooks.yaml"
+      ],
+      "search_match_modes": [
+        "exact"
+      ]
+    }
+  ],
+  "patch_status": "applied",
+  "patch_sha256": "4107dfea69872f3b6ab529e05a8184a344210684015818ac13b8dc1b7d4eb555",
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.24,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2458,
+      "completion_tokens": 45,
+      "latency_seconds": 2.379,
+      "dropped_history_messages": 0,
+      "output_sha256": "bf902d2ae41d4618486536b34e0d20db6a954804397448474b7c0e3f46f26b6d"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3325,
+      "completion_tokens": 46,
+      "latency_seconds": 1.791,
+      "dropped_history_messages": 0,
+      "output_sha256": "cf8230d49361698db99811e83f02d8523078fe78d40313377a64a46b8b237109"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3830,
+      "completion_tokens": 354,
+      "latency_seconds": 13.161,
+      "dropped_history_messages": 0,
+      "output_sha256": "378627b708fd948653f237f6cbaa2aee5d607d33bfcd7efa245c0636aef6f165"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4211,
+      "completion_tokens": 354,
+      "latency_seconds": 12.743,
+      "dropped_history_messages": 0,
+      "output_sha256": "378627b708fd948653f237f6cbaa2aee5d607d33bfcd7efa245c0636aef6f165"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4592,
+      "completion_tokens": 354,
+      "latency_seconds": 13.821,
+      "dropped_history_messages": 0,
+      "output_sha256": "378627b708fd948653f237f6cbaa2aee5d607d33bfcd7efa245c0636aef6f165"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4973,
+      "completion_tokens": 354,
+      "latency_seconds": 12.625,
+      "dropped_history_messages": 0,
+      "output_sha256": "378627b708fd948653f237f6cbaa2aee5d607d33bfcd7efa245c0636aef6f165"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5354,
+      "completion_tokens": 354,
+      "latency_seconds": 13.29,
+      "dropped_history_messages": 0,
+      "output_sha256": "378627b708fd948653f237f6cbaa2aee5d607d33bfcd7efa245c0636aef6f165"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 5735,
+      "completion_tokens": 354,
+      "latency_seconds": 13.737,
+      "dropped_history_messages": 0,
+      "output_sha256": "378627b708fd948653f237f6cbaa2aee5d607d33bfcd7efa245c0636aef6f165"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6116,
+      "completion_tokens": 354,
+      "latency_seconds": 15.872,
+      "dropped_history_messages": 0,
+      "output_sha256": "378627b708fd948653f237f6cbaa2aee5d607d33bfcd7efa245c0636aef6f165"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 6656,
+      "completion_tokens": 283,
+      "latency_seconds": 10.795,
+      "dropped_history_messages": 0,
+      "output_sha256": "e1a778d53ba61156885f76f506ca5738cc6553da7a5ec22124a59a5c17044c01"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2490,
+      "completion_tokens": 40,
+      "latency_seconds": 1.934,
+      "dropped_history_messages": 0,
+      "output_sha256": "f68fec6847ae8bdf26ccc35dbe2f9f45496b122fa931954e564386f60808880f"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "sqlfluff fix"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": ".pre-commit-hooks.yaml"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 7,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 8,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 9,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 2,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 10,
+      "finalization_requested": true,
+      "action": "final",
+      "candidate_count": 1,
+      "prior_protocol_error": "Protocol validation error: Candidate requires evidence_ids. Correct the action; do not invent evidence."
+    }
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    ".pre-commit-hooks.yaml"
+  ],
+  "patch_size_bytes": 458,
+  "prompt_tokens": 49776,
+  "completion_tokens": 2895,
+  "duration_seconds": 112.81,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

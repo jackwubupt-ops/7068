@@ -1,0 +1,143 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pvlib__pvlib-python-1072",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "04a523fafbd61bc2e49420963b84ed8e2bd1b3cf",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "68e5b6dcc6aaa6517d74b2c555b517439cdecde24e81c950b3c3bb3ddc4a665a",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "pvlib/temperature.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "4cd5cef929e9322f87a914afb8c431d1abde4e7cc11edbac16da7da1e3319ca6",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "pvlib/temperature.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "np.diff(index)"
+    },
+    {
+      "step": 2,
+      "action": "search_repo",
+      "search_query": "np.diff(poa_global.index)"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "pvlib/temperature.py"
+    },
+    {
+      "step": 4,
+      "action": "edit"
+    },
+    {
+      "step": 5,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "pvlib/temperature.py",
+    "pvlib/solarposition.py",
+    "pvlib/pvsystem.py",
+    "pvlib/iotools/epw.py",
+    "versioneer.py",
+    "pvlib/forecast.py",
+    "pvlib/iotools/tmy.py",
+    "pvlib/iotools/srml.py",
+    "pvlib/iotools/crn.py",
+    "pvlib/irradiance.py"
+  ],
+  "read_files": [
+    "pvlib/temperature.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "pvlib/temperature.py"
+  ],
+  "patch_size_bytes": 720,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1472,
+      "completion_tokens": 27,
+      "latency_seconds": 1.404,
+      "dropped_history_messages": 0,
+      "output_sha256": "fb13d6121aaf24e08a4dbe779aa823ad760d63b3654070ce701036a00987adce"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1545,
+      "completion_tokens": 30,
+      "latency_seconds": 2.352,
+      "dropped_history_messages": 0,
+      "output_sha256": "fe8ea6f64a06c94538df033a6272cba9c5b3969d993bafa588bcca0e70157323"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1720,
+      "completion_tokens": 48,
+      "latency_seconds": 1.783,
+      "dropped_history_messages": 0,
+      "output_sha256": "df6e1634566956ebba92471d157cca0dd85634f671d2f9e5a8c6483494342f58"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4560,
+      "completion_tokens": 10,
+      "latency_seconds": 1.107,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4686,
+      "completion_tokens": 66,
+      "latency_seconds": 2.463,
+      "dropped_history_messages": 0,
+      "output_sha256": "68e5b6dcc6aaa6517d74b2c555b517439cdecde24e81c950b3c3bb3ddc4a665a"
+    }
+  ],
+  "agent_calls": 5,
+  "prompt_tokens": 13983,
+  "completion_tokens": 181,
+  "duration_seconds": 10.34,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

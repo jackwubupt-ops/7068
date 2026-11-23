@@ -1,0 +1,165 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pvlib__pvlib-python-1854",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pvlib/pvlib-python",
+  "base_commit": "27a3a07ebc84b11014d3753e4923902adf9a38c0",
+  "status": "patch_failed",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 4,
+  "coder_calls": 2,
+  "attempt_count": 2,
+  "reviewer_calls": 1,
+  "candidate_attempts": [
+    {
+      "attempt": 1,
+      "patch_sha256": "f16402d1f38895e273e8162caadbe04d6890d5462c11221dd83bbd6f10881074",
+      "raw_model_patch_sha256": "f16402d1f38895e273e8162caadbe04d6890d5462c11221dd83bbd6f10881074",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found",
+      "reviewer_error": "Unsupported failure type",
+      "reviewer_failure_type": "unknown"
+    },
+    {
+      "attempt": 2,
+      "patch_sha256": "f16402d1f38895e273e8162caadbe04d6890d5462c11221dd83bbd6f10881074",
+      "raw_model_patch_sha256": "f16402d1f38895e273e8162caadbe04d6890d5462c11221dd83bbd6f10881074",
+      "hunk_header_corrections": 0,
+      "patch_status": "edit_invalid",
+      "error_code": "search_not_found",
+      "changed_files": [],
+      "edit_error_code": "search_not_found"
+    }
+  ],
+  "patch_status": "edit_invalid",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.165,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 872,
+      "completion_tokens": 50,
+      "latency_seconds": 1.939,
+      "dropped_history_messages": 0,
+      "output_sha256": "f66dd3b1d8433bec2da95f087dbd6f4459df4858bad41c89f36a06c7fa62f5fb"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 998,
+      "completion_tokens": 50,
+      "latency_seconds": 1.775,
+      "dropped_history_messages": 0,
+      "output_sha256": "f66dd3b1d8433bec2da95f087dbd6f4459df4858bad41c89f36a06c7fa62f5fb"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1106,
+      "completion_tokens": 51,
+      "latency_seconds": 1.859,
+      "dropped_history_messages": 0,
+      "output_sha256": "602eed4185c04635efee2140ee29c6eb991d0eb65370ce55ba35d1345d87dac7"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1716,
+      "completion_tokens": 236,
+      "latency_seconds": 8.348,
+      "dropped_history_messages": 0,
+      "output_sha256": "1b813ce2ad024bdc27aae6f6761a49354c09e97c1d53b47f60d09030b8759bcd"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1319,
+      "completion_tokens": 205,
+      "latency_seconds": 8.122,
+      "dropped_history_messages": 0,
+      "output_sha256": "f16402d1f38895e273e8162caadbe04d6890d5462c11221dd83bbd6f10881074"
+    },
+    {
+      "stage": "reviewer",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1068,
+      "completion_tokens": 88,
+      "latency_seconds": 3.259,
+      "dropped_history_messages": 0,
+      "output_sha256": "e897d3306775f6fd909fdefa6037edb7a3eeebd0a045b4b57b1d4b8541d0d767"
+    },
+    {
+      "stage": "coder",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1663,
+      "completion_tokens": 205,
+      "latency_seconds": 7.372,
+      "dropped_history_messages": 0,
+      "output_sha256": "f16402d1f38895e273e8162caadbe04d6890d5462c11221dd83bbd6f10881074"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "PVSystem.__init__"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "PVSystem.__init__"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "pvlib/pvsystem.py"
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    }
+  ],
+  "suspected_file_count": 1,
+  "suspected_files": [
+    "pvlib/pvsystem.py"
+  ],
+  "patch_error_code": "search_not_found",
+  "patch_error_message": "SEARCH for pvlib/pvsystem.py does not match the original file. First SEARCH line: 'else:'",
+  "prompt_tokens": 8778,
+  "completion_tokens": 888,
+  "duration_seconds": 33.62,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

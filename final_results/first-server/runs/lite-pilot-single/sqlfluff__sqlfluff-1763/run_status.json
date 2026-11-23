@@ -1,0 +1,188 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "sqlfluff__sqlfluff-1763",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "sqlfluff/sqlfluff",
+  "base_commit": "a10057635e5b2559293a676486f0b730981f037a",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "22a775dfc150c4d04c10dc8276ef2a623dd1d8fe30320e5fa67de33204c5f7a7",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "src/sqlfluff/core/__init__.py"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "262da55f667c4df5e169e59a2373e3ff1560f5d4b197b57774cab4aa747a2586",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "src/sqlfluff/core/__init__.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "UnicodeEncodeError"
+    },
+    {
+      "step": 2,
+      "action": "search_repo",
+      "search_query": "wipes the .sql file"
+    },
+    {
+      "step": 3,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/rules/lint.py"
+    },
+    {
+      "step": 4,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/cli.py"
+    },
+    {
+      "step": 5,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/parser.py"
+    },
+    {
+      "step": 6,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/rules.py"
+    },
+    {
+      "step": 7,
+      "action": "read_file",
+      "read_path": "src/sqlfluff/core/__init__.py"
+    },
+    {
+      "step": 8,
+      "action": "edit"
+    },
+    {
+      "step": 9,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "read_files": [
+    "src/sqlfluff/core/__init__.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "src/sqlfluff/core/__init__.py"
+  ],
+  "patch_size_bytes": 559,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2479,
+      "completion_tokens": 27,
+      "latency_seconds": 1.42,
+      "dropped_history_messages": 0,
+      "output_sha256": "429855f4a730616e801dafae482c8e0f600b349f66b96d13c08c223ceb6cd879"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2552,
+      "completion_tokens": 30,
+      "latency_seconds": 1.131,
+      "dropped_history_messages": 0,
+      "output_sha256": "f6df38f697d79e60373849b3884f5b8c020102bbf48fbcf282b95e214424b68a"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2628,
+      "completion_tokens": 51,
+      "latency_seconds": 1.815,
+      "dropped_history_messages": 0,
+      "output_sha256": "6a909647a6ff1e7217e3342b1bef89180ab8c930f7a320357ff6f6479e787839"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2724,
+      "completion_tokens": 49,
+      "latency_seconds": 1.727,
+      "dropped_history_messages": 0,
+      "output_sha256": "4989cd10e31fd4b894a693904505d4c72e151fe1da0a3a31ce884b9fa01df566"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2818,
+      "completion_tokens": 50,
+      "latency_seconds": 1.907,
+      "dropped_history_messages": 0,
+      "output_sha256": "63df4744bc9c70ca5758b4d8a893b63793948390c14140c048fd7096778e9942"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 2913,
+      "completion_tokens": 50,
+      "latency_seconds": 1.773,
+      "dropped_history_messages": 0,
+      "output_sha256": "cad3e03d6530a4bd8b24afa36777552668f87b1181da55eae2df6f4e6981c1f4"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3008,
+      "completion_tokens": 52,
+      "latency_seconds": 1.996,
+      "dropped_history_messages": 0,
+      "output_sha256": "a12c8f32fd40224898441a3d5bf82df121ab7f05663cfb78344fa4f5b7202df7"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3933,
+      "completion_tokens": 10,
+      "latency_seconds": 0.593,
+      "dropped_history_messages": 0,
+      "output_sha256": "79fc76396a58d16b157f369e08b4d82ba4ce8d5a5e20c35f845f1b94175a736f"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4063,
+      "completion_tokens": 54,
+      "latency_seconds": 2.193,
+      "dropped_history_messages": 0,
+      "output_sha256": "22a775dfc150c4d04c10dc8276ef2a623dd1d8fe30320e5fa67de33204c5f7a7"
+    }
+  ],
+  "agent_calls": 9,
+  "prompt_tokens": 27118,
+  "completion_tokens": 373,
+  "duration_seconds": 15.42,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

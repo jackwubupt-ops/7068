@@ -1,0 +1,128 @@
+{
+  "experiment": "qwen-single-agent-swebench-dev-v1",
+  "agent": "single",
+  "instance_id": "pylint-dev__astroid-1866",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "6cf238d089cf4b6753c94cfc089b4a47487711e5",
+  "status": "prediction_ready",
+  "edit_format": "search_replace",
+  "agent_max_steps": 16,
+  "agent_max_submissions": 2,
+  "patch_status": "applied",
+  "attempt_count": 1,
+  "candidate_attempts": [
+    {
+      "raw_model_output_sha256": "85c8b4c2a4669bc197bd44f17825ac18d8be0740f24b918e8fad2d26de42eeef",
+      "hunk_header_corrections": 0,
+      "edit_blocks": 1,
+      "edited_files": [
+        "astroid/brain/brain_builtin_inference.py"
+      ],
+      "search_match_modes": [
+        "indent_shift"
+      ],
+      "patch_status": "applied",
+      "patch_sha256": "f2869c5089a07cf95beebca629e580c986ea24d8cc6b7c3f3511fc2e86f1c688",
+      "error_code": null,
+      "error_message": "",
+      "changed_files": [
+        "astroid/brain/brain_builtin_inference.py"
+      ]
+    }
+  ],
+  "agent_action_trace": [
+    {
+      "step": 1,
+      "action": "search_repo",
+      "search_query": "TypeError: unsupported format string passed to NoneType.__format__"
+    },
+    {
+      "step": 2,
+      "action": "read_file",
+      "read_path": "astroid/brain/brain_builtin_inference.py"
+    },
+    {
+      "step": 3,
+      "action": "edit"
+    },
+    {
+      "step": 4,
+      "action": "submit",
+      "patch_status": "applied"
+    }
+  ],
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": true,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "retrieval_candidates": [
+    "astroid/brain/brain_builtin_inference.py",
+    "astroid/nodes/scoped_nodes/scoped_nodes.py",
+    "astroid/nodes/node_ng.py",
+    "astroid/interpreter/objectmodel.py",
+    "astroid/bases.py",
+    "astroid/inference_tip.py",
+    "astroid/objects.py",
+    "astroid/nodes/node_classes.py",
+    "astroid/brain/brain_functools.py",
+    "astroid/nodes/as_string.py"
+  ],
+  "read_files": [
+    "astroid/brain/brain_builtin_inference.py"
+  ],
+  "stop_reason": null,
+  "suspected_files": [
+    "astroid/brain/brain_builtin_inference.py"
+  ],
+  "patch_size_bytes": 668,
+  "source_checkout_clean": true,
+  "model_calls": [
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1241,
+      "completion_tokens": 40,
+      "latency_seconds": 1.618,
+      "dropped_history_messages": 0,
+      "output_sha256": "1e87a56d94a5ef880c0c85f57fc46d05b8200391770493ae8c6e05fee9f7f646"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1327,
+      "completion_tokens": 57,
+      "latency_seconds": 2.192,
+      "dropped_history_messages": 0,
+      "output_sha256": "10753393d8abf8adf53ad2693a1dfd569ed4cd9e071558340394f9ec2f2a2fc9"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3875,
+      "completion_tokens": 14,
+      "latency_seconds": 1.128,
+      "dropped_history_messages": 0,
+      "output_sha256": "af5c64a707c70cfae2ce5be95ba6d67b33e06ef0e08b37fefd2abbac60e9fe95"
+    },
+    {
+      "stage": "agent",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4010,
+      "completion_tokens": 52,
+      "latency_seconds": 2.565,
+      "dropped_history_messages": 0,
+      "output_sha256": "85c8b4c2a4669bc197bd44f17825ac18d8be0740f24b918e8fad2d26de42eeef"
+    }
+  ],
+  "agent_calls": 4,
+  "prompt_tokens": 10453,
+  "completion_tokens": 163,
+  "duration_seconds": 8.02,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct-single-agent"
+}

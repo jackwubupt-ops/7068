@@ -1,0 +1,142 @@
+{
+  "experiment": "qwen-small-real-swebench-full-dev-v1",
+  "instance_id": "pylint-dev__astroid-1333",
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "split": "dev",
+  "repo": "pylint-dev/astroid",
+  "base_commit": "d2a5b3c7b1e203fec3c7ca73c30eb1785d3d4d0a",
+  "status": "no_candidate_files",
+  "edit_format": "search_replace",
+  "live_api_preflight": true,
+  "planner_calls": 6,
+  "coder_calls": 0,
+  "attempt_count": 0,
+  "reviewer_calls": 0,
+  "candidate_attempts": [],
+  "patch_status": "not_attempted",
+  "patch_sha256": null,
+  "source_checkout_clean": true,
+  "official_evaluated": false,
+  "official_resolved": null,
+  "prediction_available": false,
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_calls": [
+    {
+      "stage": "preflight",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 36,
+      "completion_tokens": 3,
+      "latency_seconds": 0.107,
+      "dropped_history_messages": 0,
+      "output_sha256": "d58dafcb1d5c0daf8c36ed3d2a1ae34ff989089b73b9aefc38149cf159de8ab8"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 810,
+      "completion_tokens": 48,
+      "latency_seconds": 1.629,
+      "dropped_history_messages": 0,
+      "output_sha256": "2ee714abdb648259a65695b2d9541253d276c63024959bc3c586c49221cefe2a"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 1320,
+      "completion_tokens": 49,
+      "latency_seconds": 1.691,
+      "dropped_history_messages": 0,
+      "output_sha256": "d909a7789be89874113e202aeeaceab15e93abf27e6ea0120eeb3967893fa32c"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3702,
+      "completion_tokens": 267,
+      "latency_seconds": 9.522,
+      "dropped_history_messages": 0,
+      "output_sha256": "ff40702702631bc531d6c498e177d17c245172e4f2b7239804b8fc1ad58d9065"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 3998,
+      "completion_tokens": 49,
+      "latency_seconds": 1.806,
+      "dropped_history_messages": 0,
+      "output_sha256": "c9549bd3b4ffcf481ec4dce9cf992c23acbf28b66c23e49fa7360a15b29da68f"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4136,
+      "completion_tokens": 135,
+      "latency_seconds": 4.805,
+      "dropped_history_messages": 0,
+      "output_sha256": "11185eae8e9f77fb4ed7c37d487538245e813ee01c4c797aa1297138d986f361"
+    },
+    {
+      "stage": "planner",
+      "response_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "finish_reason": "stop",
+      "prompt_tokens": 4306,
+      "completion_tokens": 170,
+      "latency_seconds": 5.956,
+      "dropped_history_messages": 0,
+      "output_sha256": "762cc118d375bc4503ad275b81fb0efa15151fd04efc0fccc3a6a1800cb935e8"
+    }
+  ],
+  "planner_action_trace": [
+    {
+      "round": 1,
+      "finalization_requested": false,
+      "action": "search_repo",
+      "search_query": "__init__.py"
+    },
+    {
+      "round": 2,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "astroid/__init__.py"
+    },
+    {
+      "round": 3,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 1
+    },
+    {
+      "round": 4,
+      "finalization_requested": false,
+      "action": "read_file",
+      "read_path": "src/project/__init__.py",
+      "prior_protocol_error": "Protocol validation error: Evidence must reference a successful read of the candidate file. Correct the action; do not invent evidence."
+    },
+    {
+      "round": 5,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0
+    },
+    {
+      "round": 6,
+      "finalization_requested": false,
+      "action": "final",
+      "candidate_count": 0,
+      "prior_protocol_error": "Protocol validation error: root_cause_hypothesis must be a nonempty string. Correct the action; do not invent evidence."
+    }
+  ],
+  "suspected_file_count": 0,
+  "suspected_files": [],
+  "prompt_tokens": 18308,
+  "completion_tokens": 721,
+  "duration_seconds": 25.64,
+  "prediction_model_label": "qwen2.5-coder-7b-instruct",
+  "agent": "pcr"
+}

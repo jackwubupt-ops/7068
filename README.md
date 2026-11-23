@@ -262,8 +262,9 @@ bootstrap 95% CI resampling tasks.
   42.0%). P-C-R produces more applicable patches (22.7 vs 19.7) at about 3.9x the output tokens
   and 1.7x the time per task.
 - **Model:** DeepSeek vs Qwen2.5-Coder-7B (pilot v3 re-evaluated on the same repaired images,
-  0/23 for both agents): P-C-R 10 vs 0 tasks (p = 0.002), single 9 vs 0 (p = 0.004), from the
-  first DeepSeek run.
+  0/23 for both agents) against the original DeepSeek round 1 on the same server: P-C-R 10 vs 0
+  tasks and single 10 vs 0 (McNemar p = 0.002 each; one run per side). Data:
+  [`final_results/first-server/`](final_results/first-server/README.md).
 - **Syntax check:** never triggered in the four non-thinking configurations (DeepSeek edits kept
   the files parsable); it is covered by offline tests and matters for weaker models or the
   Windows demo without Docker.
@@ -306,7 +307,8 @@ the remaining failures are mostly wrong edits at or near the right place. Harnes
 applicable patches from 3 to 14, but 0 were resolved: the bottleneck is the 7B model's repair
 ability, not localization or the agent loop, so RQ1/RQ3 on 7B would compare 0 against 0. The
 final experiments therefore run on `deepseek-flash`; the 7B batches are re-evaluated on the
-repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md](docs/qwen7b-limits.md).
+repaired images and kept as the model baseline. Details: [docs/qwen7b-limits.md](docs/qwen7b-limits.md);
+all pilot batches, the vLLM log and the diagnosis reports: [`final_results/first-server/`](final_results/first-server/README.md).
 
 ## 6. Reliability, non-functional requirements, integrity and privacy
 
