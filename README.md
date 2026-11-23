@@ -3,7 +3,7 @@
 **COMP7608B final project** · Group **[GROUP NUMBER]** · Members: **[MEMBER NAMES]**
 <!-- Names/IDs are filled in only in the submission ZIP copy; this repository is public. -->
 
-**Submitted version:** git tag `v1.0-final` (see section 9).
+**Submitted version:** git tag `v1.0` (see section 9).
 
 PatchLoop helps a **repository maintainer** turn a bug report into a **reviewable, Git-applicable
 patch**. The maintainer gives an issue and a repository at a commit. The agent finds the relevant
@@ -404,7 +404,7 @@ commits the patch, on a new branch `patchloop/<session>`; nothing is ever pushed
 
 ## 9. Submitted version, AI use, attribution
 
-- Submitted version: tag `v1.0-final` (`git rev-parse v1.0-final` prints its commit; the report states it).
+- Submitted version: tag `v1.0` (`git rev-parse v1.0` prints its commit; the report states it).
 - AI assistance: see [`AI_DECLARATION.md`](AI_DECLARATION.md) (tools used, what they helped with, project prompts in `ai_prompts/`).
 - Reused software and data: SWE-bench / SWE-bench Lite (dataset and evaluation harness),
   Qwen2.5-Coder-7B-Instruct, vLLM, PyTorch, Hugging Face `datasets` / `huggingface_hub`, the OpenAI

@@ -4,10 +4,10 @@ Record changes here so teammates can understand behavior and interface changes.
 Add new entries under **Unreleased** in the same commit as the implementation.
 These are development milestones, not published GitHub releases.
 
-## Release v1.0-final (2026-11-23)
+## Release v1.0 (2026-11-23)
 
 ### Changed
-- README names the submitted version as tag `v1.0-final` (the report gives its commit); corrected the `run_tests` usage statement (the single agent tried it 3 times, no test ran).
+- README names the submitted version as tag `v1.0` (the report gives its commit); corrected the `run_tests` usage statement (the single agent tried it 3 times, no test ran).
 
 ## First-server data restored (2026-11-23)
 
