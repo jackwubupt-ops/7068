@@ -3,7 +3,7 @@
 **COMP7608B final project** · Group **[GROUP NUMBER]** · Members: **[MEMBER NAMES]**
 <!-- Names/IDs are filled in only in the submission ZIP copy; this repository is public. -->
 
-**Submitted version:** git tag `[v1.0-final]` (see section 9).
+**Submitted version:** git tag `v1.0-final` (see section 9).
 
 PatchLoop helps a **repository maintainer** turn a bug report into a **reviewable, Git-applicable
 patch**. The maintainer gives an issue and a repository at a commit. The agent finds the relevant
@@ -251,8 +251,9 @@ bootstrap 95% CI resampling tasks.
   time per task. For the single agent the same feedback hurt (0 better, 4 worse): a regression
   costs it one of its two submissions and the rewrite is often worse, whereas P-C-R's Reviewer
   diagnoses the failure before the Coder retries. Existing tests can also encode the buggy
-  behaviour the issue asks to change, so a "regression" is a signal, not proof. Neither agent
-  ever chose the `run_tests` tool itself; all feedback came from the harness check.
+  behaviour the issue asks to change, so a "regression" is a signal, not proof. P-C-R never
+  called the `run_tests` tool and the single agent tried it 3 times (one task, a test path that does
+  not exist, so no test ran); all feedback came from the harness check.
 - **RQ1 (reasoning effort):** more inference-time compute did not improve repair. No effort level
   differs significantly from thinking off, and the ranking changes between run sets (here max is
   highest; in the earlier 2-tool runs high was lowest), while output tokens grow about 15x and
@@ -403,7 +404,7 @@ commits the patch, on a new branch `patchloop/<session>`; nothing is ever pushed
 
 ## 9. Submitted version, AI use, attribution
 
-- Submitted version: tag `[v1.0-final]`, commit `[SHA]`.
+- Submitted version: tag `v1.0-final` (`git rev-parse v1.0-final` prints its commit; the report states it).
 - AI assistance: see [`AI_DECLARATION.md`](AI_DECLARATION.md) (tools used, what they helped with, project prompts in `ai_prompts/`).
 - Reused software and data: SWE-bench / SWE-bench Lite (dataset and evaluation harness),
   Qwen2.5-Coder-7B-Instruct, vLLM, PyTorch, Hugging Face `datasets` / `huggingface_hub`, the OpenAI
