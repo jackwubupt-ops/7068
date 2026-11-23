@@ -14,7 +14,8 @@ README (section 3); never commit `.env` or any key.
   execution loop (`loop.py`, `execution.py`).
 - `experiments/`: batch runner, official evaluation, reports and statistics.
 - `scripts/`: server setup, final experiment, image repair, result export; `samples/`: sample
-  requests; `final_results/`: exported results and traces; `tests/`: offline tests.
+  requests; `final_results/`: exported results and traces; `report/figures/`: figure scripts;
+  `tests/`: offline tests.
 
 ## Checks before a pull request
 

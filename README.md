@@ -342,7 +342,7 @@ commits the patch, on a new branch `patchloop/<session>`; nothing is ever pushed
 | Workload / concurrency | batch runs with 4 parallel tasks per configuration | 3 runs x 7 configurations in parallel on a 32-vCPU / 64 GiB server; each session in the app runs in its own thread and temporary worktree | budgets are per task; there is no server-wide rate limit beyond the API's own |
 | Privacy | code stays local with the Qwen backend; DeepSeek receives the issue and the code the agent reads | stated in the UI before every DeepSeek run; `.env` is git-ignored; reports store no prompt text | DeepSeek is far stronger (10/23 vs 0/23) but data leaves the machine |
 | Safety of execution | the model never runs commands; tests run only in a no-network, capability-dropped Docker container with limits | `tests/test_exec_feedback.py` checks the sandbox flags | test execution needs Docker; without it the app says so and continues |
-| Reproducibility | every batch records its settings and Git commit (`manifest.json`) | 36 batches in `final_results/runs/` | thinking mode ignores temperature, so runs are repeated 3 times |
+| Reproducibility | every batch records its settings and Git commit (`manifest.json`) | 36 batches in `final_results/runs/` and 11 in `final_results/first-server/runs/` | thinking mode ignores temperature, so runs are repeated 3 times |
 
 ### 6.3 Integrity and privacy rules
 
@@ -381,7 +381,8 @@ commits the patch, on a new branch `patchloop/<session>`; nothing is ever pushed
 | `experiments/` | batch runner (`lite_batch.py`), P-C-R and single pipelines, official evaluation, reports (`final_report.py`, `repeat_report.py`), paired statistics, failure diagnosis, retrieval recall |
 | `scripts/` | server setup (`setup_eval_server.sh`), final experiment (`run_final_deepseek.sh`), eval-image repair, repository mirroring, result export; vLLM setup/start for the local 7B baseline |
 | `samples/` | sample requests: ordinary, changed request, two failures, execution feedback |
-| `final_results/` | exported results of the final experiment and the recorded sample traces |
+| `final_results/` | exported results of the final experiment, the first-server Qwen-7B pilots (`first-server/`) and the recorded sample traces |
+| `report/figures/` | `make_heatmap.py`: regenerates the report's Figure 2 (resolved runs per task and configuration) from `final_results/` |
 | `tests/` | offline unit and integration tests (scripted model replies, real temporary Git repositories) |
 | `docs/` | server runbook (`aliyun-gpu-runbook.md`) and the 7B evidence (`qwen7b-limits.md`) |
 

@@ -477,46 +477,45 @@ cd /data/7068 && source .venv-patchloop-client/bin/activate && python -m patchlo
 
 每个示例会生成一个 `.json`（完整的事件记录）和一个 `.md`（可读的 trace）。这些文件要放进提交的 ZIP 包里。
 
-## 阶段 17：最终对比实验（DeepSeek Flash，RQ1 + RQ3）
+## 阶段 17：最终对比实验（DeepSeek Flash，RQ1 + RQ2 + RQ3，每个配置 3 次）
 
-最终的对比实验全部用 DeepSeek API 的 `deepseek-flash` 跑，**不需要 GPU，也不需要 vLLM**；官方评测仍然要用本机的 Docker。之前用 7B 跑出来的 pilot v1–v3 不再作为最终结果，只作为"7B 撑不起这个系统"的证据（见 [docs/qwen7b-limits.md](qwen7b-limits.md)）。
+最终实验全部用 DeepSeek API 的 `deepseek-flash`，**不需要 GPU 和 vLLM**，官方评测用本机 Docker。新的 CPU 服务器（最终用的是 32 vCPU / 64 GiB）先运行 `bash scripts/setup_eval_server.sh`，它会完成阶段 1、2、7、8、14 的准备工作。7B 的 pilot v1–v3 只作为模型对比的基线，数据在仓库的 `final_results/first-server/`（见 [docs/qwen7b-limits.md](qwen7b-limits.md)）。
 
-| 批次目录 | agent | 推理强度 | 用途 |
-|---|---|---|---|
-| `final-ds-pcr` | P-C-R | none（关闭思考） | RQ3 和 RQ1 共用的基线 |
-| `final-ds-single` | 单 agent | none | RQ3 |
-| `final-ds-pcr-low` | P-C-R | low | RQ1 |
-| `final-ds-pcr-high` | P-C-R | high | RQ1 |
-| `final-ds-pcr-max`（可选） | P-C-R | max | RQ1，设置 `RQ1_EFFORTS="low high max"` 才会跑 |
+| 批次目录（`$TAG-…`） | agent | 推理强度 | 执行反馈 | 用途 |
+|---|---|---|---|---|
+| `pcr` | P-C-R | none | 关 | RQ1/RQ2/RQ3 的基线 |
+| `single` | 单 agent | none | 关 | RQ3，RQ2 的单 agent 基线 |
+| `pcr-low` / `pcr-high` / `pcr-max` | P-C-R | low / high / max | 关 | RQ1 |
+| `pcr-exec` / `single-exec` | P-C-R / 单 agent | none | 开 | RQ2 |
 
-所有批次的编辑格式（search_replace）、检索（top-10）、调用预算、**回答**的输出上限都相同。开启思考时，每次调用会额外多给一份思考 token 的额度，等于 DeepSeek 官方在思考模式下的默认上限（low/high 65536，max 131072）；每个任务的思考 token 另外设上限（40 万、60 万、120 万），这些数字会写进 `manifest.json`。第一次试跑时额度只给了 8K/24K/48K，有些 Coder 调用还没想完就被截断（`QWEN_EMPTY_CONTENT`），所以改成了官方默认值。思考模式下 DeepSeek 不使用 temperature，所以 low/high/max 的结果带有随机性，报告里要写明这一点。
+所有批次都用同样的设置：4 个只读工具、search_replace 编辑格式、检索 top-10、相同的调用预算和回答输出上限、语法检查。开启思考时，每次调用额外给一份思考额度，用 DeepSeek 官方默认值（low/high 65536，max 131072）；每题的思考 token 另设上限（40 万 / 60 万 / 120 万）。这些都会写进 `manifest.json`。思考模式下 DeepSeek 不使用 temperature，所以每个配置跑 3 次。
 
-前提：`.env` 里已经有 `DEEPSEEK_API_KEY`，并且阶段 14 的 gold 自检已经做完（脚本会用 `/data/eval-selftest/gold.gold-all-dev-fixed.json` 筛选 gold 能通过的题目）。
+前提：`.env` 里已经配好 `DEEPSEEK_API_KEY`，阶段 14 的 gold 自检结果是 23/23。
 
-```bash
-screen -S final
-```
-
-在 screen 里执行（`QWEN_PCR` / `QWEN_SINGLE` 换成服务器上 pilot v3 的实际目录）：
+三次重复分别用三个 screen，可以同时跑。每条流水线依次跑完 7 个批次，每个批次 4 个 worker，所以同时最多有 12 个任务在调用 API：
 
 ```bash
-cd /data/7068 && source .venv-patchloop-client/bin/activate && QWEN_PCR=/data/runs/<pilot-v3-pcr目录> QWEN_SINGLE=/data/runs/<pilot-v3-single目录> bash scripts/run_final_deepseek.sh 2>&1 | tee /data/runs/final-ds.log
+cd /data/7068 && source .venv-patchloop-client/bin/activate && RQ1_EFFORTS="low high max" EXEC_AGENTS="pcr single" TAG=final-t4 OUT=/data/analysis/comparison-final-t4 bash scripts/run_final_deepseek.sh 2>&1 | tee /data/runs/final-t4.log
 ```
 
-脚本按顺序做：preflight（每个推理强度各调用一次）→ 生成所有批次 → 官方评测 → 在**修复后的同一批镜像**上重新评测 7B 的两个批次（旧结果另存为 `official_eval.pre-repair.json`）→ 生成 `/data/analysis/final-comparison.md` / `.json`（只统计 gold 能通过的题）和 `final-comparison.all-tasks.md`（全部 23 题）。
+另外两个 screen 里运行同一条命令，只把 `TAG` 和 `OUT` 里的 `final-t4` 换成 `final-t4-r2`、`final-t4-r3`。脚本依次做：preflight → 生成 7 个批次 → 官方评测 → 生成单次运行的报告。
 
-- 中途断了就再运行一遍同一条命令：已经完成的批次和评测会跳过，没跑完的批次会从断点继续。
-- 评测不完整（脚本退出码 2）时，查明原因后加 `EVAL_SUFFIX=-r2` 重跑（run id 只能用一次）。
-- 只想先生成、晚点再评测：加 `SKIP_EVAL=1`。
+- 中途断了（比如 API 余额不足返回 402）：充值后重新运行同一条命令。已经完成的批次会跳过；因为 API 失败而中断的任务会被重跑。
+- 评测不完整（退出码 2）：查明原因后加 `EVAL_SUFFIX=-r2` 重跑（run id 只能用一次）。
 
-**通过标准：** 所有批次 `tasks_finished = 23`；所有 `official_eval.json` 都是 `complete: true`；`final-comparison.md` 的 "Comparability warnings" 里没有意外的项目（7B 和 DeepSeek 的设置不同时会列在这里）。
+三次都跑完以后，合并结果做任务级配对检验，再打包导出：
 
-**费用：** 按 [DeepSeek 价格页](https://api-docs.deepseek.com/quick_start/pricing) 的 deepseek-flash 价格，不开思考的两个批次应该只要几美元；high/max 会产生大量思考 token，按输出价格计费，先跑 low/high，看 `summary.json` 里的 `reasoning_tokens` 再决定要不要跑 max。
+```bash
+python -m experiments.repeat_report --runs-dir /data/runs --tag final-t4 --tag final-t4-r2 --tag final-t4-r3 --tasks-file /data/analysis/comparison-final-t4.gold-tasks.txt --out /data/analysis/final-repeats-t4
+```
 
-## 以后的阶段在这台机器上怎么做
+```bash
+bash scripts/export_results.sh
+```
 
-- **RQ2 执行反馈：** 测试直接在本机的 Docker 里跑，用 SWE-bench 预构建的实例镜像，不再需要远程调用。泄漏红线不变：只能运行仓库原有的测试和模型自己写的复现脚本，`test_patch` 和 FAIL_TO_PASS 测试一律不能用。
-- **RQ1：** 已经从 QLoRA 微调改为推理强度对比（阶段 17），不再需要训练环境。
+导出的内容就是仓库里的 `final_results/`。报告的 Figure 2 由 `python report/figures/make_heatmap.py` 从这些结果生成。
+
+**通过标准：** 21 个批次都满足 `tasks_finished = 23`，每个 `official_eval.json` 都是 `complete: true`；`final-repeats-t4.md` 的 "Comparability warnings" 里只应该有 exec 两组的 commit 差异（这个差异只涉及 resume 逻辑，README 第 5 节有说明）。
 
 ## 常见问题
 
@@ -542,4 +541,4 @@ cd /data/7068 && source .venv-patchloop-client/bin/activate && QWEN_PCR=/data/ru
 3. 阶段 9 三次单题的检查输出；
 4. 阶段 10 三个配置的汇总；
 5. 阶段 11 `paired_compare` 的输出；
-6. 阶段 17 的 `/data/analysis/final-comparison.md`。
+6. 阶段 17 的 `/data/analysis/final-repeats-t4.md`。
